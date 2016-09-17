@@ -10,7 +10,7 @@ public class main {
     public static void main(String[] args) {
         iTipoServicioLogica logica = new TipoServicioLogica();
         TipoServicio servicio = new TipoServicio();
-        List<TipoServicio> lstTipoServicio = null;
+//        List<TipoServicio> lstTipoServicio = null;
         
 //        lstTipoServicio = logica.buscar("Mante");
 //        
@@ -19,7 +19,11 @@ public class main {
 //            System.out.println(lstTipoServicio.get(i).getDecripcion());
 //        }
 
-        logica.eliminar(10);
+        servicio.setDecripcion("Enano Euler");
+
+        logica.insertar(servicio);
+        
+//        logica.eliminar(10);
         
     }
 }
