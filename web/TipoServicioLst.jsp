@@ -78,7 +78,7 @@
         <form name="frmLst" method="post" class="form-inline">
             <div class="form-group">
                 <label for="txtDescripcion">Tipo de Servicio:</label>
-                <input class="form-control"  type="text" id="txtDescripcion" size="50" />              
+                <input class="form-control"  type="text" id="txtDescripcion" size="50" autofocus />              
                 &nbsp;&nbsp;
                 <input type="button" value="Buscar" onclick="buscar()" id="btnBuscar" class="btn btn-primary" />
                 <input type="button" value="Nuevo" onclick="nuevo()" id="btnNuevo" class="btn btn-primary" />

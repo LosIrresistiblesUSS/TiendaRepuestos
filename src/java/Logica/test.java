@@ -5,7 +5,7 @@ import Modelo.TipoServicio;
 import java.util.ArrayList;
 import java.util.List;
 
-public class main {
+public class test {
         
     public static void main(String[] args) {
         iTipoServicioLogica logica = new TipoServicioLogica();
