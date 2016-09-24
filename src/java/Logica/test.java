@@ -19,11 +19,10 @@ public class test {
 //            System.out.println(lstTipoServicio.get(i).getDecripcion());
 //        }
 
-        servicio.setDecripcion("Enano Euler");
+        servicio.setDecripcion("Otero.. nose baña");
 
         logica.insertar(servicio);
         
-//        logica.eliminar(10);
-        
+//        logica.eliminar(10);   
     }
 }

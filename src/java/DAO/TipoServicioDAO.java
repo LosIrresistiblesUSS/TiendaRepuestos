@@ -113,7 +113,6 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
     @Override
     public byte eliminar(int id) {
         logger.info("Eliminar TipoServicio");

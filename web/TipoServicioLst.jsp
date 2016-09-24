@@ -17,15 +17,15 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" href="css/estilos.css"/>
         
-        <title>Listadode Tipos de Servicio</title>
+        <title>Listado de Tipos de Servicio</title>
         <script type="text/javascript">
             function nuevo(){
-                document.location = "TpoServicioMnt.jsp";
+                document.location = "TipoServicioMnt.jsp";
             }
             
             function buscar(){
                 var desc = document.getElementById("txtDescripcion").value;
-                document.frmLst.action = "TipoServicioControlador?accion=buscar&descipcion=" + desc;
+                document.frmLst.action = "TipoServicioControlador?accion=buscar&descripcion=" + desc;
                 document.frmLst.submit();
             }
             
@@ -126,7 +126,6 @@
                                }
                             %>
                         </table>
-    
         </form>
     </div>
                         
