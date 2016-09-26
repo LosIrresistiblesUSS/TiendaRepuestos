@@ -1,0 +1,12 @@
+<footer>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            Copyright &COPY; Los Irresistibles USS - 2016
+        </div>
+    </div>
+</div>
+</footer>
+
+<script src="js/jquery.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>

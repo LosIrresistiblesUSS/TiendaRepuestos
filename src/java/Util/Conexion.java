@@ -48,6 +48,5 @@ public class Conexion {
       }catch(SQLException e){
           logger.error("Error al cerrar la conexión "+e.getMessage());
       }
-      
   }
 }

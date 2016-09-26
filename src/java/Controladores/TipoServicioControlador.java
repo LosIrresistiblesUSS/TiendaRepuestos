@@ -77,43 +77,45 @@ public class TipoServicioControlador extends HttpServlet {
             flgOperacion = tipoServicioService.insertar(tipoServicio);
             
             if(flgOperacion > 0){
-                mensaje = "Tipo de Servicio insertado correctamente.";
+                mensaje = "<div class='alert alert-success alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong><span class='glyphicon glyphicon-file'></span></strong> Tipo de Servicio <strong>"
+                        + tipoServicio.getDecripcion()
+                        + "</strong> insertado correctamente.</div>";
             }else{
-                mensaje = "Error al insertar Tipo de Servicio.";
+                mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong><span class='glyphicon glyphicon-file'></span></strong> Error al intentar insertar el Tipo de Servicio <strong>"
+                        + tipoServicio.getDecripcion()
+                        + ".</strong></div>";
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
             sesion.removeAttribute("listaTipoServicio");
             sesion.removeAttribute("msgListado");
             sesion.removeAttribute("tipoServicioActualizar");
-            
             sesion.setAttribute("msgPostOperacion", mensaje);
+            busca(request, response);
             
-            buscar(request, response);
         }catch(Exception e){
             logger.error("insertar: " + e.getMessage());
         }
     }
-        
-        protected void buscar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
-        String desc = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
+        String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
         try{
             sesion = request.getSession();
             sesion.removeAttribute("listaTipoServicio");
             sesion.removeAttribute("msgListado");
-            
-            
-            if(sesion.getAttribute("msgPostOperacion") != null){
-                desc = "";
-            }
-            
+            sesion.removeAttribute("tipoServicioActualizar");
             tipoServicioService = new TipoServicioLogica();
             List<TipoServicio> lstTipoSevicio = tipoServicioService.buscar(desc);
             if(lstTipoSevicio.size() > 0){
                 sesion.setAttribute("listaTipoServicio", lstTipoSevicio);
             }else{
-                mensaje = "No existen Tipos de Servicio.";
+                mensaje = "No existen Tipos de Servicio que contengan el siguiente texto: <strong>" + desc + "</strong>.";
                 sesion.setAttribute("msgListado", mensaje);
             }
             response.sendRedirect("TipoServicioLst.jsp");
@@ -121,6 +123,12 @@ public class TipoServicioControlador extends HttpServlet {
             logger.error("buscar: " + e.getMessage());
         }
     }
+        
+        
+        protected void buscar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+            busca(request, response);
+            sesion.removeAttribute("msgPostOperacion");
+        }
         
         protected void obtenerPorId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("obtenerPorId");
@@ -133,7 +141,7 @@ public class TipoServicioControlador extends HttpServlet {
             sesion.removeAttribute("msgPostOperacion");
             sesion.removeAttribute("listaTipoServicio");
             sesion.removeAttribute("msgListado");
-            sesion.removeAttribute("TipoServicioActualizar");
+            sesion.removeAttribute("tipoServicioActualizar");
             
             sesion.setAttribute("tipoServicioActualizar", tipoServicio);
             
@@ -152,12 +160,26 @@ public class TipoServicioControlador extends HttpServlet {
             tipoServicio.setIdTipoServicio(id);
             tipoServicio.setDecripcion(descripcion);
             
+            TipoServicio tipoServicioAnterior = new TipoServicio();
+            tipoServicioAnterior = (TipoServicio) sesion.getAttribute("tipoServicioActualizar");
+            
+            tipoServicioService = new TipoServicioLogica();
             flgOperacion = tipoServicioService.actualizar(tipoServicio);
-                        if(flgOperacion == 1){
-                mensaje = "Tipo de Servicio actualizado correctamente.";
+            
+            if(flgOperacion == 1){
+                mensaje = "<div class='alert alert-success alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong><span class='glyphicon glyphicon-pencil'></span> </strong>Tipo de Servicio <strong>"
+                        + tipoServicioAnterior.getDecripcion()
+                        + "</strong> actualizado correctamente por <strong>" + tipoServicio.getDecripcion() + "</strong>.</div>";
             }else if(flgOperacion == 0){
-                mensaje = "Error al actualizar Tipo de Servicio.";
+                mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong><span class='glyphicon glyphicon-pencil'></span> </strong>Error al intentar actualizar el Tipo de Servicio <strong>"
+                        + tipoServicioAnterior.getDecripcion()+ "</strong>"
+                        + " por <strong>" + tipoServicio.getDecripcion() + "</div>";
             }else{
+                /*Para cuando esté listo el PROC*/
                 mensaje = "Descripción duplicado.";
             }
             sesion = request.getSession();
@@ -165,27 +187,36 @@ public class TipoServicioControlador extends HttpServlet {
             sesion.removeAttribute("listaTipoServicio");
             sesion.removeAttribute("msgListado");
             sesion.removeAttribute("tipoServicioActualizar");
-            
             sesion.setAttribute("msgPostOperacion", mensaje);
             
-            buscar(request, response);
+            busca(request, response);
         }catch(Exception e){
             logger.error("actualizar: " + e.getMessage());
         }
     }
 
-    protected void eliminar(HttpServletRequest request, 
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void eliminar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("eliminar");
-        int id = Integer.parseInt(request.getParameter("id") == null ? "0" : 
-                request.getParameter("id"));
+        int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
         try{
             tipoServicioService = new TipoServicioLogica();
+            TipoServicio tipoServicioEliminar = new TipoServicio();
+            tipoServicioEliminar = tipoServicioService.obtenerPorId(id);
             flgOperacion = tipoServicioService.eliminar(id);
+            System.out.println(flgOperacion);
+            System.out.println(id);
+            
             if(flgOperacion > 0){
-                mensaje = "Tipo de Servicio eliminado correctamente.";
+                mensaje = "<div class='alert alert-success alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong><span class='glyphicon glyphicon-trash'></span> </strong>Tipo de Servicio <strong>"
+                        + tipoServicioEliminar.getDecripcion()
+                        + "</strong> eliminado correctamente.</div>";
             }else{
-                mensaje = "Error al eliminar Tipo de Servicio.";
+                mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong>Advertencia! </strong>Error al intentar eliminar el Tipo de Servicio <strong>"
+                        + tipoServicio.getDecripcion()+ "</strong>.</div>";
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
@@ -194,7 +225,7 @@ public class TipoServicioControlador extends HttpServlet {
             sesion.removeAttribute("tipoServicioActualizar");
             
             sesion.setAttribute("msgPostOperacion", mensaje);
-            buscar(request, response);
+            busca(request, response);
         }catch(Exception e){
             logger.error("eliminar: " + e.getMessage());
         }

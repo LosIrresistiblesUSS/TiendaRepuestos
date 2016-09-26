@@ -23,7 +23,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     private String sql;
 
     @Override
-    public byte insertar(TipoServicio ts) {
+    public int insertar(TipoServicio tipoServicio) {
         logger.info("Insertando TipoServicio");
         String sql= "INSERT Into TipoServicio(idTipoServicio, descripcion)";
         sql+=" VALUES (?,?)";
@@ -32,8 +32,8 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
            cn=con.getConexion();
            cn.setAutoCommit(false);
            ps=cn.prepareStatement(sql);
-           ps.setInt(1, ts.getIdTipoServicio());
-           ps.setString(2, ts.getDecripcion());
+           ps.setInt(1, tipoServicio.getIdTipoServicio());
+           ps.setString(2, tipoServicio.getDecripcion().trim());
            
            flgOperacion=ps.executeUpdate();
            
@@ -47,7 +47,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
        }finally{
            con.cerrarConexion(cn);
        }
-       return (byte)flgOperacion;
+       return flgOperacion;
     }
 
     @Override
@@ -55,7 +55,8 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
         logger.info("buscar");
         sql = "select idTipoServicio, descripcion "
                 + "from tiposervicio "
-                + "where descripcion like '"+ (descripcion.trim()) + "%'";
+                + "where descripcion like '%" + (descripcion.trim()) + "%'"
+                + "order by idTipoServicio desc";
         List<TipoServicio> lstTipoServicio = null;
         TipoServicio tipoServicio = null;
         try{
@@ -109,12 +110,35 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     }
 
     @Override
-    public byte actualizar(TipoServicio ts) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int actualizar(TipoServicio tipoServicio) {
+        logger.info("actualizar");
+        sql = "UPDATE TipoServicio "
+                + "SET descripcion = ? "
+                + "where idTipoServicio = ?";
+        try{
+            con = new Conexion();
+            cn = con.getConexion();
+            cn.setAutoCommit(false);
+            ps = cn.prepareStatement(sql);
+            ps.setString(1, tipoServicio.getDecripcion().trim());
+            ps.setInt(2, tipoServicio.getIdTipoServicio());
+            
+            flgOperacion=ps.executeUpdate();
+            if(flgOperacion > 0){
+                cn.commit();
+            }else{
+                cn.rollback();
+            }
+        }catch(Exception e){
+            logger.info("Eror al actualizar: " + e.getMessage() + " --> "+tipoServicio.getIdTipoServicio());
+        }finally{
+            con.cerrarConexion(cn);
+        }
+        return flgOperacion;
     }
 
     @Override
-    public byte eliminar(int id) {
+    public int eliminar(int id) {
         logger.info("Eliminar TipoServicio");
         String sql= "DELETE FROM TipoServicio where idTipoServicio = ?";
 
@@ -137,6 +161,6 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
        }finally{
            con.cerrarConexion(cn);
        }
-       return (byte)flgOperacion;
+       return flgOperacion;
     }
 }

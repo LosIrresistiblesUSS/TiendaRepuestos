@@ -1,3 +1,67 @@
-.body{
-    background: red;
+body{
+    position: absolute;
+    width: 100%;
+    min-height: 100%;
 }
+
+.navbar{
+    margin-bottom: 0;
+    border-radius: 0px;
+}
+
+.jumbotron{
+    background: #337ab7;
+    color: #fff;
+    padding: 1px 0px 15px 0px;
+}
+
+footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #222;
+    color: #fff;
+    padding: 10px 0px;
+}
+
+main{
+    padding-bottom: 50px; 
+}
+
+.buscar{
+    display: inline-block;
+}
+
+.page-header{
+    margin-top: -40px;
+    margin-bottom: 30px;
+    padding: 1px;
+}
+
+.form-group{
+    margin-bottom: 15px !important;
+}
+
+.modal-header{
+    background: #337ab7;
+    color: #fff;
+}
+
+thead{
+    background: #222;
+    color: #fff;
+}
+
+@media (max-width: 767px) {
+    .espacio-buscar{
+        height: 7px;
+     }
+}
+
+@media (min-width: 768px) {
+    .espacio-buscar{
+        display: none;
+    }
+}
+
