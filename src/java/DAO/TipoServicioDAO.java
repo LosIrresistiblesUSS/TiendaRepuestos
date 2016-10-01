@@ -25,19 +25,17 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     @Override
     public int insertar(TipoServicio tipoServicio) {
         logger.info("Insertando TipoServicio");
-        String sql= "INSERT Into TipoServicio(idTipoServicio, descripcion)";
-        sql+=" VALUES (?,?)";
+        sql= "{CALL P_Insertar_TipoServicio(?,?)}";
         try{
            con=new Conexion();
            cn=con.getConexion();
            cn.setAutoCommit(false);
-           ps=cn.prepareStatement(sql);
-           ps.setInt(1, tipoServicio.getIdTipoServicio());
-           ps.setString(2, tipoServicio.getDecripcion().trim());
-           
-           flgOperacion=ps.executeUpdate();
-           
-           if(flgOperacion>0){
+           cs = cn.prepareCall(sql.trim());
+           cs.setString(1, tipoServicio.getDecripcion().trim());
+           cs.registerOutParameter(2, java.sql.Types.INTEGER);
+           cs.executeUpdate();
+           flgOperacion = Integer.parseInt(cs.getObject(2).toString());
+           if(flgOperacion==1){
                cn.commit();
            }else{
                cn.rollback();

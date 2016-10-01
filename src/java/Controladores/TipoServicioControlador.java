@@ -76,12 +76,18 @@ public class TipoServicioControlador extends HttpServlet {
             tipoServicioService = new TipoServicioLogica();
             flgOperacion = tipoServicioService.insertar(tipoServicio);
             
-            if(flgOperacion > 0){
+            if(flgOperacion == 1){
                 mensaje = "<div class='alert alert-success alert-dismissible' role='alert'>"
                         + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
                         + "<strong><span class='glyphicon glyphicon-file'></span></strong> Tipo de Servicio <strong>"
                         + tipoServicio.getDecripcion()
                         + "</strong> insertado correctamente.</div>";
+            }else if(flgOperacion == 2){
+                mensaje = "<div class='alert alert-warning alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong><span class='glyphicon glyphicon-warning-sign'></span></strong> Tipo de Servicio <strong>"
+                        + tipoServicio.getDecripcion()
+                        + "</strong> ya se encuentra registrado.</div>";
             }else{
                 mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
                         + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
