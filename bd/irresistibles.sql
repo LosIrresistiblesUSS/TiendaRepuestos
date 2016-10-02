@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-09-2016 a las 01:50:41
+-- Tiempo de generación: 02-10-2016 a las 01:11:47
 -- Versión del servidor: 5.6.26
 -- Versión de PHP: 5.6.12
 
@@ -20,6 +20,63 @@ SET time_zone = "+00:00";
 -- Base de datos: `irresistibles`
 --
 
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_TipoServicio`(
+		 IN id int,
+	    IN descrip varchar(100),
+	    OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+		
+		SELECT count(*) into contador_rep from tiposervicio
+		WHERE descripcion = descrip;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			UPDATE TipoServicio SET descripcion = descrip
+			WHERE idTipoServicio = id;
+			SET flag_exitoso = 1;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_TipoServicio`(
+	    IN descrip varchar(100),
+	    OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contador INT DEFAULT 0;
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+	
+		SELECT count(*) into contador_rep from tiposervicio
+		WHERE descripcion = descrip;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			select idTipoServicio into contador from TipoServicio order by idTipoServicio desc limit 1;
+			IF (contador = 0) THEN
+				INSERT INTO tiposervicio(idTipoServicio, descripcion)
+	    		VALUES(1, descrip);
+				SET flag_exitoso = 1;
+			ELSE
+				INSERT INTO tiposervicio(idTipoServicio, descripcion)
+	    		VALUES(contador+1, descrip);
+				SET flag_exitoso = 1;
+			END IF;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -29,7 +86,7 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `boleta` (
   `idBoleta` int(11) NOT NULL,
   `idComprobanteVenta` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `boleta`
@@ -61,7 +118,7 @@ INSERT INTO `boleta` (`idBoleta`, `idComprobanteVenta`) VALUES
 CREATE TABLE IF NOT EXISTS `cliente` (
   `idCliente` int(11) NOT NULL,
   `idPersona` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `cliente`
@@ -95,26 +152,25 @@ CREATE TABLE IF NOT EXISTS `comprobantecompra` (
   `idComprobanteCompra` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `idProveedor` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `comprobantecompra`
 --
 
 INSERT INTO `comprobantecompra` (`idComprobanteCompra`, `fecha`, `idProveedor`) VALUES
-(1, '0000-00-00 00:00:00', 5),
-(2, '0000-00-00 00:00:00', 9),
-(3, '0000-00-00 00:00:00', 10),
-(4, '0000-00-00 00:00:00', 15),
-(5, '0000-00-00 00:00:00', 4),
-(6, '0000-00-00 00:00:00', 9),
-(7, '0000-00-00 00:00:00', 3),
-(8, '0000-00-00 00:00:00', 1),
-(9, '0000-00-00 00:00:00', 12),
-(10, '0000-00-00 00:00:00', 16),
-(11, '0000-00-00 00:00:00', 2),
-(12, '0000-00-00 00:00:00', 6),
-(13, '0000-00-00 00:00:00', 7);
+(1, '2015-05-06 05:00:00', 5),
+(2, '2015-05-06 05:00:00', 9),
+(3, '2015-05-15 05:00:00', 10),
+(5, '2015-05-21 05:00:00', 4),
+(6, '2015-05-21 05:00:00', 9),
+(7, '2015-06-06 05:00:00', 3),
+(8, '2015-06-08 05:00:00', 1),
+(9, '2015-06-15 05:00:00', 12),
+(10, '2015-06-21 05:00:00', 16),
+(11, '2016-06-30 05:00:00', 2),
+(12, '2016-07-01 05:00:00', 6),
+(13, '2015-07-02 05:00:00', 7);
 
 -- --------------------------------------------------------
 
@@ -125,41 +181,41 @@ INSERT INTO `comprobantecompra` (`idComprobanteCompra`, `fecha`, `idProveedor`) 
 CREATE TABLE IF NOT EXISTS `comprobanteventa` (
   `idComprobanteVenta` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `descripcion` varchar(150) DEFAULT NULL,
+  `descripcion` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `importe` decimal(7,2) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `comprobanteventa`
 --
 
 INSERT INTO `comprobanteventa` (`idComprobanteVenta`, `fecha`, `descripcion`, `importe`) VALUES
-(1, '0000-00-00 00:00:00', 'Realizando Ventas', '400.00'),
-(2, '0000-00-00 00:00:00', 'Realizando Ventas', '240.00'),
-(3, '0000-00-00 00:00:00', 'Realizando Ventas', '240.00'),
-(4, '0000-00-00 00:00:00', 'Realizando Ventas', '80.00'),
-(5, '0000-00-00 00:00:00', 'Realizando Ventas', '200.00'),
-(6, '0000-00-00 00:00:00', 'Realizando Ventas', '880.00'),
-(7, '0000-00-00 00:00:00', 'Realizando Ventas', '840.00'),
-(8, '0000-00-00 00:00:00', 'Realizando Ventas', '160.00'),
-(9, '0000-00-00 00:00:00', 'Realizando Ventas', '440.00'),
-(10, '0000-00-00 00:00:00', 'Realizando Ventas', '1300.00'),
-(11, '0000-00-00 00:00:00', 'Realizando Ventas', '1240.00'),
-(12, '0000-00-00 00:00:00', 'Realizando Ventas', '2500.00'),
-(13, '0000-00-00 00:00:00', 'Realizando Ventas', '1400.00'),
-(14, '0000-00-00 00:00:00', 'Realizando Ventas', '1280.00'),
-(15, '0000-00-00 00:00:00', 'Realizando Ventas', '1400.00'),
-(16, '0000-00-00 00:00:00', 'Realizando Ventas', '60.00'),
-(17, '0000-00-00 00:00:00', 'Realizando Ventas', '40.00'),
-(18, '0000-00-00 00:00:00', 'Realizando Ventas', '160.00'),
-(19, '0000-00-00 00:00:00', 'Realizando Ventas', '1180.00'),
-(20, '0000-00-00 00:00:00', 'Realizando Ventas', '1140.00'),
-(21, '0000-00-00 00:00:00', 'Realizando Ventas', '2000.00'),
-(22, '0000-00-00 00:00:00', 'Realizando Ventas', '1240.00'),
-(23, '0000-00-00 00:00:00', 'Realizando Ventas', '1240.00'),
-(24, '0000-00-00 00:00:00', 'Realizando Ventas', '2320.00'),
-(25, '0000-00-00 00:00:00', 'Realizando Ventas', '1320.00'),
-(26, '0000-00-00 00:00:00', 'Realizando Ventas', '1320.00');
+(1, '2016-08-05 05:00:00', 'Realizando Ventas', '400.00'),
+(2, '2016-09-05 05:00:00', 'Realizando Ventas', '240.00'),
+(3, '2016-05-10 05:00:00', 'Realizando Ventas', '240.00'),
+(4, '2016-05-11 05:00:00', 'Realizando Ventas', '80.00'),
+(5, '2016-05-12 05:00:00', 'Realizando Ventas', '200.00'),
+(6, '2016-05-13 05:00:00', 'Realizando Ventas', '880.00'),
+(7, '2016-05-14 05:00:00', 'Realizando Ventas', '840.00'),
+(8, '2016-05-15 05:00:00', 'Realizando Ventas', '160.00'),
+(9, '2016-05-16 05:00:00', 'Realizando Ventas', '440.00'),
+(10, '2016-05-17 05:00:00', 'Realizando Ventas', '1300.00'),
+(11, '2016-05-18 05:00:00', 'Realizando Ventas', '1240.00'),
+(12, '2016-05-19 05:00:00', 'Realizando Ventas', '2500.00'),
+(13, '2016-05-20 05:00:00', 'Realizando Ventas', '1400.00'),
+(14, '2016-05-21 05:00:00', 'Realizando Ventas', '1280.00'),
+(15, '2016-05-22 05:00:00', 'Realizando Ventas', '1400.00'),
+(16, '2016-05-23 05:00:00', 'Realizando Ventas', '60.00'),
+(17, '2016-05-24 05:00:00', 'Realizando Ventas', '40.00'),
+(18, '2016-05-25 05:00:00', 'Realizando Ventas', '160.00'),
+(19, '2016-05-26 05:00:00', 'Realizando Ventas', '1180.00'),
+(20, '2016-05-27 05:00:00', 'Realizando Ventas', '1140.00'),
+(21, '2016-05-08 05:00:00', 'Realizando Ventas', '2000.00'),
+(22, '2016-05-29 05:00:00', 'Realizando Ventas', '1240.00'),
+(23, '2016-05-30 05:00:00', 'Realizando Ventas', '1240.00'),
+(24, '2016-05-31 05:00:00', 'Realizando Ventas', '2320.00'),
+(25, '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00'),
+(26, '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00');
 
 -- --------------------------------------------------------
 
@@ -173,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `detallecompra` (
   `MontoTotal` decimal(8,2) NOT NULL,
   `idComprobanteCompra` int(11) NOT NULL,
   `idRepuesto` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `detallecompra`
@@ -188,7 +244,6 @@ INSERT INTO `detallecompra` (`idDetalleCompra`, `Cantidad`, `MontoTotal`, `idCom
 (6, 30, '2400.00', 11, 11),
 (7, 18, '1620.00', 13, 13),
 (8, 30, '180.00', 2, 25),
-(9, 10, '1600.00', 4, 38),
 (10, 30, '2400.00', 6, 42),
 (11, 50, '1156.00', 8, 65),
 (12, 38, '1710.00', 10, 80),
@@ -207,7 +262,7 @@ CREATE TABLE IF NOT EXISTS `detalleoperacion` (
   `subTotal` decimal(7,2) NOT NULL,
   `idOperacion` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `detalleoperacion`
@@ -244,6 +299,122 @@ INSERT INTO `detalleoperacion` (`idDetalleOperacion`, `cantidad`, `precio`, `sub
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `detallepermiso`
+--
+
+CREATE TABLE IF NOT EXISTS `detallepermiso` (
+  `idDetallePermiso` int(11) NOT NULL,
+  `idLogin` int(11) NOT NULL,
+  `idPermiso` int(11) NOT NULL,
+  `accion` char(1) COLLATE utf8_spanish_ci NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `detallepermiso`
+--
+
+INSERT INTO `detallepermiso` (`idDetallePermiso`, `idLogin`, `idPermiso`, `accion`, `estado`) VALUES
+(1, 1, 1, 'l', 1),
+(2, 1, 1, 'n', 0),
+(3, 1, 1, 'a', 0),
+(4, 1, 1, 'e', 0),
+(5, 1, 2, 'l', 1),
+(6, 1, 2, 'n', 0),
+(7, 1, 2, 'a', 0),
+(8, 1, 2, 'e', 0),
+(9, 1, 3, 'l', 1),
+(10, 1, 3, 'n', 0),
+(11, 1, 3, 'a', 0),
+(12, 1, 3, 'e', 0),
+(13, 1, 4, 'l', 1),
+(14, 1, 4, 'n', 0),
+(15, 1, 4, 'a', 0),
+(16, 1, 4, 'e', 0),
+(17, 2, 1, 'l', 1),
+(18, 2, 1, 'n', 0),
+(19, 2, 1, 'a', 1),
+(20, 2, 1, 'e', 0),
+(21, 2, 2, 'l', 1),
+(22, 2, 2, 'n', 0),
+(23, 2, 2, 'a', 1),
+(24, 2, 2, 'e', 0),
+(25, 2, 3, 'l', 1),
+(26, 2, 3, 'n', 0),
+(27, 2, 3, 'a', 1),
+(28, 2, 3, 'e', 0),
+(29, 2, 4, 'l', 1),
+(30, 2, 4, 'n', 0),
+(31, 2, 4, 'a', 1),
+(32, 2, 4, 'e', 0),
+(33, 3, 1, 'l', 1),
+(34, 3, 1, 'n', 1),
+(35, 3, 1, 'a', 1),
+(36, 3, 1, 'e', 1),
+(37, 3, 2, 'l', 1),
+(38, 3, 2, 'n', 1),
+(39, 3, 2, 'a', 1),
+(40, 3, 2, 'e', 1),
+(41, 3, 3, 'l', 1),
+(42, 3, 3, 'n', 1),
+(43, 3, 3, 'a', 1),
+(44, 3, 3, 'e', 1),
+(45, 3, 4, 'l', 1),
+(46, 3, 4, 'n', 1),
+(47, 3, 4, 'a', 1),
+(48, 3, 4, 'e', 1),
+(49, 4, 1, 'l', 1),
+(50, 4, 1, 'n', 0),
+(51, 4, 1, 'a', 1),
+(52, 4, 1, 'e', 0),
+(53, 4, 2, 'l', 1),
+(54, 4, 2, 'n', 0),
+(55, 4, 2, 'a', 1),
+(56, 4, 2, 'e', 0),
+(57, 4, 3, 'l', 1),
+(58, 4, 3, 'n', 0),
+(59, 4, 3, 'a', 1),
+(60, 4, 3, 'e', 0),
+(61, 4, 4, 'l', 1),
+(62, 4, 4, 'n', 0),
+(63, 4, 4, 'a', 1),
+(64, 4, 4, 'e', 0),
+(65, 5, 1, 'l', 1),
+(66, 5, 1, 'n', 1),
+(67, 5, 1, 'a', 1),
+(68, 5, 1, 'e', 1),
+(69, 5, 2, 'l', 1),
+(70, 5, 2, 'n', 1),
+(71, 5, 2, 'a', 1),
+(72, 5, 2, 'e', 1),
+(73, 5, 3, 'l', 1),
+(74, 5, 3, 'n', 1),
+(75, 5, 3, 'a', 1),
+(76, 5, 3, 'e', 1),
+(77, 5, 4, 'l', 1),
+(78, 5, 4, 'n', 1),
+(79, 5, 4, 'a', 1),
+(80, 5, 4, 'e', 1),
+(81, 6, 1, 'l', 1),
+(82, 6, 1, 'n', 0),
+(83, 6, 1, 'a', 0),
+(84, 6, 1, 'e', 0),
+(85, 6, 2, 'l', 1),
+(86, 6, 2, 'n', 0),
+(87, 6, 2, 'a', 0),
+(88, 6, 2, 'e', 0),
+(89, 6, 3, 'l', 1),
+(90, 6, 3, 'n', 0),
+(91, 6, 3, 'a', 0),
+(92, 6, 3, 'e', 0),
+(93, 6, 4, 'l', 1),
+(94, 6, 4, 'n', 0),
+(95, 6, 4, 'a', 0),
+(96, 6, 4, 'e', 0);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `detalleventa`
 --
 
@@ -251,7 +422,7 @@ CREATE TABLE IF NOT EXISTS `detalleventa` (
   `idDetalleVenta` int(11) NOT NULL,
   `idComprobanteVenta` int(11) NOT NULL,
   `idDetalleOperacion` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `detalleventa`
@@ -282,8 +453,7 @@ INSERT INTO `detalleventa` (`idDetalleVenta`, `idComprobanteVenta`, `idDetalleOp
 (22, 18, 19),
 (23, 20, 21),
 (24, 22, 23),
-(25, 24, 25),
-(26, 26, 1);
+(25, 24, 25);
 
 -- --------------------------------------------------------
 
@@ -294,8 +464,8 @@ INSERT INTO `detalleventa` (`idDetalleVenta`, `idComprobanteVenta`, `idDetalleOp
 CREATE TABLE IF NOT EXISTS `empleado` (
   `idEmpleado` int(11) NOT NULL,
   `idPersona` int(11) NOT NULL,
-  `idTipoEmpleado` varchar(6) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  `idTipoEmpleado` varchar(6) COLLATE utf8_spanish_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `empleado`
@@ -306,7 +476,8 @@ INSERT INTO `empleado` (`idEmpleado`, `idPersona`, `idTipoEmpleado`) VALUES
 (2, 6, 'EMP001'),
 (3, 17, 'EMP002'),
 (4, 28, 'EMP002'),
-(5, 23, 'EMP003');
+(5, 23, 'EMP003'),
+(6, 32, 'EMP004');
 
 -- --------------------------------------------------------
 
@@ -317,7 +488,7 @@ INSERT INTO `empleado` (`idEmpleado`, `idPersona`, `idTipoEmpleado`) VALUES
 CREATE TABLE IF NOT EXISTS `factura` (
   `idFactura` int(11) NOT NULL,
   `idComprobanteVenta` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `factura`
@@ -344,13 +515,13 @@ INSERT INTO `factura` (`idFactura`, `idComprobanteVenta`) VALUES
 
 CREATE TABLE IF NOT EXISTS `kardex` (
   `idKardex` int(11) NOT NULL,
-  `detalle` varchar(250) DEFAULT NULL,
+  `detalle` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `cantidadIngreso` int(11) DEFAULT NULL,
   `precioIngreso` decimal(6,2) DEFAULT NULL,
   `cantidadSalida` int(11) DEFAULT NULL,
   `precioSalida` decimal(6,2) DEFAULT NULL,
   `idRepuesto` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `kardex`
@@ -411,6 +582,31 @@ INSERT INTO `kardex` (`idKardex`, `detalle`, `cantidadIngreso`, `precioIngreso`,
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `login`
+--
+
+CREATE TABLE IF NOT EXISTS `login` (
+  `idLogin` int(11) NOT NULL,
+  `idPersona` int(11) NOT NULL,
+  `usuario` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
+  `pass` varchar(32) COLLATE utf8_spanish_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `login`
+--
+
+INSERT INTO `login` (`idLogin`, `idPersona`, `usuario`, `pass`) VALUES
+(1, 6, 'cantosmo', '7627cf322c11bdfb56c77206118f01cc'),
+(2, 17, 'oarrascuedannyf', '76f6779c4cb31dbffdd5fe3b3a73c4df'),
+(3, 23, 'sayastaleona', '717612314c973592d58e447cdd3e8bc2'),
+(4, 28, 'zzenaedins', 'c33ebbf3bc4d4008822f7267d07732a6'),
+(5, 32, 'crodriguezmilag', 'e63bd05bb93ac5000814ce53231c619e'),
+(6, 36, 'acotrinae', '42ffc07c053b92629cf3db3d203498d9');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `operacion`
 --
 
@@ -420,7 +616,7 @@ CREATE TABLE IF NOT EXISTS `operacion` (
   `idPersonaCliente` int(11) NOT NULL,
   `idPersonaEmpleado` int(11) NOT NULL,
   `idVehiculo` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `operacion`
@@ -453,19 +649,40 @@ INSERT INTO `operacion` (`idOperacion`, `estado`, `idPersonaCliente`, `idPersona
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `permiso`
+--
+
+CREATE TABLE IF NOT EXISTS `permiso` (
+  `idPermiso` int(11) NOT NULL,
+  `descripcion` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `permiso`
+--
+
+INSERT INTO `permiso` (`idPermiso`, `descripcion`) VALUES
+(1, 'empleado'),
+(2, 'cliente'),
+(3, 'producto'),
+(4, 'proveedor');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `persona`
 --
 
 CREATE TABLE IF NOT EXISTS `persona` (
   `idPersona` int(11) NOT NULL,
-  `numeroDocumento` varchar(13) NOT NULL,
-  `nombres` varchar(150) NOT NULL,
-  `razonSocial` varchar(150) NOT NULL,
-  `direccion` varchar(150) NOT NULL,
-  `telefono` varchar(10) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
+  `numeroDocumento` varchar(13) COLLATE utf8_spanish_ci NOT NULL,
+  `nombres` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
+  `razonSocial` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
+  `direccion` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
+  `telefono` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `email` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
   `idTipoDocumento` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `persona`
@@ -499,11 +716,11 @@ INSERT INTO `persona` (`idPersona`, `numeroDocumento`, `nombres`, `razonSocial`,
 (25, '10890045853', 'SILVA PARRAGUEZ MAXIMO GABRIEL', 'TALLERES GRAFICOS SILVA S.R.L', 'AV. FERREÑAFE # 530', '298651', 'SPARRAGUEZMAXI@crece.uss.edu.pe', 2),
 (26, '20994743337', 'VÁSQUEZ CERCADO DARWIN ALAIN', 'TIENDAS EFE S.A', 'GONZALES PRIVADO 991, URB.EL SOL', '287915', 'VCERCADODARWI@crece.uss.edu.pe', 2),
 (27, '48993794', 'ZARATE ZARATE ELVER YOEL', '', 'AV.CESAR VALLEJO # 308', '292031', 'ZZARATEELVER@crece.uss.edu.pe', 1),
-(28, '42187992', 'ZEÑA ZEÑA EDINSON OMAR', '', 'ISABEL PANTOJA 358 URB EL RECREO', '229871', 'ZZENAEDINS@crece.uss.edu.pe', 1),
+(28, '45651230', 'ZEÑA ZEÑA EDINSON OMAR', '', 'ISABEL PANTOJA 358 URB EL RECREO', '229871', 'ZZENAEDINS@crece.uss.edu.pe', 1),
 (29, '20440988225', 'CARRASCO MANAY JUAN', 'TOTAL ARTEFACTOS S.A', 'Jr.SAN BORJA Nº986', '226896', 'CMANAYJUA@crece.uss.edu.pe', 2),
 (30, '10178321659', 'CASTRO ALVITES ANTHONY GIUSEPPE', 'VISUAL DATA COMERCIAL S.A.C', 'AV. MEXICO # 9852', '209638', 'GIUSEPPEAN@crece.uss.edu.pe', 2),
 (31, '29953875624', 'CASTRO FERNANDEZ IRVIN GREGORY', 'LIBRERIA BAZAR STOCK S.R.L', 'JR. BOLIVAR # 965', '290041', 'FECASTROIR@CRECE.USS.EDU.PE', 2),
-(32, '20397995567', 'CHINGUEL RODRIGUEZ MILAGROS MARIBEL', 'LLANORMED S.A', 'JR. ATAHUALPA # 772', '296027', 'CRODRIGUEZMILAG@crece.uss.edu.pe', 2),
+(32, '77506743', 'CHINGUEL RODRIGUEZ MILAGROS MARIBEL', '', 'JR. ATAHUALPA # 772', '296027', 'CRODRIGUEZMILAG@crece.uss.edu.pe', 1),
 (33, '001196547826', 'MUÑOZ ZUTA MAYRA ALEJANDRA', '', 'AV. AMERICA ESTE # 9852', '260991', 'MAYRAZUTA@crece.uss.edu.pe', 3),
 (34, '49982159', 'NERIA COLMENARES JACQUELIN LISET', '', 'AV. AMERICA SUR # 852', '252865', 'NCOLMENARESJ@crece.uss.edu.pe', 1),
 (35, '49826500', 'NUÑEZ FERNÁNDEZ NOLBERTO ROMARIO', '', 'AV. SIMÓN # 920', '289366', 'NFERNANDEZNOLBE@crece.uss.edu.pe', 1),
@@ -518,11 +735,11 @@ INSERT INTO `persona` (`idPersona`, `numeroDocumento`, `nombres`, `razonSocial`,
 
 CREATE TABLE IF NOT EXISTS `producto` (
   `idProducto` int(11) NOT NULL,
-  `descripcion` varchar(150) DEFAULT NULL,
+  `descripcion` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
   `precio` decimal(6,2) NOT NULL,
   `precioPorMayor` decimal(6,2) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=257 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `producto`
@@ -668,35 +885,7 @@ INSERT INTO `producto` (`idProducto`, `descripcion`, `stock`, `precio`, `precioP
 (137, 'Diagnostico', NULL, '80.00', NULL),
 (138, 'Suspensión y frenos', NULL, '60.00', NULL),
 (139, 'Sistema de escape', NULL, '110.00', NULL),
-(140, 'Mantenimieto preventivo de frenos hidraulicos', NULL, '200.00', NULL),
-(229, 'Suspensión y direccion', NULL, '300.00', NULL),
-(230, 'clutch', NULL, '160.00', NULL),
-(231, 'Cambio de aceite', NULL, '50.00', NULL),
-(232, 'Afinacion', NULL, '70.00', NULL),
-(233, 'Balanceo', NULL, '80.00', NULL),
-(234, 'Mantenimiento de frenos', NULL, '30.00', NULL),
-(235, 'Llantas', NULL, '30.00', NULL),
-(236, 'Amortiguadores', NULL, '70.00', NULL),
-(237, 'frenos', NULL, '110.00', NULL),
-(238, 'Baterias', NULL, '165.00', NULL),
-(239, 'Afinacion', NULL, '46.00', NULL),
-(240, 'Sistema de enfriamiento', NULL, '195.00', NULL),
-(241, 'Diagnostico por computadoras', NULL, '350.00', NULL),
-(242, 'Cambio de aceite', NULL, '50.00', NULL),
-(243, 'Afinacion', NULL, '150.00', NULL),
-(244, 'Lubricacion', NULL, '120.00', NULL),
-(245, 'frenos', NULL, '200.00', NULL),
-(246, 'Llantas', NULL, '210.00', NULL),
-(247, 'Alineamiento y balanceo', NULL, '300.00', NULL),
-(248, 'Direcion hidraulica', NULL, '350.00', NULL),
-(249, 'Sistemas de enfriamiento', NULL, '290.00', NULL),
-(250, 'Montaje', NULL, '70.00', NULL),
-(251, 'Alineacion y reparacion de llantas', NULL, '150.00', NULL),
-(252, 'Diagnostico', NULL, '80.00', NULL),
-(253, 'Suspensión y frenos', NULL, '60.00', NULL),
-(254, 'Sistema de escape', NULL, '110.00', NULL),
-(255, 'Mantenimieto preventivo de frenos hidraulicos', NULL, '200.00', NULL),
-(256, 'Mantenimiento a Otero', 20, '80.00', '75.50');
+(140, 'Mantenimieto preventivo de frenos hidraulicos', NULL, '200.00', NULL);
 
 -- --------------------------------------------------------
 
@@ -707,7 +896,7 @@ INSERT INTO `producto` (`idProducto`, `descripcion`, `stock`, `precio`, `precioP
 CREATE TABLE IF NOT EXISTS `proveedor` (
   `idProveedor` int(11) NOT NULL,
   `idPersona` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `proveedor`
@@ -728,7 +917,6 @@ INSERT INTO `proveedor` (`idProveedor`, `idPersona`) VALUES
 (12, 29),
 (13, 30),
 (14, 31),
-(15, 32),
 (16, 37);
 
 -- --------------------------------------------------------
@@ -740,7 +928,7 @@ INSERT INTO `proveedor` (`idProveedor`, `idPersona`) VALUES
 CREATE TABLE IF NOT EXISTS `repuesto` (
   `idRepuesto` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `repuesto`
@@ -858,53 +1046,53 @@ CREATE TABLE IF NOT EXISTS `servicio` (
   `idServicio` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL,
   `idTipoServicio` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `servicio`
 --
 
 INSERT INTO `servicio` (`idServicio`, `idProducto`, `idTipoServicio`) VALUES
-(81, 101, 1),
-(82, 102, 1),
-(83, 104, 1),
-(84, 106, 1),
-(85, 108, 2),
-(86, 110, 2),
-(87, 112, 2),
-(88, 114, 2),
-(89, 116, 2),
-(90, 118, 3),
-(91, 120, 3),
-(92, 122, 3),
-(93, 124, 3),
-(94, 126, 3),
-(95, 128, 4),
-(96, 130, 4),
-(97, 132, 4),
-(98, 134, 4),
-(99, 136, 4),
-(100, 138, 4),
-(101, 140, 5),
-(102, 103, 5),
-(103, 105, 5),
-(104, 107, 5),
-(105, 109, 5),
-(106, 111, 5),
-(107, 113, 5),
-(108, 115, 6),
-(109, 117, 6),
-(110, 119, 6),
-(111, 121, 6),
-(112, 123, 6),
-(113, 125, 6),
-(114, 127, 6),
-(115, 129, 7),
-(116, 131, 7),
-(117, 133, 7),
-(118, 135, 7),
-(119, 137, 7),
-(120, 139, 7);
+(1, 101, 1),
+(2, 102, 1),
+(3, 104, 1),
+(4, 106, 1),
+(5, 108, 2),
+(6, 110, 2),
+(7, 112, 2),
+(8, 114, 2),
+(9, 116, 2),
+(10, 118, 3),
+(11, 120, 3),
+(12, 122, 3),
+(13, 124, 3),
+(14, 126, 3),
+(15, 128, 4),
+(16, 130, 4),
+(17, 132, 4),
+(18, 134, 4),
+(19, 136, 4),
+(20, 138, 4),
+(21, 140, 5),
+(22, 103, 5),
+(23, 105, 5),
+(24, 107, 5),
+(25, 109, 5),
+(26, 111, 5),
+(27, 113, 5),
+(28, 115, 6),
+(29, 117, 6),
+(30, 119, 6),
+(31, 121, 6),
+(32, 123, 6),
+(33, 125, 6),
+(34, 127, 6),
+(35, 129, 7),
+(36, 131, 7),
+(37, 133, 7),
+(38, 135, 7),
+(39, 137, 7),
+(40, 139, 7);
 
 -- --------------------------------------------------------
 
@@ -914,8 +1102,8 @@ INSERT INTO `servicio` (`idServicio`, `idProducto`, `idTipoServicio`) VALUES
 
 CREATE TABLE IF NOT EXISTS `tipodocumento` (
   `idTipoDocumento` int(11) NOT NULL,
-  `descripcion` varchar(15) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `descripcion` varchar(15) COLLATE utf8_spanish_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `tipodocumento`
@@ -933,9 +1121,9 @@ INSERT INTO `tipodocumento` (`idTipoDocumento`, `descripcion`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `tipoempleado` (
-  `idTipoEmpleado` varchar(6) NOT NULL,
-  `descripcion` varchar(25) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `idTipoEmpleado` varchar(6) COLLATE utf8_spanish_ci NOT NULL,
+  `descripcion` varchar(25) COLLATE utf8_spanish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `tipoempleado`
@@ -944,7 +1132,8 @@ CREATE TABLE IF NOT EXISTS `tipoempleado` (
 INSERT INTO `tipoempleado` (`idTipoEmpleado`, `descripcion`) VALUES
 ('EMP001', 'Vendedor'),
 ('EMP002', 'Mecanico'),
-('EMP003', 'Jefe de Almacen');
+('EMP003', 'Jefe de Almacen'),
+('EMP004', 'Administrador');
 
 -- --------------------------------------------------------
 
@@ -954,8 +1143,8 @@ INSERT INTO `tipoempleado` (`idTipoEmpleado`, `descripcion`) VALUES
 
 CREATE TABLE IF NOT EXISTS `tiposervicio` (
   `idTipoServicio` int(11) NOT NULL,
-  `descripcion` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+  `descripcion` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `tiposervicio`
@@ -978,12 +1167,12 @@ INSERT INTO `tiposervicio` (`idTipoServicio`, `descripcion`) VALUES
 
 CREATE TABLE IF NOT EXISTS `vehiculo` (
   `idVehiculo` int(11) NOT NULL,
-  `placa` varchar(10) NOT NULL,
-  `marca` varchar(25) NOT NULL,
-  `modelo` varchar(50) NOT NULL,
-  `observaciones` varchar(250) DEFAULT NULL,
+  `placa` varchar(10) COLLATE utf8_spanish_ci NOT NULL,
+  `marca` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
+  `modelo` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
+  `observaciones` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `idCliente` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `vehiculo`
@@ -1108,6 +1297,14 @@ ALTER TABLE `detalleoperacion`
   ADD KEY `fk_Producto_DetalleOperacion` (`idProducto`);
 
 --
+-- Indices de la tabla `detallepermiso`
+--
+ALTER TABLE `detallepermiso`
+  ADD PRIMARY KEY (`idDetallePermiso`),
+  ADD KEY `fk_Login_DetallePermiso` (`idLogin`),
+  ADD KEY `fk_Permiso_DetallePermiso` (`idPermiso`);
+
+--
 -- Indices de la tabla `detalleventa`
 --
 ALTER TABLE `detalleventa`
@@ -1138,6 +1335,13 @@ ALTER TABLE `kardex`
   ADD KEY `fk_Repuesto_Kardex` (`idRepuesto`);
 
 --
+-- Indices de la tabla `login`
+--
+ALTER TABLE `login`
+  ADD PRIMARY KEY (`idLogin`),
+  ADD KEY `fk_Persona_Login` (`idPersona`);
+
+--
 -- Indices de la tabla `operacion`
 --
 ALTER TABLE `operacion`
@@ -1145,6 +1349,12 @@ ALTER TABLE `operacion`
   ADD KEY `fk_PersonaCliente_Operacion` (`idPersonaCliente`),
   ADD KEY `fk_PersonaEmpleado_Operacion` (`idPersonaEmpleado`),
   ADD KEY `fk_Vehiculo_Operacion` (`idVehiculo`);
+
+--
+-- Indices de la tabla `permiso`
+--
+ALTER TABLE `permiso`
+  ADD PRIMARY KEY (`idPermiso`);
 
 --
 -- Indices de la tabla `persona`
@@ -1242,15 +1452,20 @@ ALTER TABLE `detallecompra`
 ALTER TABLE `detalleoperacion`
   MODIFY `idDetalleOperacion` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=27;
 --
+-- AUTO_INCREMENT de la tabla `detallepermiso`
+--
+ALTER TABLE `detallepermiso`
+  MODIFY `idDetallePermiso` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=97;
+--
 -- AUTO_INCREMENT de la tabla `detalleventa`
 --
 ALTER TABLE `detalleventa`
-  MODIFY `idDetalleVenta` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=27;
+  MODIFY `idDetalleVenta` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `idEmpleado` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+  MODIFY `idEmpleado` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT de la tabla `factura`
 --
@@ -1262,10 +1477,20 @@ ALTER TABLE `factura`
 ALTER TABLE `kardex`
   MODIFY `idKardex` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=51;
 --
+-- AUTO_INCREMENT de la tabla `login`
+--
+ALTER TABLE `login`
+  MODIFY `idLogin` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+--
 -- AUTO_INCREMENT de la tabla `operacion`
 --
 ALTER TABLE `operacion`
   MODIFY `idOperacion` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
+--
+-- AUTO_INCREMENT de la tabla `permiso`
+--
+ALTER TABLE `permiso`
+  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
@@ -1275,7 +1500,7 @@ ALTER TABLE `persona`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=257;
+  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=141;
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
@@ -1290,7 +1515,7 @@ ALTER TABLE `repuesto`
 -- AUTO_INCREMENT de la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=121;
+  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=41;
 --
 -- AUTO_INCREMENT de la tabla `tipodocumento`
 --
@@ -1300,7 +1525,7 @@ ALTER TABLE `tipodocumento`
 -- AUTO_INCREMENT de la tabla `tiposervicio`
 --
 ALTER TABLE `tiposervicio`
-  MODIFY `idTipoServicio` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+  MODIFY `idTipoServicio` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT de la tabla `vehiculo`
 --
@@ -1314,98 +1539,111 @@ ALTER TABLE `vehiculo`
 -- Filtros para la tabla `boleta`
 --
 ALTER TABLE `boleta`
-  ADD CONSTRAINT `fk_ComprobanteVenta_Boleta` FOREIGN KEY (`idComprobanteVenta`) REFERENCES `comprobanteventa` (`idComprobanteVenta`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_ComprobanteVenta_Boleta` FOREIGN KEY (`idComprobanteVenta`) REFERENCES `comprobanteventa` (`idComprobanteVenta`);
 
 --
 -- Filtros para la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  ADD CONSTRAINT `fk_Persona_Cliente` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Persona_Cliente` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`);
 
 --
 -- Filtros para la tabla `comprobantecompra`
 --
 ALTER TABLE `comprobantecompra`
-  ADD CONSTRAINT `fk_Proveedor_ComprobanteCompra` FOREIGN KEY (`idProveedor`) REFERENCES `proveedor` (`idProveedor`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Proveedor_ComprobanteCompra` FOREIGN KEY (`idProveedor`) REFERENCES `proveedor` (`idProveedor`);
 
 --
 -- Filtros para la tabla `detallecompra`
 --
 ALTER TABLE `detallecompra`
-  ADD CONSTRAINT `fk_ComprobanteCompra_DetalleCompra` FOREIGN KEY (`idComprobanteCompra`) REFERENCES `comprobantecompra` (`idComprobanteCompra`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_Repuesto_DetalleCompra` FOREIGN KEY (`idRepuesto`) REFERENCES `repuesto` (`idRepuesto`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_ComprobanteCompra_DetalleCompra` FOREIGN KEY (`idComprobanteCompra`) REFERENCES `comprobantecompra` (`idComprobanteCompra`),
+  ADD CONSTRAINT `fk_Repuesto_DetalleCompra` FOREIGN KEY (`idRepuesto`) REFERENCES `repuesto` (`idRepuesto`);
 
 --
 -- Filtros para la tabla `detalleoperacion`
 --
 ALTER TABLE `detalleoperacion`
-  ADD CONSTRAINT `fk_Operacion_DetalleOperacion` FOREIGN KEY (`idOperacion`) REFERENCES `operacion` (`idOperacion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_Producto_DetalleOperacion` FOREIGN KEY (`idProducto`) REFERENCES `producto` (`idProducto`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Operacion_DetalleOperacion` FOREIGN KEY (`idOperacion`) REFERENCES `operacion` (`idOperacion`),
+  ADD CONSTRAINT `fk_Producto_DetalleOperacion` FOREIGN KEY (`idProducto`) REFERENCES `producto` (`idProducto`);
+
+--
+-- Filtros para la tabla `detallepermiso`
+--
+ALTER TABLE `detallepermiso`
+  ADD CONSTRAINT `fk_Login_DetallePermiso` FOREIGN KEY (`idLogin`) REFERENCES `login` (`idLogin`),
+  ADD CONSTRAINT `fk_Permiso_DetallePermiso` FOREIGN KEY (`idPermiso`) REFERENCES `permiso` (`idPermiso`);
 
 --
 -- Filtros para la tabla `detalleventa`
 --
 ALTER TABLE `detalleventa`
-  ADD CONSTRAINT `fk_ComprobanteVenta_DetalleVenta` FOREIGN KEY (`idComprobanteVenta`) REFERENCES `comprobanteventa` (`idComprobanteVenta`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_DetalleOperacion_DetalleVenta` FOREIGN KEY (`idDetalleOperacion`) REFERENCES `detalleoperacion` (`idDetalleOperacion`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_ComprobanteVenta_DetalleVenta` FOREIGN KEY (`idComprobanteVenta`) REFERENCES `comprobanteventa` (`idComprobanteVenta`),
+  ADD CONSTRAINT `fk_DetalleOperacion_DetalleVenta` FOREIGN KEY (`idDetalleOperacion`) REFERENCES `detalleoperacion` (`idDetalleOperacion`);
 
 --
 -- Filtros para la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  ADD CONSTRAINT `fk_Persona_Empleado` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_TipoEmpleado_Empleado` FOREIGN KEY (`idTipoEmpleado`) REFERENCES `tipoempleado` (`idTipoEmpleado`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Persona_Empleado` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`),
+  ADD CONSTRAINT `fk_TipoEmpleado_Empleado` FOREIGN KEY (`idTipoEmpleado`) REFERENCES `tipoempleado` (`idTipoEmpleado`);
 
 --
 -- Filtros para la tabla `factura`
 --
 ALTER TABLE `factura`
-  ADD CONSTRAINT `fk_ComprobanteVenta_Factura` FOREIGN KEY (`idComprobanteVenta`) REFERENCES `comprobanteventa` (`idComprobanteVenta`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_ComprobanteVenta_Factura` FOREIGN KEY (`idComprobanteVenta`) REFERENCES `comprobanteventa` (`idComprobanteVenta`);
 
 --
 -- Filtros para la tabla `kardex`
 --
 ALTER TABLE `kardex`
-  ADD CONSTRAINT `fk_Repuesto_Kardex` FOREIGN KEY (`idRepuesto`) REFERENCES `repuesto` (`idRepuesto`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Repuesto_Kardex` FOREIGN KEY (`idRepuesto`) REFERENCES `repuesto` (`idRepuesto`);
+
+--
+-- Filtros para la tabla `login`
+--
+ALTER TABLE `login`
+  ADD CONSTRAINT `fk_Persona_Login` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`);
 
 --
 -- Filtros para la tabla `operacion`
 --
 ALTER TABLE `operacion`
-  ADD CONSTRAINT `fk_PersonaCliente_Operacion` FOREIGN KEY (`idPersonaCliente`) REFERENCES `persona` (`idPersona`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_PersonaEmpleado_Operacion` FOREIGN KEY (`idPersonaEmpleado`) REFERENCES `persona` (`idPersona`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_Vehiculo_Operacion` FOREIGN KEY (`idVehiculo`) REFERENCES `vehiculo` (`idVehiculo`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_PersonaCliente_Operacion` FOREIGN KEY (`idPersonaCliente`) REFERENCES `persona` (`idPersona`),
+  ADD CONSTRAINT `fk_PersonaEmpleado_Operacion` FOREIGN KEY (`idPersonaEmpleado`) REFERENCES `persona` (`idPersona`),
+  ADD CONSTRAINT `fk_Vehiculo_Operacion` FOREIGN KEY (`idVehiculo`) REFERENCES `vehiculo` (`idVehiculo`);
 
 --
 -- Filtros para la tabla `persona`
 --
 ALTER TABLE `persona`
-  ADD CONSTRAINT `fk_TipoDocumento_Persona` FOREIGN KEY (`idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_TipoDocumento_Persona` FOREIGN KEY (`idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`);
 
 --
 -- Filtros para la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  ADD CONSTRAINT `fk_Persona_Proveedor` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Persona_Proveedor` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`);
 
 --
 -- Filtros para la tabla `repuesto`
 --
 ALTER TABLE `repuesto`
-  ADD CONSTRAINT `fk_Producto_Repuesto` FOREIGN KEY (`idProducto`) REFERENCES `producto` (`idProducto`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Producto_Repuesto` FOREIGN KEY (`idProducto`) REFERENCES `producto` (`idProducto`);
 
 --
 -- Filtros para la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  ADD CONSTRAINT `fk_T_Producto_Servicio` FOREIGN KEY (`idProducto`) REFERENCES `producto` (`idProducto`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_TipoServicio_Servicio` FOREIGN KEY (`idTipoServicio`) REFERENCES `tiposervicio` (`idTipoServicio`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_T_Producto_Servicio` FOREIGN KEY (`idProducto`) REFERENCES `producto` (`idProducto`),
+  ADD CONSTRAINT `fk_TipoServicio_Servicio` FOREIGN KEY (`idTipoServicio`) REFERENCES `tiposervicio` (`idTipoServicio`);
 
 --
 -- Filtros para la tabla `vehiculo`
 --
 ALTER TABLE `vehiculo`
-  ADD CONSTRAINT `fk_Cliente_Vehiculo` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Cliente_Vehiculo` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
