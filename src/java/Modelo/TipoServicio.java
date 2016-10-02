@@ -27,9 +27,4 @@ public class TipoServicio {
     public void setDecripcion(String Decripcion) {
         this.descripcion = Decripcion;
     }
-    
-@Override
-    public String toString() {
-    return idTipoServicio + ", " +descripcion;
-    }
 }

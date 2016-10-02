@@ -12,7 +12,27 @@
 <html lang="es">
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Tipos de Servicio</title>
+        <title>Tipos de Servicio</title><script type="text/javascript">
+            function nuevo(){
+                document.location = "TipoServicioMnt.jsp";
+            }
+            
+            function buscar(){
+                var desc = document.getElementById("txtDescripcion").value;
+                document.frmLst.action = "TipoServicioControlador?accion=buscar&desc=" + desc;
+                document.frmLst.submit();
+            }
+            
+            function obtenerPorId(id){
+                document.frmLst.action = "TipoServicioControlador?accion=obtenerPorId&id=" + id;
+                document.frmLst.submit();
+            }
+            
+            function eliminar(id){
+                document.frmLst.action = "TipoServicioControlador?accion=eliminar&id=" + id;
+                document.frmLst.submit();
+            }
+        </script>
         <script type="text/javascript">
             function nuevo(){
                 document.location = "TipoServicioMnt.jsp";

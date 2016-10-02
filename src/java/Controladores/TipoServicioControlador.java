@@ -43,28 +43,28 @@ public class TipoServicioControlador extends HttpServlet {
 
     logger.info("processRequest: " + accion);
 
-    if (accion != null) {
-        if (accion.equals("insertar")) {
-            insertar(request, response);
-            return;
-        }
-        if (accion.equals("buscar")) {
-            buscar(request, response);
-            return;
-        } 
-        if (accion.equals("obtenerPorId")) {
-            obtenerPorId(request, response);
-            return;
-        }
-        if (accion.equals("actualizar")) {
-            actualizar(request, response);
-            return;
-        }
-        if (accion.equals("eliminar")) {
-            eliminar(request, response);
+        if (accion != null) {
+            if (accion.equals("insertar")) {
+                insertar(request, response);
+                return;
+            }
+            if (accion.equals("buscar")) {
+                buscar(request, response);
+                return;
+            } 
+            if (accion.equals("obtenerPorId")) {
+                obtenerPorId(request, response);
+                return;
+            }
+            if (accion.equals("actualizar")) {
+                actualizar(request, response);
+                return;
+            }
+            if (accion.equals("eliminar")) {
+                eliminar(request, response);
+            }
         }
     }
-}
         protected void insertar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("insertar");
         String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
@@ -129,8 +129,7 @@ public class TipoServicioControlador extends HttpServlet {
             logger.error("buscar: " + e.getMessage());
         }
     }
-        
-        
+
         protected void buscar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             busca(request, response);
             sesion.removeAttribute("msgPostOperacion");
@@ -178,15 +177,18 @@ public class TipoServicioControlador extends HttpServlet {
                         + "<strong><span class='glyphicon glyphicon-pencil'></span> </strong>Tipo de Servicio <strong>"
                         + tipoServicioAnterior.getDecripcion()
                         + "</strong> actualizado correctamente por <strong>" + tipoServicio.getDecripcion() + "</strong>.</div>";
-            }else if(flgOperacion == 0){
+            }else if(flgOperacion == 2){
+                mensaje = "<div class='alert alert-warning alert-dismissible' role='alert'>"
+                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                        + "<strong><span class='glyphicon glyphicon-warning-sign'></span></strong> Tipo de Servicio <strong>"
+                        + tipoServicio.getDecripcion()
+                        + "</strong> ya se encuentra registrado.</div>";
+            }else{
                 mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
                         + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
                         + "<strong><span class='glyphicon glyphicon-pencil'></span> </strong>Error al intentar actualizar el Tipo de Servicio <strong>"
                         + tipoServicioAnterior.getDecripcion()+ "</strong>"
-                        + " por <strong>" + tipoServicio.getDecripcion() + "</div>";
-            }else{
-                /*Para cuando esté listo el PROC*/
-                mensaje = "Descripción duplicado.";
+                        + " por <strong>" + tipoServicio.getDecripcion() + "</strong></div>";
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
@@ -222,7 +224,7 @@ public class TipoServicioControlador extends HttpServlet {
                 mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
                         + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
                         + "<strong>Advertencia! </strong>Error al intentar eliminar el Tipo de Servicio <strong>"
-                        + tipoServicio.getDecripcion()+ "</strong>.</div>";
+                        + tipoServicioEliminar.getDecripcion()+ "</strong>.</div>";
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");

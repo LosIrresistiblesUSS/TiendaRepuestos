@@ -1,28 +1,25 @@
 package Logica;
 
-import Interfaces.iTipoServicioLogica;
-import Modelo.TipoServicio;
-import java.util.ArrayList;
-import java.util.List;
+import DAO.LoginDAO;
+import Modelo.Usuario;
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class test {
         
     public static void main(String[] args) {
-        iTipoServicioLogica logica = new TipoServicioLogica();
-        TipoServicio servicio = new TipoServicio();
-//        List<TipoServicio> lstTipoServicio = null;
+        LoginLogica login = new LoginLogica();
+        Usuario usuario = new Usuario();
         
-//        lstTipoServicio = logica.buscar("Mante");
-//        
-//        for (int i = 0; i < lstTipoServicio.size(); i++) {
-//            System.out.println(lstTipoServicio.get(i).getIdTipoServicio());
-//            System.out.println(lstTipoServicio.get(i).getDecripcion());
-//        }
-
-        servicio.setDecripcion("Otero.. nose baña");
-
-        logica.insertar(servicio);
+        String textoSinEncriptar="48221945"; 
+        String textoEncriptadoConMD5=DigestUtils.md5Hex(textoSinEncriptar); 
         
-//        logica.eliminar(10);   
+        usuario = login.iniciarSesion("acotrinae", textoEncriptadoConMD5);
+        
+        System.out.println(usuario.getIdLogin());
+        System.out.println(usuario.getNombres());
+        System.out.println(usuario.getCargo());
+        System.out.println(usuario.getUsuario());
+        System.out.println(usuario.getPassword());
+        
     }
 }
