@@ -12,27 +12,7 @@
 <html lang="es">
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Tipos de Servicio</title><script type="text/javascript">
-            function nuevo(){
-                document.location = "TipoServicioMnt.jsp";
-            }
-            
-            function buscar(){
-                var desc = document.getElementById("txtDescripcion").value;
-                document.frmLst.action = "TipoServicioControlador?accion=buscar&desc=" + desc;
-                document.frmLst.submit();
-            }
-            
-            function obtenerPorId(id){
-                document.frmLst.action = "TipoServicioControlador?accion=obtenerPorId&id=" + id;
-                document.frmLst.submit();
-            }
-            
-            function eliminar(id){
-                document.frmLst.action = "TipoServicioControlador?accion=eliminar&id=" + id;
-                document.frmLst.submit();
-            }
-        </script>
+        <title>Tipos de Servicio</title>
         <script type="text/javascript">
             function nuevo(){
                 document.location = "TipoServicioMnt.jsp";
@@ -53,11 +33,20 @@
                 document.frmLst.action = "TipoServicioControlador?accion=eliminar&id=" + id;
                 document.frmLst.submit();
             }
+            
+            function cerrarSesion(){
+                document.location = "LoginControlador?accion=cerrarSesion";
+            }
         </script>
     </head>
     
     <body>
         <%@include file="WEB-INF/jspf/header.jspf" %>
+        
+        <% if(session.getAttribute("usuario") == null){
+            response.sendRedirect("index.jsp");
+        }%>
+        
         <main>
             <section class="jumbotron">
                 <div class="container">
@@ -65,6 +54,8 @@
                 </div>
             </section>
 
+            <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+            
             <section class="container">
                 <form name="frmLst" method="post" class="form-inline">
                     <div class="form-group">

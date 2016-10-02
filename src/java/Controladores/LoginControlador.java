@@ -11,15 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
+import org.apache.commons.codec.digest.DigestUtils;
 
 @WebServlet(name = "LoginControlador", urlPatterns = {"/LoginControlador"})/*url para el navegador*/
 public class LoginControlador extends HttpServlet {
     
-    private static Logger logger = Logger.getLogger(TipoServicioControlador.class.getName());
+    private static Logger logger = Logger.getLogger(LoginControlador.class.getName());
     
     private iLoginLogica loginService;
+    private Usuario user;
     
-    private int flgOperacion = 0;
     private String mensaje = null;
     
     private HttpSession sesion;
@@ -60,13 +61,22 @@ public class LoginControlador extends HttpServlet {
             sesion = request.getSession();
 
             loginService = new LoginLogica();
-            Usuario user = loginService.iniciarSesion(usuario, password);
+            
+            String passwordMD5 = DigestUtils.md5Hex(password); 
+            
+            user = new Usuario();
+            user = loginService.iniciarSesion(usuario, passwordMD5);
             
             if (user != null) {
                 sesion.setAttribute("usuario", user);
+                System.out.println("Inició Sesión");
+                TipoServicioControlador tipoServicioControlador = new TipoServicioControlador();
+                tipoServicioControlador.buscar(request, response);
             } else {
                 mensaje = "Usuario y/o Contraseña incorrectos";
                 sesion.setAttribute("msgSesion", mensaje);
+                System.out.println("No inició Sesión");
+                response.sendRedirect("index.jsp");
             }
             response.sendRedirect("TipoServicioLst.jsp");
         } catch (Exception e) {
@@ -75,7 +85,12 @@ public class LoginControlador extends HttpServlet {
     }
 
     private void cerrarSesion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("Cerrar Sesion");
+        sesion = request.getSession();
+        sesion.removeAttribute("msgSesion");
+        sesion.removeAttribute("usuario");
+        sesion.invalidate();
+        response.sendRedirect("index.jsp");
     }
     
 }
