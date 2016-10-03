@@ -1,0 +1,9 @@
+<% if(session.getAttribute("usuario") == null){
+    response.sendRedirect("index.jsp");
+}%>
+
+<script>
+    function cerrarSesion(){
+        document.location = "LoginControlador?accion=cerrarSesion";
+    }
+</script>

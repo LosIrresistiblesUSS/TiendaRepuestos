@@ -7,6 +7,8 @@
 <%@page import="Modelo.TipoServicio"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
+<%@include file="WEB-INF/jspf/validacion.jspf" %>
+
 <!DOCTYPE html>
 <html lang="es">
     <%
@@ -53,7 +55,6 @@
                     <h2><strong>Tipos de Servicios</strong></h2><h4>Mantenimiento</h4>
                 </div>
             </section> 
-            
             <div class="page-header">
                 <div class="container">
                     <h2>
@@ -67,25 +68,30 @@
             </div>
             
             <section class="container">
-                <form name="frmMnt" method="post" class="form-horizontal col-md-offset-3">
-                    <div class="form-group">
-                            <label class="control-label col-md-3" for="txtDescripcion">Tipo de Servicio:</label>
-                            <div class="col-md-4">
-                                <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" autofocus="autofocus" />
-                            </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading panel-heading-2"></div>
+                    <div class="panel-body">
+                        <form name="frmMnt" method="post" class="form-horizontal col-md-offset-3 form-principal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="txtDescripcion">Tipo de Servicio:</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" autofocus="autofocus" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4 col-md-offset-3">
+                                        <% if(session.getAttribute("tipoServicioActualizar") == null){ %>
+                                        <input class="btn btn-primary" type="submit" value="Insertar" onclick="insertar()" id="btnInsertar" />
+                                        <% }else{ %>
+                                        <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar(<%=tipoServicio.getIdTipoServicio()%>)" id="btnActualizar" />
+                                        <% } %>
+                                        <input class="btn btn-primary" type="button" value="Cancelar" onclick="cancelar()" id="btnCancelar" />
+                                    </div>
+                                </div>
+                        </form>
                     </div>
-                    
-                    <div class="form-group">
-                        <div class="col-md-4 col-md-offset-3">
-                            <% if(session.getAttribute("tipoServicioActualizar") == null){ %>
-                            <input class="btn btn-primary" type="button" value="Insertar" onclick="insertar()" id="btnInsertar" />
-                            <% }else{ %>
-                            <input class="btn btn-primary" type="button" value="Actualizar" onclick="actualizar(<%=tipoServicio.getIdTipoServicio()%>)" id="btnActualizar" />
-                            <% } %>
-                            <input class="btn btn-primary" type="button" value="Cancelar" onclick="cancelar()" id="btnCancelar" />
-                        </div>
-                    </div>
-                </form>
+                    <div class="panel-heading panel-heading-2"></div>
+                </div>
             </section>
         </main>
         

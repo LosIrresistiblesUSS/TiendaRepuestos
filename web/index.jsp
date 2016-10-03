@@ -10,8 +10,9 @@
 <html lang="es">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Mantenimiento de Tipo de Servicio</title>
-        
+        <link rel="stylesheet" href="css/login.css" />
         <script type="text/javascript">
             function iniciarSesion(){
                 var usuario = document.getElementById("txtUsuario").value;
@@ -27,8 +28,6 @@
                         document.frmLst.action = "LoginControlador?accion=iniciarSesion&usuario=" + usuario + "&password=" + password;
                         document.frmLst.submit();
                     }
-                    
-                    
                 }
             }
         </script>
@@ -43,24 +42,17 @@
         <% } %>
         
         
-        <form name="frmLst" method="post">
-            <table width="100%">
-                <tr>
-                    <td align="center">
-                        <h3>Bienvenido a nuestra primera aplicaciÃ³n <br />web con Java.</h3>
-                        <h1>IRRESISTIBLES</h1>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        Usuario: <input type="text" name="txtUsuario" id="txtUsuario" /></br></br>
-                        Contraseña: <input type="password" name="txtContra" id="txtContra" /></br></br>
-                        <input type="submit" onClick="iniciarSesion()" name="btnIngresar" value="Ingresar">
-                    </td>
-                    ${msgSesion}
-                </tr>
-            </table>
+        <form class="login" name="frmLst" method="post">
+            
+            <h1 class="login-title"><img src="img/login.png" /><br />Login Irresistible</h1>
+            ${msgSesion}
+            <input type="text" class="login-input" placeholder="Usuario" name="txtUsuario" id="txtUsuario" autofocus>
+            <input type="password" class="login-input" placeholder="Contraseña" name="txtContra" id="txtContra">
+            <input type="submit" onClick="iniciarSesion()" name="btnIngresar" value="Ingresar" class="login-button">
+          
         </form>
+
             
     </body>
 </html>
+

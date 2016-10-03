@@ -6,16 +6,18 @@ public class Usuario {
     private String cargo;
     private String usuario;
     private String password;
+    private String imagen;
 
     public Usuario() {
     }
 
-    public Usuario(int idLogin, String nombres, String cargo, String usuario, String password) {
+    public Usuario(int idLogin, String nombres, String cargo, String usuario, String password, String imagen) {
         this.idLogin = idLogin;
         this.nombres = nombres;
         this.cargo = cargo;
         this.usuario = usuario;
         this.password = password;
+        this.imagen = imagen;
     }
 
     public int getIdLogin() {
@@ -56,5 +58,13 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 }

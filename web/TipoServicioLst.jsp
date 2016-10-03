@@ -8,6 +8,8 @@
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
+<%@include file="WEB-INF/jspf/validacion.jspf" %>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -33,37 +35,26 @@
                 document.frmLst.action = "TipoServicioControlador?accion=eliminar&id=" + id;
                 document.frmLst.submit();
             }
-            
-            function cerrarSesion(){
-                document.location = "LoginControlador?accion=cerrarSesion";
-            }
         </script>
     </head>
     
     <body>
         <%@include file="WEB-INF/jspf/header.jspf" %>
-        
-        <% if(session.getAttribute("usuario") == null){
-            response.sendRedirect("index.jsp");
-        }%>
-        
         <main>
             <section class="jumbotron">
                 <div class="container">
                     <h2><strong>Tipos de Servicios</strong></h2><h4>Mantenimiento</h4>
                 </div>
             </section>
-
-            <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
-            
             <section class="container">
                 <form name="frmLst" method="post" class="form-inline">
                     <div class="form-group">
                         <label for="txtDescripcion">Tipo de Servicio:</label>
-                        <input class="form-control" type="text" id="txtDescripcion" autofocus />
+                        <input class="form-control" type="text" id="txtDescripcion" placeholder="Texto a buscar" autofocus />
                         <div class="espacio-buscar"></div>
-                        <button type="button" onclick="buscar()" id="btnBuscar" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Buscar</button>
-                        <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary"><span class="glyphicon glyphicon-file"></span> Nuevo</button>
+                        <!--<button type="button" onclick="buscar()" id="btnBuscar" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Buscar</button>-->
+                        <input type="submit" onclick="buscar()" id="btnBuscar" class="btn btn-primary" value="Buscar" />
+                        <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary">Nuevo</button>
                     </div>
 
                     <div class="mensajes">
@@ -95,13 +86,13 @@
                                 <td><%=tipoServicio.getDecripcion()%></td>
                                 <td>
                                     <center>
-                                        <a onclick="obtenerPorId(<%=tipoServicio.getIdTipoServicio()%>)" href="#">
+                                        <a class="text-primary" onclick="obtenerPorId(<%=tipoServicio.getIdTipoServicio()%>)" href="#">
                                         <span class="glyphicon glyphicon-pencil"></span></a>
                                     </center>
                                 </td>
                                 <td>
                                     <center>
-                                        <a href="#modalEliminar<%=i+1%>" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a class="text-danger" href="#modalEliminar<%=i+1%>" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a>
                                     </center>
                                 </td>
 
@@ -117,8 +108,8 @@
                                                 <p><strong><%=tipoServicio.getDecripcion()%></strong>.</p>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                                <button onclick="eliminar(<%=tipoServicio.getIdTipoServicio()%>)" type="button" class="btn btn-primary">Eliminar</button>
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                                <button onclick="eliminar(<%=tipoServicio.getIdTipoServicio()%>)" type="button" class="btn btn-danger">Eliminar</button>
                                             </div>
                                         </div>
                                     </div>

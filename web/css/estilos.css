@@ -9,10 +9,67 @@ body{
     border-radius: 0px;
 }
 
+.navbar-brand b{
+    color: #fff;
+}
+
+.navbar-brand b:hover{
+    color: #FFECB3;
+}
+
 .jumbotron{
     background: #337ab7;
     color: #fff;
     padding: 1px 0px 15px 0px;
+}
+
+.panel-heading-2{
+    padding: 7px;
+}
+
+.form-principal{
+    margin-top: 10px;
+}
+
+.datos-usuario{
+    text-align: center;
+}
+
+.panel-centrado{
+    padding: 30px;
+}
+
+.dropdown-menu{
+    background: #222;
+    color: #fff;
+}
+
+.img-lg-sesion{
+    width: 100px;
+    height: 100px;
+    margin: 0px 20px 0px 20px;
+    box-shadow: 0px 0px 20px #000;
+}
+
+.menu-usuario{
+    box-shadow: 0px 5px 20px #000;
+}
+
+.btn-group1{
+    padding: 0px 0px 13px 10px;
+}
+
+.mi-collapse{
+    background: #333;
+}
+
+.text-collapse{
+    color: #fff;
+}
+
+.img-xs-sesion{
+    width: 20px;
+    height: 20px;
 }
 
 footer{
@@ -33,6 +90,11 @@ main{
     display: inline-block;
 }
 
+.divider2{
+    margin-top: 23px !important;
+    margin-bottom: 15px !important;
+}
+
 .page-header{
     margin-top: -40px;
     margin-bottom: 30px;
@@ -46,6 +108,10 @@ main{
 .modal-header{
     background: #337ab7;
     color: #fff;
+}
+
+.espacio-datos-usuario{
+    margin-top: 8px;
 }
 
 thead{
@@ -64,4 +130,3 @@ thead{
         display: none;
     }
 }
-

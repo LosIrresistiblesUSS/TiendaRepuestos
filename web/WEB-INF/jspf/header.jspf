@@ -1,3 +1,25 @@
+<%@page import="Modelo.Usuario"%>
+<script>
+    
+    function cambiaClaseMantenimiento()
+    {
+        $('#nav-enlace-mantenimientos').toggleClass('active');
+        $('#collapseReportes').removeClass('in');
+        $('#nav-enlace-reportes').removeClass('active');
+    }
+    function cambiaClaseReporte()
+    {
+        $('#nav-enlace-reportes').toggleClass('active');
+        $('#collapseMantenimientos').removeClass('in');
+        $('#nav-enlace-mantenimientos').removeClass('active');
+    }
+    
+    window.onload = function()
+    {
+        document.getElementById("nav-enlace-mantenimientos").addEventListener( 'click' , cambiaClaseMantenimiento );
+        document.getElementById("nav-enlace-reportes").addEventListener( 'click' , cambiaClaseReporte );
+    }    
+</script>
 <header>
     <nav class="navbar navbar-inverse bg-info">
         <div class="container">
@@ -10,20 +32,62 @@
                 </button>
                 <a class="navbar-brand" href="#"><b>Venta de Repuestos</b></a>
             </div>
-
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Inicio</a></li>
+                    <li id="nav-enlace-mantenimientos"><a role="button" data-toggle="collapse" href="#collapseMantenimientos" aria-expanded="false" aria-controls="collapseMantenimientos">Manteniminetos</a></li>
+                    <li id="nav-enlace-reportes"><a role="button" data-toggle="collapse" href="#collapseReportes" aria-expanded="false" aria-controls="collapseReportes">Reportes</a></li>
+                    <% if(session.getAttribute("usuario") != null){
+                        String img;
+                        Usuario user = new Usuario();
+                        user = (Usuario) session.getAttribute("usuario");
+                        if(user.getImagen() == null){
+                            img = "sinimg.jpg";
+                        } else {
+                            img = user.getImagen();
+                        }
+                    %>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mantenimiento <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Tipo de Servicio</a></li>
-                            <li><a href="#">Cliente</a></li>
-                            <li><a href="#">Empleado</a></li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <img src="img/usuarios/<%=img %>" alt="<%=img %>" class="img-circle img-xs-sesion">&nbsp;<%=user.getUsuario()%>&nbsp;<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu menu-usuario">
+                            <div class="espacio-datos-usuario"></div>
+                            <div class="datos-usuario">
+                                <img class="img-lg-sesion" src="img/usuarios/<%=img %>" alt="<%=img %>">
+                                <div class="caption">
+                                  <h5><%=user.getNombres() %></h5>
+                                  <h5><span class="label label-default"><%=user.getCargo() %></span></h5>
+                                  <div role="separator" class="divider divider2"></div>
+                                  <p><a href="#" class="btn btn-danger" onclick="cerrarSesion()" role="button">Cerrar Sesión</a>
+                                </div>
+                            </div>
                         </ul>
                     </li>
+                    <% } %>
+                    
                 </ul>
             </div>
         </div>
     </nav>
+                    
+    <div class="collapse mi-collapse" id="collapseMantenimientos">
+        <div class="container btn-group1">
+            <h4 class="text-collapse">Mantenimientos</h4>
+            <div class="btn-group btn-group-xs " role="group" aria-label="">
+                <button type="button" class="btn btn-primary">Tipo Servicios</button>
+                <button type="button" class="btn btn-primary">Servicios</button>
+                <button type="button" class="btn btn-primary">Empleados</button>
+                <button type="button" class="btn btn-primary">Clientes</button>
+            </div>
+        </div>
+    </div>
+    <div class="collapse mi-collapse" id="collapseReportes">
+        <div class="container btn-group1">
+            <h4 class="text-collapse">Reportes</h4>
+            <div class="btn-group btn-group-xs" role="group" aria-label="">
+                <button type="button" class="btn btn-primary">Tipo Servicio</button>
+                <button type="button" class="btn btn-primary">Servicio</button>
+            </div>
+        </div>
+    </div>
 </header>
