@@ -56,20 +56,18 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
                 + "where descripcion like '%" + (descripcion.trim()) + "%'"
                 + "order by idTipoServicio desc";
         List<TipoServicio> lstTipoServicio = null;
-        TipoServicio tipoServicio = null;
+        TipoServicio tipoServicio;
         try{
             con = new Conexion();
             cn = con.getConexion();
             cn.setAutoCommit(false);
             ps = cn.prepareStatement(sql);
-            //ps.setString(1, razSocial);
             rs = ps.executeQuery();
             lstTipoServicio = new ArrayList<TipoServicio>();
             while(rs.next()){
                 tipoServicio = new TipoServicio();
                 tipoServicio.setIdTipoServicio(rs.getInt("idTipoServicio"));
                 tipoServicio.setDecripcion(rs.getString("descripcion")); 
-                
                 lstTipoServicio.add(tipoServicio);
             }
         }catch(Exception e){
@@ -137,7 +135,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     @Override
     public int eliminar(int id) {
         logger.info("Eliminar TipoServicio");
-        String sql= "DELETE FROM TipoServicio where idTipoServicio = ?";
+        sql= "DELETE FROM TipoServicio where idTipoServicio = ?";
 
         try{
            con=new Conexion();

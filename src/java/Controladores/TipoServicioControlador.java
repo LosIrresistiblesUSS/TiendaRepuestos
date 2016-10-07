@@ -1,5 +1,6 @@
 package Controladores;
 
+import Funciones.FuncionesMensajes;
 import Interfaces.iTipoServicioLogica;
 import Logica.TipoServicioLogica;
 import Modelo.TipoServicio;
@@ -76,24 +77,16 @@ public class TipoServicioControlador extends HttpServlet {
             tipoServicioService = new TipoServicioLogica();
             flgOperacion = tipoServicioService.insertar(tipoServicio);
             
-            if(flgOperacion == 1){
-                mensaje = "<div class='alert alert-success alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong><span class='glyphicon glyphicon-file'></span></strong> Tipo de Servicio <strong>"
-                        + tipoServicio.getDecripcion()
-                        + "</strong> insertado correctamente.</div>";
-            }else if(flgOperacion == 2){
-                mensaje = "<div class='alert alert-warning alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong><span class='glyphicon glyphicon-warning-sign'></span></strong> Tipo de Servicio <strong>"
-                        + tipoServicio.getDecripcion()
-                        + "</strong> ya se encuentra registrado.</div>";
-            }else{
-                mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong><span class='glyphicon glyphicon-file'></span></strong> Error al intentar insertar el Tipo de Servicio <strong>"
-                        + tipoServicio.getDecripcion()
-                        + ".</strong></div>";
+            switch (flgOperacion) {
+                case 1:
+                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Servicio", descripcion);
+                    break;
+                case 2:
+                    mensaje = FuncionesMensajes.insertarAdvertencia("Tipo de Servicio", descripcion);
+                    break;
+                default:
+                    mensaje = FuncionesMensajes.insertarError("Tipo de Servicio", descripcion);
+                    break;
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
@@ -119,9 +112,13 @@ public class TipoServicioControlador extends HttpServlet {
             tipoServicioService = new TipoServicioLogica();
             List<TipoServicio> lstTipoSevicio = tipoServicioService.buscar(desc);
             if(lstTipoSevicio.size() > 0){
+                if (!"".equals(desc)) {
+                    mensaje = FuncionesMensajes.buscarExitoso(desc);
+                    sesion.setAttribute("msgListado", mensaje);
+                }
                 sesion.setAttribute("listaTipoServicio", lstTipoSevicio);
             }else{
-                mensaje = "No existen Tipos de Servicio que contengan el siguiente texto: <strong>" + desc + "</strong>.";
+                mensaje = FuncionesMensajes.buscarEror("Tipos de Servicio", desc);
                 sesion.setAttribute("msgListado", mensaje);
             }
             response.sendRedirect("TipoServicioLst.jsp");
@@ -171,24 +168,16 @@ public class TipoServicioControlador extends HttpServlet {
             tipoServicioService = new TipoServicioLogica();
             flgOperacion = tipoServicioService.actualizar(tipoServicio);
             
-            if(flgOperacion == 1){
-                mensaje = "<div class='alert alert-success alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong><span class='glyphicon glyphicon-pencil'></span> </strong>Tipo de Servicio <strong>"
-                        + tipoServicioAnterior.getDecripcion()
-                        + "</strong> actualizado correctamente por <strong>" + tipoServicio.getDecripcion() + "</strong>.</div>";
-            }else if(flgOperacion == 2){
-                mensaje = "<div class='alert alert-warning alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong><span class='glyphicon glyphicon-warning-sign'></span></strong> Tipo de Servicio <strong>"
-                        + tipoServicio.getDecripcion()
-                        + "</strong> ya se encuentra registrado.</div>";
-            }else{
-                mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong><span class='glyphicon glyphicon-pencil'></span> </strong>Error al intentar actualizar el Tipo de Servicio <strong>"
-                        + tipoServicioAnterior.getDecripcion()+ "</strong>"
-                        + " por <strong>" + tipoServicio.getDecripcion() + "</strong></div>";
+            switch (flgOperacion) {
+                case 1:
+                    mensaje = FuncionesMensajes.actualizarExitoso("Tipo de Servicio", tipoServicioAnterior.getDecripcion(), tipoServicio.getDecripcion());
+                    break;
+                case 2:
+                    mensaje = FuncionesMensajes.actualizarAdvertencia("Tipo de Servicio", tipoServicio.getDecripcion());
+                    break;
+                default:
+                    mensaje = FuncionesMensajes.actualizarError("Tipo de Servicio", tipoServicioAnterior.getDecripcion(), tipoServicio.getDecripcion());
+                    break;
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
@@ -215,16 +204,9 @@ public class TipoServicioControlador extends HttpServlet {
             System.out.println(id);
             
             if(flgOperacion > 0){
-                mensaje = "<div class='alert alert-success alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong><span class='glyphicon glyphicon-trash'></span> </strong>Tipo de Servicio <strong>"
-                        + tipoServicioEliminar.getDecripcion()
-                        + "</strong> eliminado correctamente.</div>";
+                mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Servicio", tipoServicioEliminar.getDecripcion());
             }else{
-                mensaje = "<div class='alert alert-danger alert-dismissible' role='alert'>"
-                        + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
-                        + "<strong>Advertencia! </strong>Error al intentar eliminar el Tipo de Servicio <strong>"
-                        + tipoServicioEliminar.getDecripcion()+ "</strong>.</div>";
+                mensaje = FuncionesMensajes.eliminarError("Tipo de Servicio", tipoServicioEliminar.getDecripcion());
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");

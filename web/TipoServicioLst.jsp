@@ -59,9 +59,8 @@
 
                     <div class="mensajes">
                         <% if(session.getAttribute("msgListado") != null){ %>
-                            <div class="alert alert-danger" role="alert">
-                                <strong>Fatality <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>${msgListado}
-                            </div>    
+                            
+                            ${msgListado}
                         <% } %>
 
                         <% if(session.getAttribute("msgPostOperacion") != null){ %>
@@ -73,8 +72,7 @@
                             <thead align="center">
                                 <td><b>#</b></td>
                                 <td><b>Descipción</b></td>
-                                <td><b>Editar</b></td>
-                                <td><b>Eliminar</b></td>
+                                <td><b>Acciones</b></td>
                             </thead>
                             <%if(session.getAttribute("listaTipoServicio") != null){
                                 List<TipoServicio> lstTipoServicio = (List<TipoServicio>)session.getAttribute("listaTipoServicio");
@@ -86,16 +84,23 @@
                                 <td><%=tipoServicio.getDecripcion()%></td>
                                 <td>
                                     <center>
-                                        <a class="text-primary" onclick="obtenerPorId(<%=tipoServicio.getIdTipoServicio()%>)" href="#">
-                                        <span class="glyphicon glyphicon-pencil"></span></a>
+                                    <table>
+                                        <tr>
+                                            <td class="td-acciones-editar">
+                                                <button class="btn btn-warning" onclick="obtenerPorId(<%=tipoServicio.getIdTipoServicio()%>)">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </button>
+                                            </td>
+                                            <td class="td-acciones-eliminar">
+                                                <a class="text-danger" href="#modalEliminar<%=i+1%>" data-toggle="modal">
+                                                    <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
                                     </center>
                                 </td>
-                                <td>
-                                    <center>
-                                        <a class="text-danger" href="#modalEliminar<%=i+1%>" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a>
-                                    </center>
-                                </td>
-
+                                
                                 <!-- Modal - INICIO -->
                                 <div class="modal fade text-center" id="modalEliminar<%=i+1%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                     <div class="modal-dialog" role="document">
