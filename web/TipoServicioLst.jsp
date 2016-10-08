@@ -26,6 +26,12 @@
                 document.frmLst.submit();
             }
             
+            function buscarPag(pagina){
+                var desc = document.getElementById("descripcion").value;
+                document.frmLst.action = "TipoServicioControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
+                document.frmLst.submit();
+            }
+            
             function obtenerPorId(id){
                 document.frmLst.action = "TipoServicioControlador?accion=obtenerPorId&id=" + id;
                 document.frmLst.submit();
@@ -43,7 +49,7 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Servicios</strong></h2><h4>Mantenimiento</h4>
+                    <h2><strong>Tipos de Servicios</strong></h2>
                 </div>
             </section>
             <section class="container">
@@ -53,7 +59,7 @@
                         <input class="form-control" type="text" id="txtDescripcion" placeholder="Texto a buscar" autofocus />
                         <div class="espacio-buscar"></div>
                         <!--<button type="button" onclick="buscar()" id="btnBuscar" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Buscar</button>-->
-                        <input type="submit" onclick="buscar(0)" id="btnBuscar" class="btn btn-primary" value="Buscar" />
+                        <input type="submit" onclick="buscar(1)" id="btnBuscar" class="btn btn-primary" value="Buscar" />
                         <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary">Nuevo</button>
                     </div>
 
@@ -80,7 +86,7 @@
                                     TipoServicio tipoServicio = lstTipoServicio.get(i);
                             %>
                             <tbody>
-                                <td><center><%=i+1 %></center></td>
+                                <td><center><%=(((int)session.getAttribute("pagina")*(int)session.getAttribute("registrosPorPagina"))-(int)session.getAttribute("registrosPorPagina"))+i+1 %></center></td>
                                 <td><%=tipoServicio.getDecripcion()%></td>
                                 <td>
                                     <center>
@@ -121,30 +127,31 @@
                                 </div>
                                 <!-- Modal - FIN -->
                             </tbody>
-
                             <%  
                                 }
                             }
                             %>
                         </table>
+                        
+                        <input type="hidden" value="<%=session.getAttribute("descripcion")%>" id="descripcion" />
                     <!-- </div> -->
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <% if((int)session.getAttribute("pagina") == 1){ %>
                                 <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                             <% }else{ %>
-                                <li><a href="#" onclick="buscar(<%=(int)session.getAttribute("pagina")-1%>)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                <li><a href="#" onclick="buscarPag(<%=(int)session.getAttribute("pagina")-1%>)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                             <% } %>
                             <%
                             for(int i=1; i <= (int)session.getAttribute("nroPaginas"); i++){
                             
                                 if((int)session.getAttribute("pagina") == i){       
                             %>
-                                <li class="active"><a href="#" onclick="buscar(<%=i%>)"><%=i%></a></li>
+                                <li class="active"><a href="#"><%=i%></a></li>
                             <%      
                                 }else{
                             %>
-                                <li><a href="#" onclick="buscar(<%=i%>)"><%=i%></a></li>
+                                <li><a href="#" onclick="buscarPag(<%=i%>)"><%=i%></a></li>
                             <%
                                 }
                             }
@@ -152,7 +159,7 @@
                             <% if((int)session.getAttribute("pagina") == (int)session.getAttribute("nroPaginas")){ %>
                                 <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                             <% }else{ %>
-                                <li><a href="#" onclick="buscar(<%=(int)session.getAttribute("pagina")+1%>)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                                <li><a href="#" onclick="buscarPag(<%=(int)session.getAttribute("pagina")+1%>)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                             <% } %>
                         </ul>
                     </nav>

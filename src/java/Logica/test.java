@@ -23,7 +23,18 @@ public class test {
 //        System.out.println(usuario.getPassword());
 
 
-        System.out.println(Math.ceil(2.2));
+//        System.out.println(Math.ceil((int)1.1));
         
+        int numero = 1;
+        int numero2 = 5;
+        
+        String a = String.valueOf(numero);
+        
+        int resultado = numero+numero2;
+        System.out.println(resultado);
+        
+//        System.out.println(a);
+        
+//        System.out.println((double)12/10);
     }
 }

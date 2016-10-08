@@ -79,12 +79,11 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     
     @Override
     public int totalRegistros(String descripcion, int inicio, int registrosPorPagina){
+        int total = 0;
         logger.info("Total de Registros");
         sql = "select count(*) as total "
                 + "from tiposervicio "
-                + "where descripcion like '%" + (descripcion.trim()) + "%'"
-                + "order by idTipoServicio desc LIMIT " + inicio + ", " + registrosPorPagina;
-        int total = 0;
+                + "where descripcion like '%" + (descripcion.trim()) + "%'";
         try{
             con = new Conexion();
             cn = con.getConexion();

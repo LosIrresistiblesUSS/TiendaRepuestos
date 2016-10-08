@@ -34,7 +34,7 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li id="nav-enlace-mantenimientos"><a role="button" data-toggle="collapse" href="#collapseMantenimientos" aria-expanded="false" aria-controls="collapseMantenimientos">Manteniminetos</a></li>
+                    <li id="nav-enlace-mantenimientos"><a role="button" data-toggle="collapse" href="#collapseMantenimientos" aria-expanded="false" aria-controls="collapseMantenimientos">Mantenimientos</a></li>
                     <li id="nav-enlace-reportes"><a role="button" data-toggle="collapse" href="#collapseReportes" aria-expanded="false" aria-controls="collapseReportes">Reportes</a></li>
                     <% if(session.getAttribute("usuario") != null){
                         String img;
@@ -73,7 +73,7 @@
     <div class="collapse mi-collapse" id="collapseMantenimientos">
         <div class="container btn-group1">
             <h4 class="text-collapse">Mantenimientos</h4>
-            <div class="btn-group btn-group-xs " role="group" aria-label="">
+            <div class="btn-group btn-group-sm " role="group" aria-label="">
                 <button type="button" class="btn btn-primary">Tipo Servicios</button>
                 <button type="button" class="btn btn-primary">Servicios</button>
                 <button type="button" class="btn btn-primary">Empleados</button>
@@ -84,7 +84,7 @@
     <div class="collapse mi-collapse" id="collapseReportes">
         <div class="container btn-group1">
             <h4 class="text-collapse">Reportes</h4>
-            <div class="btn-group btn-group-xs" role="group" aria-label="">
+            <div class="btn-group btn-group-sm" role="group" aria-label="">
                 <button type="button" class="btn btn-primary">Tipo Servicio</button>
                 <button type="button" class="btn btn-primary">Servicio</button>
             </div>

@@ -17,5 +17,4 @@ public class LoginLogica implements iLoginLogica {
     public boolean cerrarSesion() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

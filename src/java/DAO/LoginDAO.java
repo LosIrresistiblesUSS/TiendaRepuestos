@@ -22,7 +22,7 @@ public class LoginDAO implements iLoginDAO {
     @Override
     public Usuario iniciarSesion(String user, String pass) {
         logger.info("iniciarSesion");
-        sql = "SELECT l.idLogin,l.usuario,l.pass,l.imagen,p.nombres,te.descripcion " +
+        sql ="SELECT l.idLogin,l.usuario,l.pass,l.imagen,p.nombres,te.descripcion " +
             "FROM Login AS l " +
             "inner join Persona AS p " +
             "ON l.idPersona = p.idPersona " +
@@ -62,5 +62,4 @@ public class LoginDAO implements iLoginDAO {
     public boolean cerrarSesion() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }
