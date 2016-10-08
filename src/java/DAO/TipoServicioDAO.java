@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class TipoServicioDAO implements iTipoServicioDAO  {
-    //atributos
     private static Logger logger = Logger.getLogger(TipoServicioDAO.class.getName());
     private Conexion con;
     private Connection cn;
@@ -27,25 +26,25 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
         logger.info("Insertando TipoServicio");
         sql= "{CALL P_Insertar_TipoServicio(?,?)}";
         try{
-           con=new Conexion();
-           cn=con.getConexion();
-           cn.setAutoCommit(false);
-           cs = cn.prepareCall(sql.trim());
-           cs.setString(1, tipoServicio.getDecripcion().trim());
-           cs.registerOutParameter(2, java.sql.Types.INTEGER);
-           cs.executeUpdate();
-           flgOperacion = Integer.parseInt(cs.getObject(2).toString());
-           if(flgOperacion==1){
-               cn.commit();
-           }else{
-               cn.rollback();
-           }
-       }catch(Exception e){
-        logger.info("Error al insertar" + e.getMessage());
-       }finally{
-           con.cerrarConexion(cn);
-       }
-       return flgOperacion;
+            con=new Conexion();
+            cn=con.getConexion();
+            cn.setAutoCommit(false);
+            cs = cn.prepareCall(sql.trim());
+            cs.setString(1, tipoServicio.getDecripcion().trim());
+            cs.registerOutParameter(2, java.sql.Types.INTEGER);
+            cs.executeUpdate();
+            flgOperacion = Integer.parseInt(cs.getObject(2).toString());
+            if(flgOperacion==1){
+                cn.commit();
+            }else{
+                cn.rollback();
+            }
+        }catch(Exception e){
+            logger.info("Error al insertar" + e.getMessage());
+        }finally{
+            con.cerrarConexion(cn);
+        }
+        return flgOperacion;
     }
 
     @Override
@@ -136,26 +135,23 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     public int eliminar(int id) {
         logger.info("Eliminar TipoServicio");
         sql= "DELETE FROM TipoServicio where idTipoServicio = ?";
-
         try{
-           con=new Conexion();
-           cn=con.getConexion();
-           cn.setAutoCommit(false);
-           ps=cn.prepareStatement(sql);
-           ps.setInt(1, id);
-           
-           flgOperacion=ps.executeUpdate();
-           
-           if(flgOperacion>0){
-               cn.commit();
-           }else{
-               cn.rollback();
-           }
-       }catch(Exception e){
-        logger.info("Error al Eliminar" + e.getMessage());
-       }finally{
-           con.cerrarConexion(cn);
-       }
-       return flgOperacion;
+            con=new Conexion();
+            cn=con.getConexion();
+            cn.setAutoCommit(false);
+            ps=cn.prepareStatement(sql);
+            ps.setInt(1, id);
+            flgOperacion=ps.executeUpdate();
+            if(flgOperacion>0){
+                cn.commit();
+            }else{
+                cn.rollback();
+            }
+        }catch(Exception e){
+            logger.info("Error al Eliminar" + e.getMessage());
+        }finally{
+            con.cerrarConexion(cn);
+        }
+        return flgOperacion;
     }
 }

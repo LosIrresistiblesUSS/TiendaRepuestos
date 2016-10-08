@@ -2,7 +2,7 @@ package Logica;
 
 import DAO.LoginDAO;
 import Modelo.Usuario;
-import org.apache.commons.codec.digest.DigestUtils;
+/*import org.apache.commons.codec.digest.DigestUtils;*/
 
 public class test {
         
@@ -11,9 +11,9 @@ public class test {
         Usuario usuario = new Usuario();
         
         String textoSinEncriptar="48221945"; 
-        String textoEncriptadoConMD5=DigestUtils.md5Hex(textoSinEncriptar); 
+        /*String textoEncriptadoConMD5=DigestUtils.md5Hex(textoSinEncriptar);
         
-        usuario = login.iniciarSesion("acotrinae", textoEncriptadoConMD5);
+        usuario = login.iniciarSesion("acotrinae", textoEncriptadoConMD5); */
         
         System.out.println(usuario.getIdLogin());
         System.out.println(usuario.getNombres());

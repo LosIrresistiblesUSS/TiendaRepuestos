@@ -47,7 +47,7 @@
                 </div>
             </section>
             <section class="container">
-                <form name="frmLst" method="post" class="form-inline">
+                <form name="frmLst" method="post" class="form-inline formulario-resultados">
                     <div class="form-group">
                         <label for="txtDescripcion">Tipo de Servicio:</label>
                         <input class="form-control" type="text" id="txtDescripcion" placeholder="Texto a buscar" autofocus />
@@ -68,7 +68,7 @@
                         <% } %>
                     </div>
                     <!-- <div class="table-responsive"> --> <!-- Activar para tabla responsiva -->
-                        <table border="1" class="table table-hover">
+                        <table border="1" class="table table-hover tabla-resultados">
                             <thead align="center">
                                 <td><b>#</b></td>
                                 <td><b>Descipción</b></td>
@@ -128,10 +128,24 @@
                             %>
                         </table>
                     <!-- </div> -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li>
+                                <a href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </form>
             </section>
         </main>
-        
         <%@include file="WEB-INF/jspf/footer.jspf" %>
     </body>
 </html>

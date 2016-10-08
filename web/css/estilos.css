@@ -27,6 +27,14 @@ body{
     padding: 7px;
 }
 
+.formulario-resultados{
+    margin-bottom: 0px;
+}
+
+.tabla-resultados{
+    margin-bottom: 7px;
+}
+
 .form-principal{
     margin-top: 10px;
 }

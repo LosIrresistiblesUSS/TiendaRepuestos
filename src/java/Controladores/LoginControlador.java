@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
-import org.apache.commons.codec.digest.DigestUtils;
 
 @WebServlet(name = "LoginControlador", urlPatterns = {"/LoginControlador"})/*url para el navegador*/
 public class LoginControlador extends HttpServlet {
@@ -59,13 +58,9 @@ public class LoginControlador extends HttpServlet {
         
         try {
             sesion = request.getSession();
-
             loginService = new LoginLogica();
-            
-            String passwordMD5 = DigestUtils.md5Hex(password); 
-            
             user = new Usuario();
-            user = loginService.iniciarSesion(usuario, passwordMD5);
+            user = loginService.iniciarSesion(usuario, password);
             
             if (user != null) {
                 sesion.setAttribute("usuario", user);
@@ -91,6 +86,5 @@ public class LoginControlador extends HttpServlet {
         sesion.removeAttribute("usuario");
         sesion.invalidate();
         response.sendRedirect("index.jsp");
-    }
-    
+    }   
 }
