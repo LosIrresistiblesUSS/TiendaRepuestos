@@ -48,12 +48,12 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     }
 
     @Override
-    public List<TipoServicio> buscar(String descripcion) {
+    public List<TipoServicio> buscar(String descripcion, int inicio, int registrosPorPagina) {
         logger.info("buscar");
         sql = "select idTipoServicio, descripcion "
                 + "from tiposervicio "
                 + "where descripcion like '%" + (descripcion.trim()) + "%'"
-                + "order by idTipoServicio desc";
+                + "order by idTipoServicio desc LIMIT " + inicio + ", " + registrosPorPagina;
         List<TipoServicio> lstTipoServicio = null;
         TipoServicio tipoServicio;
         try{
@@ -75,6 +75,31 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
             con.cerrarConexion(cn);
         }
         return lstTipoServicio;
+    }
+    
+    @Override
+    public int totalRegistros(String descripcion, int inicio, int registrosPorPagina){
+        logger.info("Total de Registros");
+        sql = "select count(*) as total "
+                + "from tiposervicio "
+                + "where descripcion like '%" + (descripcion.trim()) + "%'"
+                + "order by idTipoServicio desc LIMIT " + inicio + ", " + registrosPorPagina;
+        int total = 0;
+        try{
+            con = new Conexion();
+            cn = con.getConexion();
+            cn.setAutoCommit(false);
+            ps = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                total = rs.getInt("total");
+            }
+        }catch(Exception e){
+            logger.info("Error en Total de Registros: " + e.getMessage());
+        }finally{
+            con.cerrarConexion(cn);
+        }
+        return total;
     }
 
     @Override

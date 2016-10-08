@@ -15,11 +15,17 @@ public class TipoServicioLogica implements iTipoServicioLogica{
     }
 
     @Override
-    public List<TipoServicio> buscar(String descipcion) {
+    public List<TipoServicio> buscar(String descipcion, int inicio, int registrosPorPagina) {
         tipoServicioDAO = new TipoServicioDAO();
-        return tipoServicioDAO.buscar(descipcion);
+        return tipoServicioDAO.buscar(descipcion, inicio, registrosPorPagina);
     }
 
+    @Override
+    public int totalRegistros(String descipcion, int inicio, int registrosPorPagina) {
+        tipoServicioDAO = new TipoServicioDAO();
+        return tipoServicioDAO.totalRegistros(descipcion, inicio, registrosPorPagina);
+    }
+    
     @Override
     public TipoServicio obtenerPorId(int id) {
         tipoServicioDAO = new TipoServicioDAO();

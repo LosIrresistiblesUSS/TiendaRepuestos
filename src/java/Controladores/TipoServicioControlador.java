@@ -104,13 +104,27 @@ public class TipoServicioControlador extends HttpServlet {
         protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
         String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
+        String pag = request.getParameter("pag") == null ? "0" : request.getParameter("pag");
+        int pagina = Integer.parseInt(pag);
+        
+        int registrosPorPagina = 2;
+        int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
+        
         try{
             sesion = request.getSession();
             sesion.removeAttribute("listaTipoServicio");
             sesion.removeAttribute("msgListado");
             sesion.removeAttribute("tipoServicioActualizar");
             tipoServicioService = new TipoServicioLogica();
-            List<TipoServicio> lstTipoSevicio = tipoServicioService.buscar(desc);
+            List<TipoServicio> lstTipoSevicio = tipoServicioService.buscar(desc, inicio, registrosPorPagina);
+            
+            int totalRegistros = tipoServicioService.totalRegistros(desc, inicio, registrosPorPagina);
+            System.out.println(totalRegistros);
+            int numeroPaginas = (int)Math.ceil(totalRegistros / registrosPorPagina);
+            System.out.println(numeroPaginas);
+            sesion.setAttribute("pagina", pagina);
+            sesion.setAttribute("nroPaginas", numeroPaginas);
+            
             if(lstTipoSevicio.size() > 0){
                 if (!"".equals(desc)) {
                     mensaje = FuncionesMensajes.buscarExitoso(desc);

@@ -20,9 +20,9 @@
                 document.location = "TipoServicioMnt.jsp";
             }
             
-            function buscar(){
+            function buscar(pagina){
                 var desc = document.getElementById("txtDescripcion").value;
-                document.frmLst.action = "TipoServicioControlador?accion=buscar&desc=" + desc;
+                document.frmLst.action = "TipoServicioControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
                 document.frmLst.submit();
             }
             
@@ -53,7 +53,7 @@
                         <input class="form-control" type="text" id="txtDescripcion" placeholder="Texto a buscar" autofocus />
                         <div class="espacio-buscar"></div>
                         <!--<button type="button" onclick="buscar()" id="btnBuscar" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Buscar</button>-->
-                        <input type="submit" onclick="buscar()" id="btnBuscar" class="btn btn-primary" value="Buscar" />
+                        <input type="submit" onclick="buscar(0)" id="btnBuscar" class="btn btn-primary" value="Buscar" />
                         <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary">Nuevo</button>
                     </div>
 
@@ -130,17 +130,30 @@
                     <!-- </div> -->
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
-                            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li>
-                                <a href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
+                            <% if((int)session.getAttribute("pagina") == 1){ %>
+                                <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                            <% }else{ %>
+                                <li><a href="#" onclick="buscar(<%=(int)session.getAttribute("pagina")-1%>)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                            <% } %>
+                            <%
+                            for(int i=1; i <= (int)session.getAttribute("nroPaginas"); i++){
+                            
+                                if((int)session.getAttribute("pagina") == i){       
+                            %>
+                                <li class="active"><a href="#" onclick="buscar(<%=i%>)"><%=i%></a></li>
+                            <%      
+                                }else{
+                            %>
+                                <li><a href="#" onclick="buscar(<%=i%>)"><%=i%></a></li>
+                            <%
+                                }
+                            }
+                            %>
+                            <% if((int)session.getAttribute("pagina") == (int)session.getAttribute("nroPaginas")){ %>
+                                <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                            <% }else{ %>
+                                <li><a href="#" onclick="buscar(<%=(int)session.getAttribute("pagina")+1%>)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                            <% } %>
                         </ul>
                     </nav>
                 </form>
