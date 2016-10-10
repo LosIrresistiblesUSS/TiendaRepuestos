@@ -1,10 +1,10 @@
 <%-- 
-    Document   : TipoServicioLst
-    Created on : 15-sep-2016, 16:36:46
+    Document   : TipoEmpleadoList
+    Created on : 09-oct-2016, 13:16:56
     Author     : Los Irresistibles
 --%>
 
-<%@page import="Modelo.TipoServicio"%>
+<%@page import="Modelo.TipoEmpleado"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -14,31 +14,31 @@
 <html lang="es">
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Tipos de Servicio</title>
+        <title>Tipo de Empleado</title>
         <script type="text/javascript">
             function nuevo(){
-                document.location = "TipoServicioMnt.jsp";
+                document.location = "TipoEmpleadoMnt.jsp";
             }
             
             function buscar(pagina){
                 var desc = document.getElementById("txtDescripcion").value;
-                document.frmLst.action = "TipoServicioControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
+                document.frmLst.action = "TipoEmpleadoControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
                 document.frmLst.submit();
             }
             
             function buscarPag(pagina){
                 var desc = document.getElementById("descripcion").value;
-                document.frmLst.action = "TipoServicioControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
+                document.frmLst.action = "TipoEmpleadoControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
                 document.frmLst.submit();
             }
             
-            function obtenerPorId(id){
-                document.frmLst.action = "TipoServicioControlador?accion=obtenerPorId&id=" + id;
+            function obtenerPorId(idTe){
+                document.frmLst.action = "TipoEmpleadoControlador?accion=obtenerPorId&idTe=" + idTe;
                 document.frmLst.submit();
             }
             
-            function eliminar(id){
-                document.frmLst.action = "TipoServicioControlador?accion=eliminar&id=" + id;
+            function eliminar(idTe){
+                document.frmLst.action = "TipoEmpleadoControlador?accion=eliminar&idTe=" + idTe;
                 document.frmLst.submit();
             }
         </script>
@@ -49,13 +49,13 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Servicios</strong></h2>
+                    <h2><strong>Tipos de Empleado</strong></h2>
                 </div>
             </section>
             <section class="container">
                 <form name="frmLst" method="post" class="form-inline formulario-resultados">
                     <div class="form-group">
-                        <label for="txtDescripcion">Tipo de Servicio:</label>
+                        <label for="txtDescripcion">Tipo de Empleado:</label>
                         <input class="form-control" type="text" id="txtDescripcion" placeholder="Texto a buscar" autofocus />
                         <div class="espacio-buscar"></div>
                         <!--<button type="button" onclick="buscar()" id="btnBuscar" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Buscar</button>-->
@@ -77,23 +77,23 @@
                         <table border="1" class="table table-hover tabla-resultados">
                             <thead align="center">
                                 <td><b>#</b></td>
-                                <td><b>Descipción</b></td>
+                                <td><b>Descripción</b></td>
                                 <td><b>Acciones</b></td>
                             </thead>
-                            <%if(session.getAttribute("listaTipoServicio") != null){
-                                List<TipoServicio> lstTipoServicio = (List<TipoServicio>)session.getAttribute("listaTipoServicio");
-                                for(int i=0; i < lstTipoServicio.size(); i++){
-                                    TipoServicio tipoServicio = lstTipoServicio.get(i);
+                            <%if(session.getAttribute("listaTipoEmpleado") != null){
+                                List<TipoEmpleado> lstTipoEmpleado = (List<TipoEmpleado>)session.getAttribute("listaTipoEmpleado");
+                                for(int i=0; i < lstTipoEmpleado.size(); i++){
+                                    TipoEmpleado tipoEmpleado = lstTipoEmpleado.get(i);
                             %>
                             <tbody>
                                 <td><center><%=(((int)session.getAttribute("pagina")*(int)session.getAttribute("registrosPorPagina"))-(int)session.getAttribute("registrosPorPagina"))+i+1 %></center></td>
-                                <td><%=tipoServicio.getDescripcion()%></td>
+                                <td><%=tipoEmpleado.getDescripcion()%></td>
                                 <td>
                                     <center>
                                     <table>
                                         <tr>
                                             <td class="td-acciones-editar">
-                                                <button class="btn btn-warning" onclick="obtenerPorId(<%=tipoServicio.getIdTipoServicio()%>)">
+                                                <button class="btn btn-warning" onclick="obtenerPorId(<%=tipoEmpleado.getIdTipoEmpleado()%>)">
                                                     <span class="glyphicon glyphicon-pencil"></span>
                                                 </button>
                                             </td>
@@ -112,15 +112,15 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="myModalLabel">Eliminar Tipo de Servicio</h3>
+                                                <h3 class="modal-title" id="myModalLabel">Eliminar Tipo de Empleado</h3>
                                             </div>
                                             <div class="modal-body">
-                                                <p>Está seguro de eliminar el Tipo de Servicio:</p>
-                                                <p><strong><%=tipoServicio.getDescripcion()%></strong>.</p>
+                                                <p>Está seguro de eliminar el Tipo de Empleado:</p>
+                                                <p><strong><%=tipoEmpleado.getDescripcion()%></strong>.</p>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                                                <button onclick="eliminar(<%=tipoServicio.getIdTipoServicio()%>)" type="button" class="btn btn-danger">Eliminar</button>
+                                                <button onclick="eliminar(<%=tipoEmpleado.getIdTipoEmpleado()%>)" type="button" class="btn btn-danger">Eliminar</button>
                                             </div>
                                         </div>
                                     </div>

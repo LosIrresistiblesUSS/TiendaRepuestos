@@ -7,9 +7,9 @@ public class TipoServicio {
     public TipoServicio() {
     }
 
-    public TipoServicio(int idTipoServicio, String Decripcion) {
+    public TipoServicio(int idTipoServicio, String Descripcion) {
         this.idTipoServicio = idTipoServicio;
-        this.descripcion = Decripcion;
+        this.descripcion = Descripcion;
     }
 
     public int getIdTipoServicio() {
@@ -20,11 +20,11 @@ public class TipoServicio {
         this.idTipoServicio = idTipoServicio;
     }
 
-    public String getDecripcion() {
+    public String getDescripcion() {
         return descripcion;
     }
 
-    public void setDecripcion(String Decripcion) {
-        this.descripcion = Decripcion;
+    public void setDescripcion(String Descripcion) {
+        this.descripcion = Descripcion;
     }
 }

@@ -1,48 +1,62 @@
 <%-- 
-    Document   : TipoServicioMnt
-    Created on : 24-sep-2016, 14:45:55
-    Author     : Los Irresistibles
+    Document   : TipoEmpleadoMnt
+    Created on : 09-oct-2016, 15:57:14
+    Author     : AUGUSTO
 --%>
 
-<%@page import="Modelo.TipoServicio"%>
+<%@page import="Modelo.TipoEmpleado"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%@include file="WEB-INF/jspf/validacion.jspf" %>
-
 <!DOCTYPE html>
 <html lang="es">
     <%
-    TipoServicio tipoServicio = (TipoServicio) session.getAttribute("tipoServicioActualizar");
-    tipoServicio = tipoServicio == null ? new TipoServicio() : tipoServicio;
-    String descripcion = tipoServicio.getDescripcion() == null ? "" : tipoServicio.getDescripcion();
+    TipoEmpleado tipoEmpleado = (TipoEmpleado) session.getAttribute("tipoEmpleadoActualizar");
+    tipoEmpleado = tipoEmpleado == null ? new TipoEmpleado() : tipoEmpleado;
+    String idTe = tipoEmpleado.getIdTipoEmpleado() == null ? "" : tipoEmpleado.getIdTipoEmpleado();
+    String descripcion = tipoEmpleado.getDescripcion() == null ? "" : tipoEmpleado.getDescripcion();
     %>
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Mantenimiento de Tipos de Servicio</title>
+        <title>Mantenimiento de Tipos de Empleado</title>
         <script type="text/javascript">
             function insertar(){
+                var idTe = document.getElementById("txtid").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
                 
                 if(descripcion == ""){
                     alert("Campo Descripcion es obligatorio.");
                 }else{
-                    document.frmMnt.action = "TipoServicioControlador?accion=insertar&descripcion=" + descripcion;
+                    document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&descripcion=" + descripcion;
+                    document.frmMnt.submit();
+                }
+                 if(idTe == ""){
+                    alert("Campo Id es obligatorio.");
+                }else{
+                    document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&idTe=" + idTe;
                     document.frmMnt.submit();
                 }
             }
             
-            function actualizar(id){
+            function actualizar(){
+                var idTe = document.getElementById("txtid").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
                 if(descripcion == ""){
                     alert("Campo Descripcion es obligatorio.");
                 }else{
-                    document.frmMnt.action = "TipoServicioControlador?accion=actualizar&descripcion=" + descripcion + "&id=" + id;
+                    document.frmMnt.action = "TipoEmpleadoControlador?accion=actualizar&descripcion=" + descripcion;
+                    document.frmMnt.submit();
+                }
+                if(idTe == ""){
+                    alert("Campo Descripcion es obligatorio.");
+                }else{
+                    document.frmMnt.action = "TipoEmpleadoControlador?accion=actualizar&idTe=" + idTe;
                     document.frmMnt.submit();
                 }
             }
             
             function cancelar(){
-                document.location = "TipoServicioControlador?accion=buscar";
+                document.location = "TipoEmpleadoControlador?accion=buscar";
             }
         </script>
     </head>
@@ -52,18 +66,18 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Servicios</strong></h2><h4>Mantenimiento</h4>
+                    <h2><strong>Tipos de Empleado</strong></h2><h4>Mantenimiento</h4>
                 </div>
             </section> 
             <div class="page-header">
                 <div class="container">
                     <h2>
-                        <% if(session.getAttribute("tipoServicioActualizar") == null){ %>
+                        <% if(session.getAttribute("tipoEmpleadoActualizar") == null){ %>
                             Insertar 
                         <% }else{ %>
                             Actualizar
                         <% } %>
-                        <small>Tipo de Servicio</small></h2>
+                        <small>Tipo de Empleado</small></h2>
                 </div>
             </div>
             
@@ -73,8 +87,9 @@
                     <div class="panel-body">
                         <form name="frmMnt" method="post" class="form-horizontal col-md-offset-3 form-principal">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3" for="txtDescripcion">Tipo de Servicio:</label>
+                                    <label class="control-label col-md-3" for="txtDescripcion">Tipo de Empleado:</label>
                                     <div class="col-md-4">
+                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=idTe%>" autofocus="autofocus" />
                                         <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" autofocus="autofocus" />
                                     </div>
                                 </div>
@@ -83,7 +98,7 @@
                                         <% if(session.getAttribute("tipoServicioActualizar") == null){ %>
                                         <input class="btn btn-primary" type="submit" value="Insertar" onclick="insertar()" id="btnInsertar" />
                                         <% }else{ %>
-                                        <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar(<%=tipoServicio.getIdTipoServicio()%>)" id="btnActualizar" />
+                                        <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar(<%=tipoEmpleado.getIdTipoEmpleado()%>)" id="btnActualizar" />
                                         <% } %>
                                         <input class="btn btn-primary" type="button" value="Cancelar" onclick="cancelar()" id="btnCancelar" />
                                     </div>

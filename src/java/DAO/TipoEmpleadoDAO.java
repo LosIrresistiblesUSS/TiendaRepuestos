@@ -1,7 +1,7 @@
 package DAO;
 
-import Interfaces.iTipoServicioDAO;
-import Modelo.TipoServicio;
+import Interfaces.iTipoEmpleadoDAO;
+import Modelo.TipoEmpleado;
 import Util.Conexion;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class TipoServicioDAO implements iTipoServicioDAO  {
-    private static Logger logger = Logger.getLogger(TipoServicioDAO.class.getName());
+public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
+ private static Logger logger = Logger.getLogger(TipoEmpleadoDAO.class.getName());
     private Conexion con;
     private Connection cn;
     private ResultSet rs;
@@ -22,16 +22,17 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     private String sql;
 
     @Override
-    public int insertar(TipoServicio tipoServicio) {
-        logger.info("Insertando TipoServicio");
-        sql= "{CALL P_Insertar_TipoServicio(?,?)}";
+    public int insertar(TipoEmpleado tipoEmpleado) {
+        logger.info("Insertando TipoEmpleado");
+        sql= "{CALL P_Insertar_TipoEmpleado(?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setString(1, tipoServicio.getDescripcion().trim());
-            cs.registerOutParameter(2, java.sql.Types.INTEGER);
+            cs.setString(1, tipoEmpleado.getIdTipoEmpleado().trim());
+            cs.setString(2, tipoEmpleado.getDescripcion().trim());
+            cs.registerOutParameter(3, java.sql.Types.INTEGER);
             cs.executeUpdate();
             flgOperacion = Integer.parseInt(cs.getObject(2).toString());
             if(flgOperacion==1){
@@ -48,33 +49,32 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     }
 
     @Override
-    public List<TipoServicio> buscar(String descripcion, int inicio, int registrosPorPagina) {
+    public List<TipoEmpleado> buscar(String id, int inicio, int registrosPorPagina) {
         logger.info("buscar");
-        sql = "select idTipoServicio, descripcion "
-                + "from tiposervicio "
-                + "where descripcion like '%" + (descripcion.trim()) + "%'"
-                + "order by idTipoServicio desc LIMIT " + inicio + ", " + registrosPorPagina;
-        List<TipoServicio> lstTipoServicio = null;
-        TipoServicio tipoServicio;
+        sql = "select idTipoEmpleado"
+                + "from tipoEmpleado "
+                + "where idTipoEmpleado like '%" + (id.trim()) + "%'"
+                + "order by idTipoEmpleado desc LIMIT " + inicio + ", " + registrosPorPagina;
+        List<TipoEmpleado> lstTipoEmpleado = null;
+        TipoEmpleado tipoEmpleado;
         try{
             con = new Conexion();
             cn = con.getConexion();
             cn.setAutoCommit(false);
             ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();
-            lstTipoServicio = new ArrayList<TipoServicio>();
+            lstTipoEmpleado = new ArrayList<TipoEmpleado>();
             while(rs.next()){
-                tipoServicio = new TipoServicio();
-                tipoServicio.setIdTipoServicio(rs.getInt("idTipoServicio"));
-                tipoServicio.setDescripcion(rs.getString("descripcion")); 
-                lstTipoServicio.add(tipoServicio);
+                tipoEmpleado = new TipoEmpleado();
+                tipoEmpleado.setIdTipoEmpleado(rs.getString("id"));
+                lstTipoEmpleado.add(tipoEmpleado);
             }
         }catch(Exception e){
             logger.info("Error buscar: " + e.getMessage());
         }finally{
             con.cerrarConexion(cn);
         }
-        return lstTipoServicio;
+        return lstTipoEmpleado;
     }
     
     @Override
@@ -82,7 +82,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
         int total = 0;
         logger.info("Total de Registros");
         sql = "select count(*) as total "
-                + "from tiposervicio "
+                + "from tipoempleado "
                 + "where descripcion like '%" + (descripcion.trim()) + "%'";
         try{
             con = new Conexion();
@@ -102,43 +102,43 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     }
 
     @Override
-    public TipoServicio obtenerPorId(int id) {
+    public TipoEmpleado obtenerPorId(String id) {
         logger.info("buscarPorId");
         sql = "select idTipoServicio, descripcion "
-                + "from TipoServicio "
-                + "where idTipoServicio = ?";
-        TipoServicio tipoServicio = null;
+                + "from TipoEmpleado "
+                + "where idTipoEmpleado = ?";
+        TipoEmpleado tipoEmpleado = null;
         try{
             con = new Conexion();
             cn = con.getConexion();
             cn.setAutoCommit(false);
             ps = cn.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setString(1, id);
             rs = ps.executeQuery();
             while(rs.next()){
-                tipoServicio = new TipoServicio();
-                tipoServicio.setIdTipoServicio(rs.getInt("idTipoServicio"));
-                tipoServicio.setDescripcion(rs.getString("descripcion"));
+                tipoEmpleado = new TipoEmpleado();
+                tipoEmpleado.setIdTipoEmpleado(rs.getString("idTipoEmpleado"));
+                tipoEmpleado.setDescripcion(rs.getString("descripcion"));
             }
         }catch(Exception e){
             logger.info("buscarPorId: " + e.getMessage());
         }finally{
             con.cerrarConexion(cn);
         }
-        return tipoServicio;
+        return tipoEmpleado;
     }
 
     @Override
-    public int actualizar(TipoServicio tipoServicio) {
+    public int actualizar(TipoEmpleado tipoEmpleado) {
         logger.info("actualizar");
-        sql = "{CALL P_Actualizar_TipoServicio(?,?,?)}";
+        sql = "{CALL P_Actualizar_TipoEmpleado(?,?,?)}";
         try{
             con = new Conexion();
             cn = con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setInt(1, tipoServicio.getIdTipoServicio());
-            cs.setString(2, tipoServicio.getDescripcion().trim());
+            cs.setString(1, tipoEmpleado.getIdTipoEmpleado());
+            cs.setString(2, tipoEmpleado.getDescripcion().trim());
             cs.registerOutParameter(3, java.sql.Types.INTEGER);
             cs.executeUpdate();
             flgOperacion = Integer.parseInt(cs.getObject(3).toString());
@@ -148,7 +148,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
                 cn.rollback();
             }
         }catch(Exception e){
-            logger.info("Eror al actualizar: " + e.getMessage() + " --> "+tipoServicio.getIdTipoServicio());
+            logger.info("Eror al actualizar: " + e.getMessage() + " --> "+tipoEmpleado.getIdTipoEmpleado());
         }finally{
             con.cerrarConexion(cn);
         }
@@ -156,15 +156,15 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     }
 
     @Override
-    public int eliminar(int id) {
-        logger.info("Eliminar TipoServicio");
-        sql= "DELETE FROM TipoServicio where idTipoServicio = ?";
+    public int eliminar(String id) {
+        logger.info("Eliminar TipoEmpelado");
+        sql= "DELETE FROM TipoEmpelado where idTipoEmpelado = ?";
         try{
             con=new Conexion();
             cn=con.getConexion();
             cn.setAutoCommit(false);
             ps=cn.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setString(1, id);
             flgOperacion=ps.executeUpdate();
             if(flgOperacion>0){
                 cn.commit();

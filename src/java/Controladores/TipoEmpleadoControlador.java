@@ -1,9 +1,9 @@
 package Controladores;
 
 import Funciones.FuncionesMensajes;
-import Interfaces.iTipoServicioLogica;
-import Logica.TipoServicioLogica;
-import Modelo.TipoServicio;
+import Interfaces.iTipoEmpleadoLogica;
+import Logica.TipoEmpleadoLogica;
+import Modelo.TipoEmpleado;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
-@WebServlet(name = "TipoServicioControlador", urlPatterns = {"/TipoServicioControlador"})/*url para el navegador*/
-public class TipoServicioControlador extends HttpServlet {
+@WebServlet(name = "TipoEmpleadoControlador", urlPatterns = {"/TipoEmpleadoControlador"})/*url para el navegador*/
+public class TipoEmpleadoControlador extends HttpServlet{
     
-    private static Logger logger = Logger.getLogger(TipoServicioControlador.class.getName());
+    private static Logger logger = Logger.getLogger(TipoEmpleadoControlador.class.getName());
     
-    private iTipoServicioLogica tipoServicioService;
-    private TipoServicio tipoServicio;
+    private iTipoEmpleadoLogica tipoEmpleadoService;
+    private TipoEmpleado tipoEmpleado;
     
     private int flgOperacion = 0;
     private String mensaje = null;
@@ -69,39 +69,44 @@ public class TipoServicioControlador extends HttpServlet {
     
         protected void insertar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("insertar");
+        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
         String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
         
         try{
-            tipoServicio = new TipoServicio();
-            tipoServicio.setDescripcion(descripcion);
+            tipoEmpleado = new TipoEmpleado();
+            tipoEmpleado.setDescripcion(descripcion);
+            tipoEmpleado.setIdTipoEmpleado(idTe);
             
-            tipoServicioService = new TipoServicioLogica();
-            flgOperacion = tipoServicioService.insertar(tipoServicio);
+            tipoEmpleadoService = new TipoEmpleadoLogica();
+            flgOperacion = tipoEmpleadoService.insertar(tipoEmpleado);
             
             switch (flgOperacion) {
                 case 1:
-                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Servicio", descripcion);
+                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", descripcion);
+                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", idTe);
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.insertarAdvertencia("Tipo de Servicio", descripcion);
+                    mensaje = FuncionesMensajes.insertarAdvertencia("Tipo de Empelado", descripcion);
+                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", idTe);
                     break;
                 default:
-                    mensaje = FuncionesMensajes.insertarError("Tipo de Servicio", descripcion);
+                    mensaje = FuncionesMensajes.insertarError("Tipo de Empelado", descripcion);
+                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", idTe);
                     break;
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
-            sesion.removeAttribute("listaTipoServicio");
+            sesion.removeAttribute("listaTipoEmpleado");
             sesion.removeAttribute("msgListado");
-            sesion.removeAttribute("tipoServicioActualizar");
+            sesion.removeAttribute("tipoEmpleadoActualizar");
             sesion.setAttribute("msgPostOperacion", mensaje);
             busca(request, response);
             
-        }catch(Exception e){
+            }catch(Exception e){
             logger.error("insertar: " + e.getMessage());
+            }
         }
-    }
-
+    
         protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
         String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
@@ -112,34 +117,34 @@ public class TipoServicioControlador extends HttpServlet {
        
         try{
             sesion = request.getSession();
-            sesion.removeAttribute("listaTipoServicio");
+            sesion.removeAttribute("listaTipoEmpleado");
             sesion.removeAttribute("msgListado");
             sesion.removeAttribute("tipoServicioActualizar");
             
-            tipoServicioService = new TipoServicioLogica();
-            List<TipoServicio> lstTipoSevicio = tipoServicioService.buscar((String)desc, inicio, registrosPorPagina);
-            int totalRegistros = tipoServicioService.totalRegistros(desc, inicio, registrosPorPagina);
+            tipoEmpleadoService = new TipoEmpleadoLogica();
+            List<TipoEmpleado> lstTipoEmpleado = tipoEmpleadoService.buscar((String)desc, inicio, registrosPorPagina);
+            int totalRegistros = tipoEmpleadoService.totalRegistros(desc, inicio, registrosPorPagina);
             int numeroPaginas = (int)Math.ceil((double)totalRegistros / registrosPorPagina);
             sesion.setAttribute("pagina", pagina);
             sesion.setAttribute("nroPaginas", numeroPaginas);
             sesion.setAttribute("descripcion", desc);
             sesion.setAttribute("registrosPorPagina", registrosPorPagina);
-            if(lstTipoSevicio.size() > 0){
+            if(lstTipoEmpleado.size() > 0){
                 if (!"".equals(desc)) {
                     mensaje = FuncionesMensajes.buscarExitoso(desc);
                     sesion.setAttribute("msgListado", mensaje);
                 }
-                sesion.setAttribute("listaTipoServicio", lstTipoSevicio);
+                sesion.setAttribute("listaTipoEmpleado", lstTipoEmpleado);
             }else{
-                mensaje = FuncionesMensajes.buscarEror("Tipos de Servicio", desc);
+                mensaje = FuncionesMensajes.buscarEror("Tipos de Empleado", desc);
                 sesion.setAttribute("msgListado", mensaje);
             }
-            response.sendRedirect("TipoServicioLst.jsp");
-        }catch(Exception e){
+            response.sendRedirect("TipoEmpleadoLst.jsp");
+            }catch(Exception e){
             logger.error("buscar: " + e.getMessage());
+            }
         }
-    }
-
+     
         protected void buscar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             busca(request, response);
             sesion.removeAttribute("msgPostOperacion");
@@ -147,83 +152,88 @@ public class TipoServicioControlador extends HttpServlet {
         
         protected void obtenerPorId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("obtenerPorId");
-        int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
+        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
+
         try{
-            tipoServicioService = new TipoServicioLogica();
-            tipoServicio = tipoServicioService.obtenerPorId(id);
+            tipoEmpleadoService = new TipoEmpleadoLogica();
+            tipoEmpleado = tipoEmpleadoService.obtenerPorId(idTe);
             
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
-            sesion.removeAttribute("listaTipoServicio");
+            sesion.removeAttribute("listaTipoEmpleado");
             sesion.removeAttribute("msgListado");
-            sesion.removeAttribute("tipoServicioActualizar");
-            sesion.setAttribute("tipoServicioActualizar", tipoServicio);
-            response.sendRedirect("TipoServicioMnt.jsp");
-        }catch(Exception e){
+            sesion.removeAttribute("tipoEmpleadoActualizar");
+            sesion.setAttribute("tipoEmpeladoActualizar", tipoEmpleado);
+            response.sendRedirect("TipoEmpleadoMnt.jsp");
+            }catch(Exception e){
             logger.error("obtenerPorId: " + e.getMessage());
+            }
         }
-    }
 
-    protected void actualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void actualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("actualizar");
-        int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
+        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
         String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
         try{
-            tipoServicio = new TipoServicio();
-            tipoServicio.setIdTipoServicio(id);
-            tipoServicio.setDescripcion(descripcion);
+            tipoEmpleado = new TipoEmpleado();
+            tipoEmpleado.setIdTipoEmpleado(idTe);
+            tipoEmpleado.setDescripcion(descripcion);
             
-            TipoServicio tipoServicioAnterior = new TipoServicio();
-            tipoServicioAnterior = (TipoServicio) sesion.getAttribute("tipoServicioActualizar");
+            TipoEmpleado tipoEmpleadoAnterior = new TipoEmpleado();
+            tipoEmpleadoAnterior = (TipoEmpleado) sesion.getAttribute("tipoEmpleadoActualizar");
             
-            tipoServicioService = new TipoServicioLogica();
-            flgOperacion = tipoServicioService.actualizar(tipoServicio);
+            tipoEmpleadoService = new TipoEmpleadoLogica();
+            flgOperacion = tipoEmpleadoService.actualizar(tipoEmpleado);
             
             switch (flgOperacion) {
                 case 1:
-                    mensaje = FuncionesMensajes.actualizarExitoso("Tipo de Servicio", tipoServicioAnterior.getDescripcion(), tipoServicio.getDescripcion());
+                    mensaje = FuncionesMensajes.actualizarExitoso("Tipo de Empleado", tipoEmpleadoAnterior.getIdTipoEmpleado(), tipoEmpleado.getIdTipoEmpleado());
+                    mensaje = FuncionesMensajes.actualizarExitoso("Tipo de Empleado", tipoEmpleadoAnterior.getDescripcion(), tipoEmpleado.getDescripcion());
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.actualizarAdvertencia("Tipo de Servicio", tipoServicio.getDescripcion());
+                    mensaje = FuncionesMensajes.actualizarAdvertencia("Tipo de Empleado", tipoEmpleado.getIdTipoEmpleado());
+                    mensaje = FuncionesMensajes.actualizarAdvertencia("Tipo de Empleado", tipoEmpleado.getDescripcion());                
                     break;
                 default:
-                    mensaje = FuncionesMensajes.actualizarError("Tipo de Servicio", tipoServicioAnterior.getDescripcion(), tipoServicio.getDescripcion());
+                    mensaje = FuncionesMensajes.actualizarError("Tipo de Empleado", tipoEmpleadoAnterior.getIdTipoEmpleado(), tipoEmpleado.getIdTipoEmpleado());
+                    mensaje = FuncionesMensajes.actualizarError("Tipo de Empleado", tipoEmpleadoAnterior.getDescripcion(), tipoEmpleado.getDescripcion());                   
                     break;
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
-            sesion.removeAttribute("listaTipoServicio");
+            sesion.removeAttribute("listaTipoEmpleado");
             sesion.removeAttribute("msgListado");
-            sesion.removeAttribute("tipoServicioActualizar");
+            sesion.removeAttribute("tipoEmpleadoActualizar");
             sesion.setAttribute("msgPostOperacion", mensaje);
             
             busca(request, response);
-        }catch(Exception e){
+            }catch(Exception e){
             logger.error("actualizar: " + e.getMessage());
+            }
         }
-    }
 
-    protected void eliminar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void eliminar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("eliminar");
-        int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
+        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
+
         try{
-            tipoServicioService = new TipoServicioLogica();
-            TipoServicio tipoServicioEliminar = new TipoServicio();
-            tipoServicioEliminar = tipoServicioService.obtenerPorId(id);
-            flgOperacion = tipoServicioService.eliminar(id);
+            tipoEmpleadoService = new TipoEmpleadoLogica();
+            TipoEmpleado tipoEmpleadoEliminar = new TipoEmpleado();
+            tipoEmpleadoEliminar = tipoEmpleadoService.obtenerPorId(idTe);
+            flgOperacion = tipoEmpleadoService.eliminar(idTe);
             System.out.println(flgOperacion);
-            System.out.println(id);
+            System.out.println(idTe);
             
             if(flgOperacion > 0){
-                mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Servicio", tipoServicioEliminar.getDescripcion());
+                mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Servicio", tipoEmpleadoEliminar.getDescripcion());
             }else{
-                mensaje = FuncionesMensajes.eliminarError("Tipo de Servicio", tipoServicioEliminar.getDescripcion());
+                mensaje = FuncionesMensajes.eliminarError("Tipo de Servicio", tipoEmpleadoEliminar.getDescripcion());
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
-            sesion.removeAttribute("listaTipoServicio");
+            sesion.removeAttribute("listaTipoEmpleado");
             sesion.removeAttribute("msgListado");
-            sesion.removeAttribute("tipoServicioActualizar");
+            sesion.removeAttribute("tipoEmpleadoActualizar");
             
             sesion.setAttribute("msgPostOperacion", mensaje);
             busca(request, response);
