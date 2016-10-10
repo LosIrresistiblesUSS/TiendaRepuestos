@@ -24,7 +24,7 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
     @Override
     public int insertar(TipoEmpleado tipoEmpleado) {
         logger.info("Insertando TipoEmpleado");
-        sql= "{CALL P_Insertar_TipoEmpleado(?,?)}";
+        sql= "{CALL P_Insertar_TipoEmpleado(?,?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
@@ -34,7 +34,7 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
             cs.setString(2, tipoEmpleado.getDescripcion().trim());
             cs.registerOutParameter(3, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(2).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(3).toString());
             if(flgOperacion==1){
                 cn.commit();
             }else{
@@ -49,11 +49,11 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
     }
 
     @Override
-    public List<TipoEmpleado> buscar(String id, int inicio, int registrosPorPagina) {
+    public List<TipoEmpleado> buscar(String descripcion, int inicio, int registrosPorPagina) {
         logger.info("buscar");
-        sql = "select idTipoEmpleado"
-                + "from tipoEmpleado "
-                + "where idTipoEmpleado like '%" + (id.trim()) + "%'"
+        sql = "select idTipoEmpleado, descripcion "
+                + "from TipoEmpleado "
+                + "where descripcion like '%" + (descripcion.trim()) + "%' "
                 + "order by idTipoEmpleado desc LIMIT " + inicio + ", " + registrosPorPagina;
         List<TipoEmpleado> lstTipoEmpleado = null;
         TipoEmpleado tipoEmpleado;
@@ -66,11 +66,12 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
             lstTipoEmpleado = new ArrayList<TipoEmpleado>();
             while(rs.next()){
                 tipoEmpleado = new TipoEmpleado();
-                tipoEmpleado.setIdTipoEmpleado(rs.getString("id"));
+                tipoEmpleado.setIdTipoEmpleado(rs.getString("idTipoEmpleado"));
+                tipoEmpleado.setDescripcion(rs.getString("descripcion"));
                 lstTipoEmpleado.add(tipoEmpleado);
             }
         }catch(Exception e){
-            logger.info("Error buscar: " + e.getMessage());
+            logger.info("Error al buscarDAO: " + e.getMessage());
         }finally{
             con.cerrarConexion(cn);
         }
@@ -103,8 +104,8 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
 
     @Override
     public TipoEmpleado obtenerPorId(String id) {
-        logger.info("buscarPorId");
-        sql = "select idTipoServicio, descripcion "
+        logger.info("BuscarPorId TipoEmpleado");
+        sql = "select idTipoEmpleado, descripcion "
                 + "from TipoEmpleado "
                 + "where idTipoEmpleado = ?";
         TipoEmpleado tipoEmpleado = null;
@@ -121,7 +122,7 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
                 tipoEmpleado.setDescripcion(rs.getString("descripcion"));
             }
         }catch(Exception e){
-            logger.info("buscarPorId: " + e.getMessage());
+            logger.info("buscarPorId TipoEmpleado: " + e.getMessage());
         }finally{
             con.cerrarConexion(cn);
         }
@@ -137,7 +138,7 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
             cn = con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setString(1, tipoEmpleado.getIdTipoEmpleado());
+            cs.setString(1, tipoEmpleado.getIdTipoEmpleado().trim());
             cs.setString(2, tipoEmpleado.getDescripcion().trim());
             cs.registerOutParameter(3, java.sql.Types.INTEGER);
             cs.executeUpdate();
@@ -172,7 +173,7 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
                 cn.rollback();
             }
         }catch(Exception e){
-            logger.info("Error al Eliminar" + e.getMessage());
+            logger.info("Error al Eliminar TipoEmpleado" + e.getMessage());
         }finally{
             con.cerrarConexion(cn);
         }

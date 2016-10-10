@@ -37,8 +37,9 @@
                 document.frmLst.submit();
             }
             
-            function eliminar(idTe){
-                document.frmLst.action = "TipoEmpleadoControlador?accion=eliminar&idTe=" + idTe;
+            function eliminar(){
+                var id = document.getElementById("txtEliminar").value;
+                document.frmLst.action = "TipoEmpleadoControlador?accion=eliminar&idTe=" + id;
                 document.frmLst.submit();
             }
         </script>
@@ -65,18 +66,18 @@
 
                     <div class="mensajes">
                         <% if(session.getAttribute("msgListado") != null){ %>
-                            
                             ${msgListado}
                         <% } %>
 
                         <% if(session.getAttribute("msgPostOperacion") != null){ %>
-                        ${msgPostOperacion}
+                            ${msgPostOperacion}
                         <% } %>
                     </div>
                     <!-- <div class="table-responsive"> --> <!-- Activar para tabla responsiva -->
                         <table border="1" class="table table-hover tabla-resultados">
                             <thead align="center">
                                 <td><b>#</b></td>
+                                <td><b>Id</b></td>
                                 <td><b>Descripción</b></td>
                                 <td><b>Acciones</b></td>
                             </thead>
@@ -87,6 +88,7 @@
                             %>
                             <tbody>
                                 <td><center><%=(((int)session.getAttribute("pagina")*(int)session.getAttribute("registrosPorPagina"))-(int)session.getAttribute("registrosPorPagina"))+i+1 %></center></td>
+                                <td><%=tipoEmpleado.getIdTipoEmpleado()%></td>
                                 <td><%=tipoEmpleado.getDescripcion()%></td>
                                 <td>
                                     <center>
@@ -120,7 +122,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                                                <button onclick="eliminar(<%=tipoEmpleado.getIdTipoEmpleado()%>)" type="button" class="btn btn-danger">Eliminar</button>
+                                                <button onclick="eliminar()" type="button" class="btn btn-danger">Eliminar</button>
+                                                <input type="text" id="txtEliminar" value="<%=tipoEmpleado.getIdTipoEmpleado()%>" />
                                             </div>
                                         </div>
                                     </div>

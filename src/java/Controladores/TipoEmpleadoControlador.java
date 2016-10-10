@@ -68,14 +68,14 @@ public class TipoEmpleadoControlador extends HttpServlet{
     }
     
         protected void insertar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("insertar");
-        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
+        logger.info("Insertar Tipo de Empleado");
+        String idTe = request.getParameter("id") == null ? "" : request.getParameter("id");
         String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
         
         try{
             tipoEmpleado = new TipoEmpleado();
-            tipoEmpleado.setDescripcion(descripcion);
             tipoEmpleado.setIdTipoEmpleado(idTe);
+            tipoEmpleado.setDescripcion(descripcion);
             
             tipoEmpleadoService = new TipoEmpleadoLogica();
             flgOperacion = tipoEmpleadoService.insertar(tipoEmpleado);
@@ -83,15 +83,12 @@ public class TipoEmpleadoControlador extends HttpServlet{
             switch (flgOperacion) {
                 case 1:
                     mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", descripcion);
-                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", idTe);
                     break;
                 case 2:
                     mensaje = FuncionesMensajes.insertarAdvertencia("Tipo de Empelado", descripcion);
-                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", idTe);
                     break;
                 default:
                     mensaje = FuncionesMensajes.insertarError("Tipo de Empelado", descripcion);
-                    mensaje = FuncionesMensajes.insertarExitoso("Tipo de Empelado", idTe);
                     break;
             }
             sesion = request.getSession();
@@ -103,7 +100,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
             busca(request, response);
             
             }catch(Exception e){
-            logger.error("insertar: " + e.getMessage());
+            logger.error("Insertar Tipo de Empleado: " + e.getMessage());
             }
         }
     
@@ -119,7 +116,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
             sesion = request.getSession();
             sesion.removeAttribute("listaTipoEmpleado");
             sesion.removeAttribute("msgListado");
-            sesion.removeAttribute("tipoServicioActualizar");
+            sesion.removeAttribute("tipoEmpleadoActualizar");
             
             tipoEmpleadoService = new TipoEmpleadoLogica();
             List<TipoEmpleado> lstTipoEmpleado = tipoEmpleadoService.buscar((String)desc, inicio, registrosPorPagina);
@@ -136,12 +133,12 @@ public class TipoEmpleadoControlador extends HttpServlet{
                 }
                 sesion.setAttribute("listaTipoEmpleado", lstTipoEmpleado);
             }else{
-                mensaje = FuncionesMensajes.buscarEror("Tipos de Empleado", desc);
+                mensaje = FuncionesMensajes.buscarError("Tipos de Empleado", desc);
                 sesion.setAttribute("msgListado", mensaje);
             }
             response.sendRedirect("TipoEmpleadoLst.jsp");
             }catch(Exception e){
-            logger.error("buscar: " + e.getMessage());
+            logger.error("Error al buscar: " + e.getMessage());
             }
         }
      
@@ -187,15 +184,12 @@ public class TipoEmpleadoControlador extends HttpServlet{
             
             switch (flgOperacion) {
                 case 1:
-                    mensaje = FuncionesMensajes.actualizarExitoso("Tipo de Empleado", tipoEmpleadoAnterior.getIdTipoEmpleado(), tipoEmpleado.getIdTipoEmpleado());
                     mensaje = FuncionesMensajes.actualizarExitoso("Tipo de Empleado", tipoEmpleadoAnterior.getDescripcion(), tipoEmpleado.getDescripcion());
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.actualizarAdvertencia("Tipo de Empleado", tipoEmpleado.getIdTipoEmpleado());
                     mensaje = FuncionesMensajes.actualizarAdvertencia("Tipo de Empleado", tipoEmpleado.getDescripcion());                
                     break;
                 default:
-                    mensaje = FuncionesMensajes.actualizarError("Tipo de Empleado", tipoEmpleadoAnterior.getIdTipoEmpleado(), tipoEmpleado.getIdTipoEmpleado());
                     mensaje = FuncionesMensajes.actualizarError("Tipo de Empleado", tipoEmpleadoAnterior.getDescripcion(), tipoEmpleado.getDescripcion());                   
                     break;
             }
@@ -213,21 +207,21 @@ public class TipoEmpleadoControlador extends HttpServlet{
         }
 
         protected void eliminar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("eliminar");
-        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
+        logger.info("Eliminar TipoEmpleado");
+        String idTe = request.getParameter("idTe") == null ? "0" : request.getParameter("idTe");
 
         try{
             tipoEmpleadoService = new TipoEmpleadoLogica();
             TipoEmpleado tipoEmpleadoEliminar = new TipoEmpleado();
             tipoEmpleadoEliminar = tipoEmpleadoService.obtenerPorId(idTe);
             flgOperacion = tipoEmpleadoService.eliminar(idTe);
-            System.out.println(flgOperacion);
-            System.out.println(idTe);
+            System.out.println(flgOperacion + " operacion");
+            System.out.println(idTe + " iddd");
             
             if(flgOperacion > 0){
-                mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Servicio", tipoEmpleadoEliminar.getDescripcion());
+                mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Empleado", tipoEmpleadoEliminar.getDescripcion());
             }else{
-                mensaje = FuncionesMensajes.eliminarError("Tipo de Servicio", tipoEmpleadoEliminar.getDescripcion());
+                mensaje = FuncionesMensajes.eliminarError("Tipo de Empleado", tipoEmpleadoEliminar.getDescripcion());
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");

@@ -131,7 +131,7 @@ public class TipoServicioControlador extends HttpServlet {
                 }
                 sesion.setAttribute("listaTipoServicio", lstTipoSevicio);
             }else{
-                mensaje = FuncionesMensajes.buscarEror("Tipos de Servicio", desc);
+                mensaje = FuncionesMensajes.buscarError("Tipos de Servicio", desc);
                 sesion.setAttribute("msgListado", mensaje);
             }
             response.sendRedirect("TipoServicioLst.jsp");

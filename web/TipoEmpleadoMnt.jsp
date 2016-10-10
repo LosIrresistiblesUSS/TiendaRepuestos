@@ -21,19 +21,13 @@
         <title>Mantenimiento de Tipos de Empleado</title>
         <script type="text/javascript">
             function insertar(){
-                var idTe = document.getElementById("txtid").value;
+                var idTe = document.getElementById("txtId").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
                 
-                if(descripcion == ""){
-                    alert("Campo Descripcion es obligatorio.");
+                if(idTe == "" || descripcion == ""){
+                    alert("Campo Id y Descripcion son obligatorios.");
                 }else{
-                    document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&descripcion=" + descripcion;
-                    document.frmMnt.submit();
-                }
-                 if(idTe == ""){
-                    alert("Campo Id es obligatorio.");
-                }else{
-                    document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&idTe=" + idTe;
+                    document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&id=" + idTe + "&descripcion=" + descripcion;
                     document.frmMnt.submit();
                 }
             }
@@ -87,12 +81,21 @@
                     <div class="panel-body">
                         <form name="frmMnt" method="post" class="form-horizontal col-md-offset-3 form-principal">
                                 <div class="form-group">
+                                    <label class="control-label col-md-3" for="txtDescripcion">Id Tipo de Empleado:</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" id="txtId" value="<%=idTe%>" autofocus="autofocus" />
+                                        
+                                    </div>
+                                </div>
+                                    
+                                <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDescripcion">Tipo de Empleado:</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=idTe%>" autofocus="autofocus" />
+                                        
                                         <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" autofocus="autofocus" />
                                     </div>
                                 </div>
+                                    
                                 <div class="form-group">
                                     <div class="col-md-4 col-md-offset-3">
                                         <% if(session.getAttribute("tipoServicioActualizar") == null){ %>

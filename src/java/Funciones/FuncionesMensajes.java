@@ -28,7 +28,7 @@ public class FuncionesMensajes {
         return mensaje;
     }
     
-    public static String buscarEror(String clase, String desc){
+    public static String buscarError(String clase, String desc){
         String mensaje = "<div class='alert alert-mensajes alert-danger' role='alert'> "
                 + "<strong>Fatality <span class='glyphicon glyphicon-exclamation-sign'></span></strong>"
                 + " No existen " + clase + " que contengan el siguiente texto: <strong>" + desc + "</strong>.</div>";
