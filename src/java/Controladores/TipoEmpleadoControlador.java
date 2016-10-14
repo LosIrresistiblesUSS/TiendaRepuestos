@@ -109,7 +109,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
         String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
         String pag = request.getParameter("pag") == null ? "1" : request.getParameter("pag");
         int pagina = Integer.parseInt(pag);
-        int registrosPorPagina = 10; //Numero de registros por pagina 
+        int registrosPorPagina = 5; //Numero de registros por pagina 
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
        
         try{
@@ -169,7 +169,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
 
         protected void actualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("actualizar");
-        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
+        String idTe = request.getParameter("id") == null ? "" : request.getParameter("id");
         String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
         try{
             tipoEmpleado = new TipoEmpleado();
@@ -216,7 +216,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
             tipoEmpleadoEliminar = tipoEmpleadoService.obtenerPorId(idTe);
             flgOperacion = tipoEmpleadoService.eliminar(idTe);
             System.out.println(flgOperacion + " operacion");
-            System.out.println(idTe + " iddd");
+            System.out.println(idTe);
             
             if(flgOperacion > 0){
                 mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Empleado", tipoEmpleadoEliminar.getDescripcion());
@@ -235,4 +235,4 @@ public class TipoEmpleadoControlador extends HttpServlet{
             logger.error("eliminar: " + e.getMessage());
         }
     }
-}
+} 

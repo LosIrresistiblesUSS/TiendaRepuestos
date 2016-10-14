@@ -1,10 +1,10 @@
 <%-- 
-    Document   : TipoEmpleadoList
-    Created on : 09-oct-2016, 13:16:56
+    Document   : Empleado
+    Created on : 10-oct-2016, 16:40:50
     Author     : Los Irresistibles
 --%>
 
-<%@page import="Modelo.TipoEmpleado"%>
+<%@page import="Modelo.Empleado"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -14,32 +14,31 @@
 <html lang="es">
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Tipo de Empleado</title>
+        <title>Empleado</title>
         <script type="text/javascript">
             function nuevo(){
-                document.location = "TipoEmpleadoMnt.jsp";
+                document.location = "EmpleadoMnt.jsp";
             }
             
             function buscar(pagina){
-                var desc = document.getElementById("txtDescripcion").value;
-                document.frmLst.action = "TipoEmpleadoControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
+                var nom = document.getElementById("txtNombres").value;
+                document.frmLst.action = "EmpleadoControlador?accion=buscar&nom=" + nom + "&pag=" + pagina;
                 document.frmLst.submit();
             }
             
             function buscarPag(pagina){
-                var desc = document.getElementById("descripcion").value;
-                document.frmLst.action = "TipoEmpleadoControlador?accion=buscar&desc=" + desc + "&pag=" + pagina;
+                var nom = document.getElementById("nombres").value;
+                document.frmLst.action = "EmpleadoControlador?accion=buscar&nom=" + nom + "&pag=" + pagina;
                 document.frmLst.submit();
             }
             
-            function obtenerPorId(idTe){
-                document.frmLst.action = "TipoEmpleadoControlador?accion=obtenerPorId&idTe=" + idTe;
+            function obtenerPorId(id){
+                document.frmLst.action = "EmpleadoControlador?accion=obtenerPorId&id=" + id;
                 document.frmLst.submit();
             }
             
-            function eliminar(){
-                var id = document.getElementById("txtEliminar").value;
-                document.frmLst.action = "TipoEmpleadoControlador?accion=eliminar&idTe=" + id;
+            function eliminar(id){
+                document.frmLst.action = "EmpleadoControlador?accion=eliminar&id=" + id;
                 document.frmLst.submit();
             }
         </script>
@@ -50,52 +49,58 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Empleado</strong></h2>
+                    <h2><strong>Empleado</strong></h2>
                 </div>
             </section>
             <section class="container">
                 <form name="frmLst" method="post" class="form-inline formulario-resultados">
                     <div class="form-group">
-                        <label for="txtDescripcion">Tipo de Empleado:</label>
-                        <input class="form-control" type="text" id="txtDescripcion" placeholder="Texto a buscar" autofocus />
+                        <label for="txtDescripcion">Empleado:</label>
+                        <input class="form-control" type="text" id="txtNombres" placeholder="Texto a buscar" autofocus />
                         <div class="espacio-buscar"></div>
-                        <!--<button type="button" onclick="buscar()" id="btnBuscar" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Buscar</button>-->
                         <input type="submit" onclick="buscar(1)" id="btnBuscar" class="btn btn-primary" value="Buscar" />
                         <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary">Nuevo</button>
                     </div>
 
                     <div class="mensajes">
                         <% if(session.getAttribute("msgListado") != null){ %>
+                            
                             ${msgListado}
                         <% } %>
 
                         <% if(session.getAttribute("msgPostOperacion") != null){ %>
-                            ${msgPostOperacion}
+                        ${msgPostOperacion}
                         <% } %>
                     </div>
-                    <!-- <div class="table-responsive"> --> <!-- Activar para tabla responsiva -->
+                    <div class="table-responsive"> <!-- Activar para tabla responsiva -->
                         <table border="1" class="table table-hover tabla-resultados">
                             <thead align="center">
                                 <td><b>#</b></td>
-                                <td><b>Id</b></td>
-                                <td><b>Descripción</b></td>
+                                <td><b>Nombres</b></td>
+                                <td><b>Doc</b></td>
+                                <td><b># Doc</b></td>
+                                <td><b>dirección</b></td>
+                                <td><b>Telefono</b></td>
                                 <td><b>Acciones</b></td>
                             </thead>
-                            <%if(session.getAttribute("listaTipoEmpleado") != null){
-                                List<TipoEmpleado> lstTipoEmpleado = (List<TipoEmpleado>)session.getAttribute("listaTipoEmpleado");
-                                for(int i=0; i < lstTipoEmpleado.size(); i++){
-                                    TipoEmpleado tipoEmpleado = lstTipoEmpleado.get(i);
+                            <%if(session.getAttribute("listaEmpleado") != null){
+                                List<Empleado> lstEmpleado = (List<Empleado>)session.getAttribute("listaEmpleado");
+                                for(int i=0; i < lstEmpleado.size(); i++){
+                                    Empleado empleado = lstEmpleado.get(i);
                             %>
                             <tbody>
                                 <td><center><%=(((int)session.getAttribute("pagina")*(int)session.getAttribute("registrosPorPagina"))-(int)session.getAttribute("registrosPorPagina"))+i+1 %></center></td>
-                                <td><%=tipoEmpleado.getIdTipoEmpleado()%></td>
-                                <td><%=tipoEmpleado.getDescripcion()%></td>
+                                <td><%=empleado.getNombres()%></td>
+                                <td><%=empleado.getTipoDocumento().getDescripcion()%></td>
+                                <td><%=empleado.getNumeroDocumento()%></td>
+                                <td><%=empleado.getDireccion()%></td>
+                                <td><%=empleado.getTelefono() %></td>
                                 <td>
                                     <center>
                                     <table>
                                         <tr>
                                             <td class="td-acciones-editar">
-                                                <button class="btn btn-warning" onclick="obtenerPorId(<%=tipoEmpleado.getIdTipoEmpleado()%>)">
+                                                <button class="btn btn-warning" onclick="obtenerPorId(<%=empleado.getIdEmpleado()%>)">
                                                     <span class="glyphicon glyphicon-pencil"></span>
                                                 </button>
                                             </td>
@@ -114,15 +119,15 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="myModalLabel">Eliminar Tipo de Empleado</h3>
+                                                <h3 class="modal-title" id="myModalLabel">Eliminar Empleado</h3>
                                             </div>
                                             <div class="modal-body">
-                                                <p>Está seguro de eliminar el Tipo de Empleado:</p>
-                                                <p><strong><%=tipoEmpleado.getDescripcion()%></strong>.</p>
+                                                <p>Está seguro de eliminar el Empleado:</p>
+                                                <p><strong><%=empleado.getNombres()%></strong>.</p>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                                                <button onclick="eliminar(<%=tipoEmpleado.getIdTipoEmpleado()%>)" type="button" class="btn btn-danger">Eliminar</button>
+                                                <button onclick="eliminar(<%=empleado.getIdEmpleado()%>)" type="button" class="btn btn-danger">Eliminar</button>
                                             </div>
                                         </div>
                                     </div>
@@ -135,8 +140,8 @@
                             %>
                         </table>
                         
-                        <input type="hidden" value="<%=session.getAttribute("descripcion")%>" id="descripcion" />
-                    <!-- </div> -->
+                        <input type="hidden" value="<%=session.getAttribute("nombres")%>" id="nombres" />
+                    </div>
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <% if((int)session.getAttribute("pagina") == 1){ %>

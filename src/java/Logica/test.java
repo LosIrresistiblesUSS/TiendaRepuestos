@@ -1,6 +1,8 @@
 package Logica;
 
 import DAO.LoginDAO;
+import Modelo.Empleado;
+import Modelo.TipoEmpleado;
 import Modelo.Usuario;
 /*import org.apache.commons.codec.digest.DigestUtils;*/
 
@@ -25,16 +27,36 @@ public class test {
 
 //        System.out.println(Math.ceil((int)1.1));
         
-        int numero = 1;
-        int numero2 = 5;
-        
-        String a = String.valueOf(numero);
-        
-        int resultado = numero+numero2;
-        System.out.println(resultado);
-        
+//        int numero = 1;
+//        int numero2 = 5;
+//        
+//        String a = String.valueOf(numero);
+//        
+//        int resultado = numero+numero2;
+//        System.out.println(resultado);
+//        
 //        System.out.println(a);
         
 //        System.out.println((double)12/10);
+
+        Empleado empleado = new Empleado();
+        
+
+        empleado.setNombres("sbhdahskjdsad");
+        
+        TipoEmpleado tipoEmpleado = new TipoEmpleado();
+        tipoEmpleado.setIdTipoEmpleado("EMP10");
+        tipoEmpleado.setDescripcion("Admin");
+        
+        empleado.setTipoEmpleado(tipoEmpleado);
+        
+        
+        System.out.println(empleado.getNombres());
+        System.out.println(empleado.getTipoEmpleado().getIdTipoEmpleado());
+        System.out.println(empleado.getTipoEmpleado().getDescripcion());
+        
+
+
+
     }
 }

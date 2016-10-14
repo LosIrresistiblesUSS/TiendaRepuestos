@@ -35,19 +35,13 @@
             function actualizar(){
                 var idTe = document.getElementById("txtid").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
-                if(descripcion == ""){
-                    alert("Campo Descripcion es obligatorio.");
+                if(idTe == "" || descripcion == ""){
+                    alert("Campo Id y Descripcion son obligatorios.");
                 }else{
-                    document.frmMnt.action = "TipoEmpleadoControlador?accion=actualizar&descripcion=" + descripcion;
+                    document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&id=" + idTe + "&descripcion=" + descripcion;
                     document.frmMnt.submit();
-                }
-                if(idTe == ""){
-                    alert("Campo Descripcion es obligatorio.");
-                }else{
-                    document.frmMnt.action = "TipoEmpleadoControlador?accion=actualizar&idTe=" + idTe;
-                    document.frmMnt.submit();
-                }
             }
+        }
             
             function cancelar(){
                 document.location = "TipoEmpleadoControlador?accion=buscar";
@@ -98,7 +92,7 @@
                                     
                                 <div class="form-group">
                                     <div class="col-md-4 col-md-offset-3">
-                                        <% if(session.getAttribute("tipoServicioActualizar") == null){ %>
+                                        <% if(session.getAttribute("tipoEmpleadoActualizar") == null){ %>
                                         <input class="btn btn-primary" type="submit" value="Insertar" onclick="insertar()" id="btnInsertar" />
                                         <% }else{ %>
                                         <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar(<%=tipoEmpleado.getIdTipoEmpleado()%>)" id="btnActualizar" />
