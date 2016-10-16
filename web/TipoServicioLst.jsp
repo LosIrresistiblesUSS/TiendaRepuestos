@@ -14,7 +14,7 @@
 <html lang="es">
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Tipos de Servicio</title>
+        <title>Tipo de Servicio</title>
         <script type="text/javascript">
             function nuevo(){
                 document.location = "TipoServicioMnt.jsp";
@@ -49,7 +49,7 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Servicios</strong></h2>
+                    <h2><strong>Tipo de Servicio</strong></h2>
                 </div>
             </section>
             <section class="container">

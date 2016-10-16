@@ -149,8 +149,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
         
         protected void obtenerPorId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("obtenerPorId");
-        String idTe = request.getParameter("idte") == null ? "" : request.getParameter("idte");
-
+        String idTe = request.getParameter("idTe") == null ? "" : request.getParameter("idTe");
         try{
             tipoEmpleadoService = new TipoEmpleadoLogica();
             tipoEmpleado = tipoEmpleadoService.obtenerPorId(idTe);
@@ -160,7 +159,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
             sesion.removeAttribute("listaTipoEmpleado");
             sesion.removeAttribute("msgListado");
             sesion.removeAttribute("tipoEmpleadoActualizar");
-            sesion.setAttribute("tipoEmpeladoActualizar", tipoEmpleado);
+            sesion.setAttribute("tipoEmpleadoActualizar", tipoEmpleado);
             response.sendRedirect("TipoEmpleadoMnt.jsp");
             }catch(Exception e){
             logger.error("obtenerPorId: " + e.getMessage());
@@ -169,7 +168,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
 
         protected void actualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("actualizar");
-        String idTe = request.getParameter("id") == null ? "" : request.getParameter("id");
+        String idTe = request.getParameter("idTe") == null ? "" : request.getParameter("idTe");
         String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
         try{
             tipoEmpleado = new TipoEmpleado();
@@ -208,15 +207,13 @@ public class TipoEmpleadoControlador extends HttpServlet{
 
         protected void eliminar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("Eliminar TipoEmpleado");
-        String idTe = request.getParameter("idTe") == null ? "0" : request.getParameter("idTe");
-
+        String idTe = request.getParameter("idTe") == null ? "" : request.getParameter("idTe");
         try{
             tipoEmpleadoService = new TipoEmpleadoLogica();
             TipoEmpleado tipoEmpleadoEliminar = new TipoEmpleado();
             tipoEmpleadoEliminar = tipoEmpleadoService.obtenerPorId(idTe);
+
             flgOperacion = tipoEmpleadoService.eliminar(idTe);
-            System.out.println(flgOperacion + " operacion");
-            System.out.println(idTe);
             
             if(flgOperacion > 0){
                 mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Empleado", tipoEmpleadoEliminar.getDescripcion());

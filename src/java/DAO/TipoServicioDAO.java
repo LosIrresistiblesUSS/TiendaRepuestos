@@ -23,7 +23,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
 
     @Override
     public int insertar(TipoServicio tipoServicio) {
-        logger.info("Insertando TipoServicio");
+        logger.info("Insertar TipoServicio");
         sql= "{CALL P_Insertar_TipoServicio(?,?)}";
         try{
             con=new Conexion();
@@ -49,7 +49,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
 
     @Override
     public List<TipoServicio> buscar(String descripcion, int inicio, int registrosPorPagina) {
-        logger.info("buscar");
+        logger.info("Buscar TipoServicio");
         sql = "select idTipoServicio, descripcion "
                 + "from tiposervicio "
                 + "where descripcion like '%" + (descripcion.trim()) + "%'"
@@ -80,7 +80,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
     @Override
     public int totalRegistros(String descripcion, int inicio, int registrosPorPagina){
         int total = 0;
-        logger.info("Total de Registros");
+        logger.info("TotalRegistros TipoServicio");
         sql = "select count(*) as total "
                 + "from tiposervicio "
                 + "where descripcion like '%" + (descripcion.trim()) + "%'";
@@ -103,7 +103,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
 
     @Override
     public TipoServicio obtenerPorId(int id) {
-        logger.info("buscarPorId");
+        logger.info("ObtenerPorId TipoServicio");
         sql = "select idTipoServicio, descripcion "
                 + "from TipoServicio "
                 + "where idTipoServicio = ?";
@@ -130,7 +130,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
 
     @Override
     public int actualizar(TipoServicio tipoServicio) {
-        logger.info("actualizar");
+        logger.info("Actualizar TipoServicio");
         sql = "{CALL P_Actualizar_TipoServicio(?,?,?)}";
         try{
             con = new Conexion();

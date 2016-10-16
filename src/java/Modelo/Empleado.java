@@ -5,6 +5,7 @@ public class Empleado extends Persona{
     private TipoEmpleado tipoEmpleado;
 
     public Empleado() {
+        tipoEmpleado = new TipoEmpleado();
     }
 
     public Empleado(int idEmpleado, TipoEmpleado tipoEmpleado, int idPersona, String numeroDocumento, String nombres, String direccion, String telefono, String email, TipoDocumento tipoDocumento) {

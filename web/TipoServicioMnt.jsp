@@ -18,12 +18,12 @@
     %>
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Mantenimiento de Tipos de Servicio</title>
+        <title>Tipo de Servicio</title>
         <script type="text/javascript">
             function insertar(){
                 var descripcion = document.getElementById("txtDescripcion").value;
                 
-                if(descripcion == ""){
+                if(descripcion === ""){
                     alert("Campo Descripcion es obligatorio.");
                 }else{
                     document.frmMnt.action = "TipoServicioControlador?accion=insertar&descripcion=" + descripcion;
@@ -33,7 +33,7 @@
             
             function actualizar(id){
                 var descripcion = document.getElementById("txtDescripcion").value;
-                if(descripcion == ""){
+                if(descripcion === ""){
                     alert("Campo Descripcion es obligatorio.");
                 }else{
                     document.frmMnt.action = "TipoServicioControlador?accion=actualizar&descripcion=" + descripcion + "&id=" + id;
@@ -52,7 +52,7 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Servicios</strong></h2><h4>Mantenimiento</h4>
+                    <h2><strong>Tipo de Servicio</strong></h2>
                 </div>
             </section> 
             <div class="page-header">

@@ -211,9 +211,6 @@ public class TipoServicioControlador extends HttpServlet {
             TipoServicio tipoServicioEliminar = new TipoServicio();
             tipoServicioEliminar = tipoServicioService.obtenerPorId(id);
             flgOperacion = tipoServicioService.eliminar(id);
-            System.out.println(flgOperacion);
-            System.out.println(id);
-            
             if(flgOperacion > 0){
                 mensaje = FuncionesMensajes.eliminarExitoso("Tipo de Servicio", tipoServicioEliminar.getDescripcion());
             }else{

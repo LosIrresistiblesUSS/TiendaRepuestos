@@ -1,62 +1,66 @@
 package Logica;
 
-import DAO.LoginDAO;
-import Modelo.Empleado;
+import Funciones.ListasObjetos;
+import Modelo.TipoDocumento;
 import Modelo.TipoEmpleado;
-import Modelo.Usuario;
-/*import org.apache.commons.codec.digest.DigestUtils;*/
+import java.util.Iterator;
+import java.util.List;
 
 public class test {
         
     public static void main(String[] args) {
-//        LoginLogica login = new LoginLogica();
-//        Usuario usuario = new Usuario();
-        
-//        String textoSinEncriptar="48221945"; 
 
-        /*String textoEncriptadoConMD5=DigestUtils.md5Hex(textoSinEncriptar);
-        
-        usuario = login.iniciarSesion("acotrinae", textoEncriptadoConMD5); */
-        
-//        System.out.println(usuario.getIdLogin());
-//        System.out.println(usuario.getNombres());
-//        System.out.println(usuario.getCargo());
-//        System.out.println(usuario.getUsuario());
-//        System.out.println(usuario.getPassword());
-
-
-//        System.out.println(Math.ceil((int)1.1));
-        
-//        int numero = 1;
-//        int numero2 = 5;
+//        List<TipoDocumento> lstTipoDocumento = ListasObjetos.listaTipoDocumento();
+//        for (TipoDocumento tipoDocumento : lstTipoDocumento){
+//            System.out.println(tipoDocumento.getIdTipoDocumento()+" "+tipoDocumento.getDescripcion());
+//        }
 //        
-//        String a = String.valueOf(numero);
+//        List<TipoEmpleado> lstTipoEmpleado = ListasObjetos.listaTipoEmpleado();
+//        for (TipoEmpleado tipoEmpleado : lstTipoEmpleado){
+//            System.out.println(tipoEmpleado.getIdTipoEmpleado()+" "+tipoEmpleado.getDescripcion());
+//        }
+        
+        
+        String sCadena = "Hola Mundo";
+        String sSubCadena = sCadena.substring(5,10);
+        System.out.println(sSubCadena);
+        
+//---------------------------------------------------------
+        
+        String cadena ="EMP919";
+        String cadena2 = cadena.substring(3);
+        int cadenaInt = Integer.parseInt(cadena2)+1;
+        String cadenaIntString = String.valueOf(cadenaInt);
+
+        char[] arrayCadena = cadenaIntString.toCharArray();
+        int totalCaracteres = arrayCadena.length;
+
+        String codigo = null;
+        switch (totalCaracteres) {
+            case 1:
+                codigo = "EMP00" + cadenaIntString;
+                break;
+            case 2:
+                codigo = "EMP0" + cadenaIntString;
+                break;
+            case 3:
+                codigo = "EMP" + cadenaIntString;
+                break;
+            default:
+                break;
+        }
+        
+        System.out.println(codigo);
+
+
+//                int cadenaTrans = Integer.parseInt(cadena);
+
+//                
+//                
+        char[] arrayChar = cadena.toCharArray();
+
+        int total = arrayChar.length;
+        
 //        
-//        int resultado = numero+numero2;
-//        System.out.println(resultado);
-//        
-//        System.out.println(a);
-        
-//        System.out.println((double)12/10);
-
-        Empleado empleado = new Empleado();
-        
-
-        empleado.setNombres("sbhdahskjdsad");
-        
-        TipoEmpleado tipoEmpleado = new TipoEmpleado();
-        tipoEmpleado.setIdTipoEmpleado("EMP10");
-        tipoEmpleado.setDescripcion("Admin");
-        
-        empleado.setTipoEmpleado(tipoEmpleado);
-        
-        
-        System.out.println(empleado.getNombres());
-        System.out.println(empleado.getTipoEmpleado().getIdTipoEmpleado());
-        System.out.println(empleado.getTipoEmpleado().getDescripcion());
-        
-
-
-
     }
 }

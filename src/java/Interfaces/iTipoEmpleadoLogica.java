@@ -4,7 +4,7 @@ import Modelo.TipoEmpleado;
 import java.util.List;
 
 public interface iTipoEmpleadoLogica {
-     public int insertar(TipoEmpleado tipoEmpleado);
+    public int insertar(TipoEmpleado tipoEmpleado);
     public List<TipoEmpleado> buscar(String descipcion, int inicio, int registrosPorPagina);
     public int totalRegistros(String descipcion, int inicio, int registrosPorPagina);
     public TipoEmpleado obtenerPorId(String id);

@@ -71,6 +71,35 @@ public class FuncionesMensajes {
         return mensaje;
     }
     
+    //--------ACTUALIZACIÓN EMPLEADO----------------------------------------------
+    
+    public static String actualizarExitoso2(String clase, String desc){
+        String mensaje = "<div class='alert alert-mensajes alert-success alert-dismissible' role='alert'>"
+                + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                + "<strong><span class='glyphicon glyphicon-pencil'></span></strong> Algún Campo del " + clase + " <strong>"
+                + desc + "</strong> a sido actualizado correctamente.</div>";
+        return mensaje;
+    }
+    
+    public static String actualizarAdvertencia2(String clase, String desc){
+        String mensaje = "<div class='alert alert-mensajes alert-warning alert-dismissible' role='alert'>"
+                + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                + "<strong><span class='glyphicon glyphicon-warning-sign'></span> </strong>Algún <strong>" + clase + "</strong> con el Nro. de Documento  <strong>"
+                + desc
+                + "</strong> ya se encuentra registrado.</div>";
+        return mensaje;
+    }
+    
+    public static String actualizarError2(String clase, String desc){
+        String mensaje = "<div class='alert alert-mensajes alert-danger alert-dismissible' role='alert'>"
+                + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+                + "<strong><span class='glyphicon glyphicon-pencil'></span> </strong>Error al intentar actualizar algún campo del " + clase + " <strong>"
+                + desc + "</strong>";
+        return mensaje;
+    }
+    
+    //------------------------------------------------------
+    
     public static String eliminarExitoso(String clase, String desc){
         String mensaje = "<div class='alert alert-mensajes alert-success alert-dismissible' role='alert'>"
                 + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"

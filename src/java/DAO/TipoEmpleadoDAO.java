@@ -159,7 +159,7 @@ public class TipoEmpleadoDAO implements iTipoEmpleadoDAO{
     @Override
     public int eliminar(String id) {
         logger.info("Eliminar TipoEmpelado");
-        sql= "DELETE FROM TipoEmpelado where idTipoEmpelado = ?";
+        sql= "DELETE FROM TipoEmpleado where idTipoEmpleado = ?";
         try{
             con=new Conexion();
             cn=con.getConexion();

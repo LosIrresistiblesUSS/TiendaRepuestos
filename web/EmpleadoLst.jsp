@@ -77,9 +77,10 @@
                             <thead align="center">
                                 <td><b>#</b></td>
                                 <td><b>Nombres</b></td>
+                                <td><b>Tipo</b></td>
                                 <td><b>Doc</b></td>
                                 <td><b># Doc</b></td>
-                                <td><b>dirección</b></td>
+                                <td><b>Email</b></td>
                                 <td><b>Telefono</b></td>
                                 <td><b>Acciones</b></td>
                             </thead>
@@ -91,9 +92,10 @@
                             <tbody>
                                 <td><center><%=(((int)session.getAttribute("pagina")*(int)session.getAttribute("registrosPorPagina"))-(int)session.getAttribute("registrosPorPagina"))+i+1 %></center></td>
                                 <td><%=empleado.getNombres()%></td>
+                                <td><%=empleado.getTipoEmpleado().getDescripcion() %></td>
                                 <td><%=empleado.getTipoDocumento().getDescripcion()%></td>
                                 <td><%=empleado.getNumeroDocumento()%></td>
-                                <td><%=empleado.getDireccion()%></td>
+                                <td><%=empleado.getEmail()%></td>
                                 <td><%=empleado.getTelefono() %></td>
                                 <td>
                                     <center>

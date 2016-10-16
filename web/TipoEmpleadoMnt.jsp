@@ -4,6 +4,7 @@
     Author     : AUGUSTO
 --%>
 
+<%@page import="Funciones.ListasObjetos"%>
 <%@page import="Modelo.TipoEmpleado"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -18,7 +19,7 @@
     %>
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Mantenimiento de Tipos de Empleado</title>
+        <title>Tipo de Empleado</title>
         <script type="text/javascript">
             function insertar(){
                 var idTe = document.getElementById("txtId").value;
@@ -33,12 +34,12 @@
             }
             
             function actualizar(){
-                var idTe = document.getElementById("txtid").value;
+                var idTe = document.getElementById("txtId").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
                 if(idTe == "" || descripcion == ""){
                     alert("Campo Id y Descripcion son obligatorios.");
                 }else{
-                    document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&id=" + idTe + "&descripcion=" + descripcion;
+                    document.frmMnt.action = "TipoEmpleadoControlador?accion=actualizar&idTe=" + idTe + "&descripcion=" + descripcion;
                     document.frmMnt.submit();
             }
         }
@@ -54,7 +55,7 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Empleado</strong></h2><h4>Mantenimiento</h4>
+                    <h2><strong>Tipo de Empleado</strong></h2>
                 </div>
             </section> 
             <div class="page-header">
@@ -77,16 +78,18 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDescripcion">Id Tipo de Empleado:</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtId" value="<%=idTe%>" autofocus="autofocus" />
-                                        
+                                        <% if(session.getAttribute("tipoEmpleadoActualizar") == null){ %>
+                                        <input class="form-control" type="text" id="txtId" value="<%=ListasObjetos.ultimoCodigoEmpleado()%>" maxlength='6' autofocus="autofocus" placeholder="" />
+                                        <% }else{ %>
+                                        <input class="form-control" type="text" id="txtId" value="<%=idTe%>" maxlength='6' placeholder="" disabled />
+                                        <% } %>
                                     </div>
                                 </div>
                                     
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDescripcion">Tipo de Empleado:</label>
                                     <div class="col-md-4">
-                                        
-                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" autofocus="autofocus" />
+                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" maxlength='25' autofocus />
                                     </div>
                                 </div>
                                     
@@ -95,7 +98,7 @@
                                         <% if(session.getAttribute("tipoEmpleadoActualizar") == null){ %>
                                         <input class="btn btn-primary" type="submit" value="Insertar" onclick="insertar()" id="btnInsertar" />
                                         <% }else{ %>
-                                        <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar(<%=tipoEmpleado.getIdTipoEmpleado()%>)" id="btnActualizar" />
+                                        <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar()" id="btnActualizar" />
                                         <% } %>
                                         <input class="btn btn-primary" type="button" value="Cancelar" onclick="cancelar()" id="btnCancelar" />
                                     </div>

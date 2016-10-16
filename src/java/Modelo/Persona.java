@@ -10,6 +10,7 @@ public class Persona{
     protected TipoDocumento tipoDocumento;
 
     public Persona() {
+        tipoDocumento = new TipoDocumento();
     }
 
     public Persona(int idPersona, String numeroDocumento, String nombres, String direccion, String telefono, String email, TipoDocumento tipoDocumento) {

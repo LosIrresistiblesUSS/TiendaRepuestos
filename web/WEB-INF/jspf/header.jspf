@@ -74,10 +74,9 @@
         <div class="container btn-group1">
             <h4 class="text-collapse">Mantenimientos</h4>
             <div class="btn-group btn-group-sm " role="group" aria-label="">
-                <button type="button" class="btn btn-primary">Tipo Servicios</button>
-                <button type="button" class="btn btn-primary">Servicios</button>
-                <button type="button" class="btn btn-primary">Empleados</button>
-                <button type="button" class="btn btn-primary">Clientes</button>
+                <a href="EmpleadoControlador?accion=buscar" class="btn btn-primary">Empleado</a>
+                <a href="TipoEmpleadoControlador?accion=buscar" class="btn btn-primary">Tipo Empleado</a>
+                <a href="TipoServicioControlador?accion=buscar" class="btn btn-primary">Tipo Servicio</a>                
             </div>
         </div>
     </div>

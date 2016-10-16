@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 
 @WebServlet(name = "LoginControlador", urlPatterns = {"/LoginControlador"})/*url para el navegador*/
 public class LoginControlador extends HttpServlet {
-    
     private static Logger logger = Logger.getLogger(LoginControlador.class.getName());
     
     private iLoginLogica loginService;
@@ -39,7 +38,6 @@ public class LoginControlador extends HttpServlet {
     String accion = request.getParameter("accion");
 
     logger.info("processRequest: " + accion);
-
         if (accion != null) {
             if (accion.equals("iniciarSesion")) {
                 iniciarSesion(request, response);
@@ -52,7 +50,7 @@ public class LoginControlador extends HttpServlet {
     }
 
     private void iniciarSesion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("iniciar Sesion");
+        logger.info("iniciarSesion Login");
         String usuario = request.getParameter("usuario") == null ? "" : request.getParameter("usuario");
         String password = request.getParameter("password") == null ? "" : request.getParameter("password");
         
@@ -64,16 +62,15 @@ public class LoginControlador extends HttpServlet {
             
             if (user != null) {
                 sesion.setAttribute("usuario", user);
-                System.out.println("Inició Sesión");
+                System.out.println("---(Sesión Iniciada)---");
                 TipoServicioControlador tipoServicioControlador = new TipoServicioControlador();
                 tipoServicioControlador.buscar(request, response);
             } else {
                 mensaje = "Usuario y/o Contraseña incorrectos";
                 sesion.setAttribute("msgSesion", mensaje);
-                System.out.println("No inició Sesión");
+                System.out.println("---(No inició Sesión)---");
                 response.sendRedirect("index.jsp");
             }
-            response.sendRedirect("TipoServicioLst.jsp");
         } catch (Exception e) {
             logger.error("Iniciar Sesion: " + e.getMessage());
         }

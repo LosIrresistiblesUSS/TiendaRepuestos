@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class EmpleadoDAO implements iEmpleadoDAO{
 
-    private static Logger logger = Logger.getLogger(TipoServicioDAO.class.getName());
+    private static Logger logger = Logger.getLogger(EmpleadoDAO.class.getName());
     private Conexion con;
     private Connection cn;
     private ResultSet rs;
@@ -27,31 +27,30 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public int insertar(Empleado empleado) {
     logger.info("Insertando Empleado");
-        sql= "{CALL P_Insertar_Empleado(?,?,?,?,?,?,?,?,?,?)}";
+        sql= "{CALL P_Insertar_Empleado(?,?,?,?,?,?,?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setInt(1, empleado.getTipoDocumento().getIdTipoDocumento());
-            cs.setString(2, empleado.getTipoDocumento().getDescripcion());
-            cs.setInt(3, empleado.getIdPersona());
-            cs.setString(4, empleado.getTipoEmpleado().getIdTipoEmpleado());
-            cs.setString(5, empleado.getNumeroDocumento().trim());
-            cs.setString(6, empleado.getNombres().trim());
-            cs.setString(7, empleado.getDireccion().trim());
-            cs.setString(8, empleado.getTelefono().trim());
-            cs.setString(9, empleado.getEmail().trim());
-            cs.registerOutParameter(10, java.sql.Types.INTEGER);
+            cs.setString(1, empleado.getNumeroDocumento().trim());
+            cs.setString(2, empleado.getNombres().trim());
+            cs.setString(3, empleado.getDireccion().trim());
+            cs.setString(4, empleado.getTelefono().trim());
+            cs.setString(5, empleado.getEmail().trim());
+            cs.setInt(6, empleado.getTipoDocumento().getIdTipoDocumento());
+            cs.setString(7, empleado.getTipoEmpleado().getIdTipoEmpleado().trim());
+            cs.registerOutParameter(8, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(10).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(8).toString());
+            
             if(flgOperacion==1){
                 cn.commit();
             }else{
                 cn.rollback();
             }
         }catch(Exception e){
-            logger.info("Error al insertar" + e.getMessage());
+            logger.info("Error al insertar " + e.getMessage());
         }finally{
             con.cerrarConexion(cn);
         }
@@ -143,12 +142,14 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public Empleado obtenerPorId(int id) {
         logger.info("buscarPorId");
-        sql = "select idEmpleado,p.idpersona, p.nombres, td.descripcion, p.numerodocumento, p.direccion, p.telefono, te.idtipoempleado, te.descripcion "
-                + "from tipoempleado as te inner join empleado as e " +
-                "on te.idtipoempleado=e.idtipoempleado " +
-                "inner join persona as p " +
-                "on e.idpersona=p.idpersona inner join tipodocumento as td " +
-                "on p.idtipodocumento=td.idtipodocumento"
+        sql = "select idEmpleado,p.idpersona, p.nombres, td.idTipoDocumento, p.numerodocumento, "
+                + "p.direccion, p.telefono, p.email, te.idtipoempleado, te.descripcion "
+                + "from tipoempleado as te inner join empleado as e "
+                + "on te.idtipoempleado=e.idtipoempleado "
+                + "inner join persona as p "
+                + "on e.idpersona=p.idpersona "
+                + "inner join tipodocumento as td "
+                + "on p.idtipodocumento=td.idtipodocumento "
                 + "where idEmpleado = ?";
         Empleado empleado = null;
         TipoEmpleado tipoEmpleado = null;
@@ -162,24 +163,21 @@ public class EmpleadoDAO implements iEmpleadoDAO{
             rs = ps.executeQuery();
             while(rs.next()){
                 empleado = new Empleado();
-                tipoEmpleado =  new TipoEmpleado();
-                tipoDocumento = new TipoDocumento();
                 //Todos los campos del empleado que se actualizara por ID
                 empleado.setIdEmpleado(rs.getInt("idEmpleado"));
-                empleado.setIdPersona(rs.getInt("idpersona"));
+                empleado.setNumeroDocumento(rs.getString("numerodocumento"));
                 empleado.setNombres(rs.getString("nombres")); 
-                
-                tipoDocumento.setDescripcion(rs.getString("td.descripcion"));
-                empleado.setTipoDocumento(tipoDocumento);
-                
-                empleado.setNumeroDocumento(rs.getString("numerodocumento")); 
                 empleado.setDireccion(rs.getString("direccion")); 
                 empleado.setTelefono(rs.getString("telefono"));
+                empleado.setEmail(rs.getString("email"));
                 
-                tipoEmpleado.setIdTipoEmpleado(rs.getString("idtipoempleado"));
-                tipoEmpleado.setDescripcion(rs.getString("te.descripcion"));
+                tipoDocumento = new TipoDocumento();
+                tipoDocumento.setIdTipoDocumento(rs.getInt("idTipoDocumento"));
+                empleado.setTipoDocumento(tipoDocumento);
+                
+                tipoEmpleado =  new TipoEmpleado();
+                tipoEmpleado.setIdTipoEmpleado(rs.getString("idTipoEmpleado"));
                 empleado.setTipoEmpleado(tipoEmpleado);
-                
             }
         }catch(Exception e){
             logger.info("buscarPorId: " + e.getMessage());
@@ -192,24 +190,23 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public int actualizar(Empleado empleado) {
         logger.info("actualizar");
-        sql = "{CALL P_Actualizar_Empleado(?,?,?)}";
+        sql = "{CALL P_Actualizar_Empleado(?,?,?,?,?,?,?,?,?)}";
         try{
             con = new Conexion();
             cn = con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setInt(1, empleado.getTipoDocumento().getIdTipoDocumento());
-            cs.setString(2, empleado.getTipoDocumento().getDescripcion());
-            cs.setInt(3, empleado.getIdPersona());
-            cs.setString(4, empleado.getTipoEmpleado().getIdTipoEmpleado());
-            cs.setString(5, empleado.getNumeroDocumento().trim());
-            cs.setString(6, empleado.getNombres().trim());
-            cs.setString(7, empleado.getDireccion().trim());
-            cs.setString(8, empleado.getTelefono().trim());
-            cs.setString(9, empleado.getEmail().trim());
-            cs.registerOutParameter(10, java.sql.Types.INTEGER);
+            cs.setInt(1, empleado.getIdEmpleado());
+            cs.setString(2, empleado.getNumeroDocumento().trim());
+            cs.setString(3, empleado.getNombres().trim());
+            cs.setString(4, empleado.getDireccion().trim());
+            cs.setString(5, empleado.getTelefono().trim());
+            cs.setString(6, empleado.getEmail().trim());
+            cs.setInt(7, empleado.getTipoDocumento().getIdTipoDocumento());
+            cs.setString(8, empleado.getTipoEmpleado().getIdTipoEmpleado().trim());
+            cs.registerOutParameter(9, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(10).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(9).toString());
             if(flgOperacion == 1){
                 cn.commit();
             }else{
@@ -226,15 +223,18 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public int eliminar(int id) {
         logger.info("Eliminar Empleado");
-        sql= "DELETE FROM Empleado where idEmpleado = ?";
+        sql= "{CALL P_Eliminar_Empleado(?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
-            cn.setAutoCommit(false);
-            ps=cn.prepareStatement(sql);
-            ps.setInt(1, id);
-            flgOperacion=ps.executeUpdate();
-            if(flgOperacion>0){
+            
+            cs = cn.prepareCall(sql.trim());
+            cs.setInt(1, id);
+            cs.registerOutParameter(2, java.sql.Types.INTEGER);
+            cs.executeUpdate();
+            flgOperacion = Integer.parseInt(cs.getObject(2).toString());
+            
+            if(flgOperacion == 1){
                 cn.commit();
             }else{
                 cn.rollback();

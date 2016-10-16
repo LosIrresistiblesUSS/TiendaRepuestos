@@ -32,13 +32,14 @@
                 document.frmLst.submit();
             }
             
-            function obtenerPorId(idTe){
-                document.frmLst.action = "TipoEmpleadoControlador?accion=obtenerPorId&idTe=" + idTe;
+            function obtenerPorId(num){
+                var id = document.getElementById("txtActualizar"+num).value;
+                document.frmLst.action = "TipoEmpleadoControlador?accion=obtenerPorId&idTe=" + id;
                 document.frmLst.submit();
             }
             
-            function eliminar(){
-                var id = document.getElementById("txtEliminar").value;
+            function eliminar(num){
+                var id = document.getElementById("txtEliminar"+num).value;
                 document.frmLst.action = "TipoEmpleadoControlador?accion=eliminar&idTe=" + id;
                 document.frmLst.submit();
             }
@@ -50,7 +51,7 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Tipos de Empleado</strong></h2>
+                    <h2><strong>Tipo de Empleado</strong></h2>
                 </div>
             </section>
             <section class="container">
@@ -73,7 +74,7 @@
                             ${msgPostOperacion}
                         <% } %>
                     </div>
-                    <!-- <div class="table-responsive"> --> <!-- Activar para tabla responsiva -->
+                    <div class="table-responsive"> <!-- Activar para tabla responsiva -->
                         <table border="1" class="table table-hover tabla-resultados">
                             <thead align="center">
                                 <td><b>#</b></td>
@@ -95,7 +96,8 @@
                                     <table>
                                         <tr>
                                             <td class="td-acciones-editar">
-                                                <button class="btn btn-warning" onclick="obtenerPorId(<%=tipoEmpleado.getIdTipoEmpleado()%>)">
+                                                <input type="hidden" value="<%=tipoEmpleado.getIdTipoEmpleado()%>" id="txtActualizar<%=i+1%>" />
+                                                <button class="btn btn-warning" onclick="obtenerPorId(<%=i+1%>)">
                                                     <span class="glyphicon glyphicon-pencil"></span>
                                                 </button>
                                             </td>
@@ -122,7 +124,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                                                <button onclick="eliminar(<%=tipoEmpleado.getIdTipoEmpleado()%>)" type="button" class="btn btn-danger">Eliminar</button>
+                                                <input type="hidden" value="<%=tipoEmpleado.getIdTipoEmpleado()%>" id="txtEliminar<%=i+1%>" />
+                                                <button onclick="eliminar(<%=i+1%>)" type="button" class="btn btn-danger">Eliminar</button>
                                             </div>
                                         </div>
                                     </div>
@@ -136,7 +139,7 @@
                         </table>
                         
                         <input type="hidden" value="<%=session.getAttribute("descripcion")%>" id="descripcion" />
-                    <!-- </div> -->
+                    </div>
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <% if((int)session.getAttribute("pagina") == 1){ %>

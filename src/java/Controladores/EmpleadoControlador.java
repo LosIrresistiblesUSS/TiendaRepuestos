@@ -74,34 +74,32 @@ public class EmpleadoControlador extends HttpServlet {
     
         protected void insertar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("insertar");
-        int  idTipoDocumento = Integer.parseInt(request.getParameter("idTipoDocumento") == null ? "0" : request.getParameter("idTipoDocumento"));
-        String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");      
-        int  idPersona = Integer.parseInt(request.getParameter("idPersona") == null ? "0" : request.getParameter("idPersona"));
-        String idTipoEmpleado = request.getParameter("idTipoEmpleado") == null ? "" : request.getParameter("idTipoEmpleado");
-        String numeroDocumento = request.getParameter("numeroDocumento") == null ? "" : request.getParameter("numeroDocumento");
+        
         String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email = request.getParameter("email") == null ? "" : request.getParameter("email");
+        int  idTipoDocumento = Integer.parseInt(request.getParameter("idTipoDocumento") == null ? "0" : request.getParameter("idTipoDocumento"));
+        String nroDocumento = request.getParameter("nroDocumento") == null ? "" : request.getParameter("nroDocumento");
+        String idTipoEmpleado = request.getParameter("idTipoEmpleado") == null ? "" : request.getParameter("idTipoEmpleado");
         try{
             empleado = new Empleado();
-            tipoEmpleado = new TipoEmpleado();
-            tipoDocumento = new TipoDocumento();
             
-            tipoDocumento.setIdTipoDocumento(idTipoDocumento);
-            tipoDocumento.setDescripcion(descripcion);
-            empleado.setTipoDocumento(tipoDocumento);
-            empleado.setIdPersona(idPersona);
-            
-            tipoEmpleado.setIdTipoEmpleado(idTipoEmpleado);
-            empleado.setTipoEmpleado(tipoEmpleado);
-    
-            empleado.setNumeroDocumento(numeroDocumento);
             empleado.setNombres(nombres);
             empleado.setDireccion(direccion);
             empleado.setTelefono(telefono);
             empleado.setEmail(email);
             
+            tipoDocumento = new TipoDocumento();
+            tipoDocumento.setIdTipoDocumento(idTipoDocumento);
+            empleado.setTipoDocumento(tipoDocumento);
+            
+            empleado.setNumeroDocumento(nroDocumento);
+            
+            tipoEmpleado = new TipoEmpleado();
+            tipoEmpleado.setIdTipoEmpleado(idTipoEmpleado);
+            empleado.setTipoEmpleado(tipoEmpleado);
+    
             empleadoService = new EmpleadoLogica();
             flgOperacion = empleadoService.insertar(empleado);
             
@@ -110,7 +108,7 @@ public class EmpleadoControlador extends HttpServlet {
                     mensaje = FuncionesMensajes.insertarExitoso("Empleado", nombres);
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.insertarAdvertencia("Empleado", nombres);
+                    mensaje = FuncionesMensajes.insertarAdvertencia("Empleado con Nro. de Documento ", nroDocumento);
                     break;
                 default:
                     mensaje = FuncionesMensajes.insertarError("Empleado", nombres);
@@ -194,35 +192,31 @@ public class EmpleadoControlador extends HttpServlet {
     protected void actualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("actualizar");
         int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
-        int  idTipoDocumento = Integer.parseInt(request.getParameter("idTipoDocumento") == null ? "0" : request.getParameter("idTipoDocumento"));
-        String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");      
-        int  idPersona = Integer.parseInt(request.getParameter("idPersona") == null ? "0" : request.getParameter("idPersona"));
-        String idTipoEmpleado = request.getParameter("idTipoEmpleado") == null ? "" : request.getParameter("idTipoEmpleado");
-        String numeroDocumento = request.getParameter("numeroDocumento") == null ? "" : request.getParameter("numeroDocumento");
         String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email = request.getParameter("email") == null ? "" : request.getParameter("email");
+        int  idTipoDocumento = Integer.parseInt(request.getParameter("idTipoDocumento") == null ? "0" : request.getParameter("idTipoDocumento"));
+        String nroDocumento = request.getParameter("nroDocumento") == null ? "" : request.getParameter("nroDocumento");
+        String idTipoEmpleado = request.getParameter("idTipoEmpleado") == null ? "" : request.getParameter("idTipoEmpleado");
         try{
             empleado = new Empleado();
-            tipoEmpleado = new TipoEmpleado();
-            tipoDocumento = new TipoDocumento();
             
             empleado.setIdEmpleado(id);
-            tipoDocumento.setIdTipoDocumento(idTipoDocumento);
-            tipoDocumento.setDescripcion(descripcion);
-            empleado.setTipoDocumento(tipoDocumento);
-           
-            empleado.setIdPersona(idPersona);
-            
-            tipoEmpleado.setIdTipoEmpleado(idTipoEmpleado);
-            empleado.setTipoEmpleado(tipoEmpleado);
-    
-            empleado.setNumeroDocumento(numeroDocumento);
             empleado.setNombres(nombres);
             empleado.setDireccion(direccion);
             empleado.setTelefono(telefono);
             empleado.setEmail(email);
+            
+            tipoDocumento = new TipoDocumento();
+            tipoDocumento.setIdTipoDocumento(idTipoDocumento);
+            empleado.setTipoDocumento(tipoDocumento);
+            
+            empleado.setNumeroDocumento(nroDocumento);
+            
+            tipoEmpleado = new TipoEmpleado();
+            tipoEmpleado.setIdTipoEmpleado(idTipoEmpleado);
+            empleado.setTipoEmpleado(tipoEmpleado);
            
             
             Empleado empleadoAnterior = new Empleado();
@@ -233,13 +227,13 @@ public class EmpleadoControlador extends HttpServlet {
             
             switch (flgOperacion) {
                 case 1:
-                    mensaje = FuncionesMensajes.actualizarExitoso("Empleado", empleadoAnterior.getNombres(), empleado.getNombres());
+                    mensaje = FuncionesMensajes.actualizarExitoso2("Empleado(a)", empleado.getNombres());
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.actualizarAdvertencia("Empleado", empleado.getNombres());
+                    mensaje = FuncionesMensajes.actualizarAdvertencia2("Empleado(a)", empleado.getNumeroDocumento());
                     break;
                 default:
-                    mensaje = FuncionesMensajes.actualizarError("Empleado", empleadoAnterior.getNombres(), empleado.getNombres());
+                    mensaje = FuncionesMensajes.actualizarError2("Empleado(a)", empleado.getNombres());
                     break;
             }
             sesion = request.getSession();
@@ -263,8 +257,6 @@ public class EmpleadoControlador extends HttpServlet {
             Empleado empleadoEliminar = new Empleado();
             empleadoEliminar = empleadoService.obtenerPorId(id);
             flgOperacion = empleadoService.eliminar(id);
-            System.out.println(flgOperacion);
-            System.out.println(id);
             
             if(flgOperacion > 0){
                 mensaje = FuncionesMensajes.eliminarExitoso("Empleado", empleadoEliminar.getNombres());
