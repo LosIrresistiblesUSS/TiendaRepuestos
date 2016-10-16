@@ -1,8 +1,17 @@
 package Logica;
 
 import Funciones.ListasObjetos;
+import Modelo.Cliente;
+import Modelo.DetalleOperacion;
+import Modelo.DetalleVentaRepuesto;
+import Modelo.Empleado;
+import Modelo.OperacionRepuesto;
+import Modelo.Producto;
+import Modelo.Repuesto;
 import Modelo.TipoDocumento;
 import Modelo.TipoEmpleado;
+import Modelo.Vehiculo;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,48 +28,95 @@ public class test {
 //        for (TipoEmpleado tipoEmpleado : lstTipoEmpleado){
 //            System.out.println(tipoEmpleado.getIdTipoEmpleado()+" "+tipoEmpleado.getDescripcion());
 //        }
+
+        DetalleOperacion detalleOperacion = new DetalleOperacion();
+        
+        detalleOperacion.setIdDetalleOperacion(1);
+        
+            OperacionRepuesto operacionRepuesto = new OperacionRepuesto();
+            operacionRepuesto.setIdOperacionRepuesto(1);
+            operacionRepuesto.setEstado(true);
+
+                Cliente cliente = new Cliente();
+                cliente.setIdCliente(10);
+                cliente.setNombres("Cantos");
+
+            operacionRepuesto.setCliente(cliente);
+
+                Empleado empleado = new Empleado();
+                empleado.setIdEmpleado(10);
+                empleado.setNombres("Acuña");
+
+            operacionRepuesto.setEmpleado(empleado);
+
+                Vehiculo vehiculo = new Vehiculo();
+                vehiculo.setIdVehiculo(20);
+                vehiculo.setMarca("Toyota");
+                vehiculo.setModelo("Hiunday");
+
+            operacionRepuesto.setVehiculo(vehiculo);
         
         
-        String sCadena = "Hola Mundo";
-        String sSubCadena = sCadena.substring(5,10);
-        System.out.println(sSubCadena);
+        detalleOperacion.setOperacionRespuesto(operacionRepuesto);
         
-//---------------------------------------------------------
         
-        String cadena ="EMP919";
-        String cadena2 = cadena.substring(3);
-        int cadenaInt = Integer.parseInt(cadena2)+1;
-        String cadenaIntString = String.valueOf(cadenaInt);
-
-        char[] arrayCadena = cadenaIntString.toCharArray();
-        int totalCaracteres = arrayCadena.length;
-
-        String codigo = null;
-        switch (totalCaracteres) {
-            case 1:
-                codigo = "EMP00" + cadenaIntString;
-                break;
-            case 2:
-                codigo = "EMP0" + cadenaIntString;
-                break;
-            case 3:
-                codigo = "EMP" + cadenaIntString;
-                break;
-            default:
-                break;
-        }
+        List<DetalleVentaRepuesto> lista = new ArrayList<>();
         
-        System.out.println(codigo);
-
-
-//                int cadenaTrans = Integer.parseInt(cadena);
-
-//                
-//                
-        char[] arrayChar = cadena.toCharArray();
-
-        int total = arrayChar.length;
         
-//        
+            DetalleVentaRepuesto repuesto1 = new DetalleVentaRepuesto();
+                repuesto1.setIdDetalleVentaRepuesto(1);
+                repuesto1.setCantidad(20);
+                repuesto1.setPrecio(10.5);
+                repuesto1.setSubTotal(210);
+
+                    Repuesto re1 = new Repuesto();
+                    re1.setDescripcion("llanta");
+
+            repuesto1.setRepuesto(re1);
+            lista.add(repuesto1);
+            
+            DetalleVentaRepuesto repuesto2 = new DetalleVentaRepuesto();
+
+                repuesto2.setIdDetalleVentaRepuesto(2);
+                repuesto2.setCantidad(10);
+                repuesto2.setPrecio(10);
+                repuesto2.setSubTotal(100);
+
+                    Repuesto re2 = new Repuesto();
+                    re2.setDescripcion("timon");
+
+            repuesto2.setRepuesto(re2);
+            lista.add(repuesto2);
+            
+            
+            DetalleVentaRepuesto repuesto3 = new DetalleVentaRepuesto();
+
+                repuesto3.setIdDetalleVentaRepuesto(3);
+                repuesto3.setCantidad(30);
+                repuesto3.setPrecio(1);
+                repuesto3.setSubTotal(30);
+
+                    Repuesto re3 = new Repuesto();
+                    re3.setDescripcion("Parabrisas");
+
+            repuesto3.setRepuesto(re3);
+            lista.add(repuesto3);
+            
+            
+            
+            detalleOperacion.setLstDetalleVentaRepuesto(lista);
+            
+           
+            System.out.println("El CLiente: " + detalleOperacion.getOperacionRespuesto().getCliente().getNombres());
+            System.out.println("El Empleado: " + detalleOperacion.getOperacionRespuesto().getEmpleado().getNombres());
+            System.out.println("Con vehiculo: " + detalleOperacion.getOperacionRespuesto().getVehiculo().getMarca());
+     
+            System.out.println("");
+            System.out.println("Productos:");
+            System.out.println("---------");
+            for(DetalleVentaRepuesto temp : detalleOperacion.getLstDetalleVentaRepuesto()){
+                System.out.println(temp.getIdDetalleVentaRepuesto() +  " " + temp.getRepuesto().getDescripcion() + " " +temp.getPrecio() + " " + temp.getSubTotal());
+            }
+            
     }
 }

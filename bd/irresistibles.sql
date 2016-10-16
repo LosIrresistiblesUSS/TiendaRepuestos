@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
+-- version 4.4.14
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-10-2016 a las 20:05:23
--- Versión del servidor: 10.1.13-MariaDB
--- Versión de PHP: 5.6.23
+-- Tiempo de generación: 17-10-2016 a las 01:30:23
+-- Versión del servidor: 5.6.26
+-- Versión de PHP: 5.6.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -24,7 +24,69 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_TipoServicio` (IN `id` INT, IN `descrip` VARCHAR(100), OUT `flag_exitoso` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_Empleado`(
+		IN _idEmpleado int,
+		IN _numeroDocumento varchar(13),
+		IN _nombres varchar(150),
+		IN _direccion varchar(150),
+		IN _telefono varchar(10),
+		IN _email varchar(100),
+		IN _idTipoDocumento int,
+		IN _idTipoEmpleado varchar(6),		
+		OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contador_rep INT DEFAULT 0;
+		DECLARE _idPersona INT;
+		DECLARE docu varchar(13);
+		SET flag_exitoso = 0;
+		
+		select count(*) into contador_rep
+		from Persona as p inner join Empleado as e
+		on p.idPersona = e.idPersona
+		where p.numeroDocumento = _numeroDocumento;
+
+		IF (contador_rep = 2) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			select idPersona into _idPersona from Empleado
+			where idEmpleado = _idEmpleado limit 1;
+			
+			UPDATE Persona SET numeroDocumento = _numeroDocumento, nombres = _nombres,
+			direccion = _direccion, telefono = _telefono, email = _email,
+			idTipoDocumento = _idTipoDocumento WHERE idPersona = _idPersona;
+			
+			UPDATE Empleado SET idTipoEmpleado = _idTipoEmpleado
+			WHERE idEmpleado = _idEmpleado;
+			SET flag_exitoso = 1;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_TipoEmpleado`(
+		 IN id varchar(6),
+	    IN descrip varchar(100),
+	    OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+		
+		SELECT count(*) into contador_rep from tipoempleado
+		WHERE descripcion = descrip;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			UPDATE TipoEmpleado SET descripcion = descrip
+			WHERE idTipoEmpleado = id;
+			SET flag_exitoso = 1;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_TipoServicio`(IN `id` INT, IN `descrip` VARCHAR(100), OUT `flag_exitoso` INT)
+BEGIN
 		DECLARE contador_rep INT DEFAULT 0;
 		SET flag_exitoso = 0;
 		
@@ -41,7 +103,207 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_TipoServicio` (IN `id`
 		SELECT flag_exitoso;
 	END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_TipoServicio` (IN `descrip` VARCHAR(100), OUT `flag_exitoso` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Eliminar_Empleado`(
+		IN _idEmpleado int,	
+		OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE _idPersona INT;
+	
+		select idPersona into _idPersona from Empleado
+		where idEmpleado = _idEmpleado limit 1;
+		
+		START TRANSACTION;
+			DELETE FROM Empleado WHERE idEmpleado = _idEmpleado;
+			DELETE FROM Persona WHERE idPersona = _idPersona;
+		COMMIT;
+		SET flag_exitoso = 1;
+		SELECT flag_exitoso;		
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_Empleado`(
+		IN _numeroDocumento varchar(13),
+		IN _nombres varchar(150),
+		IN _direccion varchar(150),
+		IN _telefono varchar(10),
+		IN _email varchar(100),
+		IN _idTipoDocumento int,
+		IN _idTipoEmpleado varchar(6),		
+		OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contadorPersona INT DEFAULT 0;
+		DECLARE contadorEmpleado INT DEFAULT 0;
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+	
+		SELECT count(*) into contador_rep from Persona
+		WHERE numeroDocumento = _numeroDocumento;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			select idPersona into contadorPersona from Persona order by idPersona desc limit 1;
+			select idEmpleado into contadorEmpleado from Empleado order by idEmpleado desc limit 1;
+			
+			INSERT INTO Persona(idPersona,numeroDocumento,nombres,direccion,telefono,email,idTipoDocumento)
+    		VALUES(contadorPersona+1,_numeroDocumento,_nombres,_direccion,_telefono,_email,_idTipoDocumento);
+    		
+    		INSERT INTO Empleado(idEmpleado,idPersona,idTipoEmpleado)
+    		VALUES(contadorEmpleado+1,contadorPersona+1,_idTipoEmpleado);
+    		
+			SET flag_exitoso = 1;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_Proveedor`(
+		IN _numeroDocumento varchar(13),
+		IN _nombres varchar(150),
+		IN _razonSocial varchar(150),
+		IN _direccion varchar(150),
+		IN _telefono varchar(10),
+		IN _email varchar(100),
+		IN _idTipoDocumento int,		
+		OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contadorPersona INT DEFAULT 0;
+		DECLARE contadorProveedor INT DEFAULT 0;
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+	
+		SELECT count(*) into contador_rep from Persona
+		WHERE numeroDocumento = _numeroDocumento;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			select idPersona into contadorPersona from Persona order by idPersona desc limit 1;
+			select idProveedor into contadorProveedor from Proveedor order by idProveedor desc limit 1;
+			
+			START TRANSACTION;
+				INSERT INTO Persona(idPersona,numeroDocumento,nombres,direccion,telefono,email,idTipoDocumento)
+	    		VALUES(contadorPersona+1,_numeroDocumento,_nombres,_direccion,_telefono,_email,_idTipoDocumento);
+	    		
+	    		INSERT INTO Proveedor(idProveedor,idPersona, razonSocial)
+	    		VALUES(contadorProveedor+1,contadorPersona+1, _razonSocial);
+    		COMMIT;
+    		
+			SET flag_exitoso = 1;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_Repuesto`(
+		 IN _idProducto int,
+	    IN _descrip varchar(150),
+       IN _stock int,
+	    IN _precio double(6,2),
+	    IN _precioPorMayor double(6,2),
+	    OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contador INT DEFAULT 0;
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+	
+		SELECT count(*) into contador_rep from Producto
+		WHERE idProducto = _idProducto or descripcion = _descrip;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			select idRepuesto into contador from Repuesto order by idRepuesto desc limit 1;
+			IF (contador = 0) THEN
+				INSERT INTO Producto(idProducto, descripcion,stock,precio,precioPorMayor)
+	    		VALUES(_idProducto, _descrip, _stock, _precio, _precioPorMayor);
+	    		
+	    		INSERT INTO Repuesto(idRepuesto, idProducto)
+	    		VALUES(1, _idProducto);
+	    		
+				SET flag_exitoso = 1;
+			ELSE
+				INSERT INTO Producto(idProducto, descripcion,stock,precio,precioPorMayor)
+	    		VALUES(_idProducto, _descrip, _stock, _precio, _precioPorMayor);
+
+				INSERT INTO Repuesto(idRepuesto, idProducto)
+	    		VALUES(contador+1, _idProducto);
+
+				SET flag_exitoso = 1;
+			END IF;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_Servicio`(
+	    IN _descrip varchar(150),
+	    IN _precio double(6,2),
+		 IN _idTipoServico int,
+	    OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contadorProducto INT DEFAULT 0;
+		DECLARE contadorServicio INT DEFAULT 0;
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+	
+		SELECT count(*) into contador_rep from Producto
+		WHERE descripcion = _descrip;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			select idProducto into contadorProducto from Producto order by idProducto desc limit 1;
+			select idServicio into contadorServicio from Servicio order by idServicio desc limit 1;
+			
+			START TRANSACTION;
+				INSERT INTO Producto(idProducto,descripcion,precio)
+	    		VALUES(contadorProducto+1, _descrip, _precio);
+	    		
+	    		INSERT INTO Servicio(idServicio, idProducto,idTipoServicio)
+	    		VALUES(contadorServicio+1, contadorProducto+1,_idTipoServico);
+	    		
+	    		SET flag_exitoso = 1;
+    		COMMIT;
+    		
+
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_TipoEmpleado`(
+	    IN id varchar(6),
+	    IN descrip varchar(100),
+	    OUT flag_exitoso int
+	)
+BEGIN
+		DECLARE contador INT DEFAULT 0;
+		DECLARE contador_rep INT DEFAULT 0;
+		SET flag_exitoso = 0;
+	
+		SELECT count(*) into contador_rep from tipoempleado
+		WHERE descripcion = descrip or idTipoEmpleado = id;
+		
+		IF (contador_rep != 0) THEN
+			SET flag_exitoso = 2;
+		ELSE
+			select idTipoEmpleado into contador from TipoEmpleado order by idTipoEmpleado desc limit 1;
+			IF (contador = 0) THEN
+				INSERT INTO tipoempleado(idTipoEmpleado, descripcion)
+	    		VALUES(id,descrip);
+				SET flag_exitoso = 1;
+			ELSE
+				INSERT INTO tipoempleado(idTipoEmpleado, descripcion)
+	    		VALUES(id, descrip);
+				SET flag_exitoso = 1;
+			END IF;
+		END IF;
+		SELECT flag_exitoso;
+	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_TipoServicio`(IN `descrip` VARCHAR(100), OUT `flag_exitoso` INT)
+BEGIN
 		DECLARE contador INT DEFAULT 0;
 		DECLARE contador_rep INT DEFAULT 0;
 		SET flag_exitoso = 0;
@@ -74,10 +336,10 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `boleta`
 --
 
-CREATE TABLE `boleta` (
+CREATE TABLE IF NOT EXISTS `boleta` (
   `idBoleta` int(11) NOT NULL,
   `idComprobanteVenta` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `boleta`
@@ -106,32 +368,33 @@ INSERT INTO `boleta` (`idBoleta`, `idComprobanteVenta`) VALUES
 -- Estructura de tabla para la tabla `cliente`
 --
 
-CREATE TABLE `cliente` (
+CREATE TABLE IF NOT EXISTS `cliente` (
   `idCliente` int(11) NOT NULL,
+  `razonSocial` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
   `idPersona` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `cliente`
 --
 
-INSERT INTO `cliente` (`idCliente`, `idPersona`) VALUES
-(1, 2),
-(2, 3),
-(3, 4),
-(4, 5),
-(5, 7),
-(6, 8),
-(7, 11),
-(8, 12),
-(9, 18),
-(10, 20),
-(11, 21),
-(12, 24),
-(13, 27),
-(14, 33),
-(15, 34),
-(16, 35);
+INSERT INTO `cliente` (`idCliente`, `razonSocial`, `idPersona`) VALUES
+(1, '', 2),
+(2, '', 3),
+(3, '', 4),
+(4, '', 5),
+(5, '', 7),
+(6, '', 8),
+(7, '', 11),
+(8, '', 12),
+(9, '', 18),
+(10, '', 20),
+(11, '', 21),
+(12, '', 24),
+(13, '', 27),
+(14, '', 33),
+(15, '', 34),
+(16, '', 35);
 
 -- --------------------------------------------------------
 
@@ -139,11 +402,11 @@ INSERT INTO `cliente` (`idCliente`, `idPersona`) VALUES
 -- Estructura de tabla para la tabla `comprobantecompra`
 --
 
-CREATE TABLE `comprobantecompra` (
+CREATE TABLE IF NOT EXISTS `comprobantecompra` (
   `idComprobanteCompra` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `idProveedor` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `comprobantecompra`
@@ -169,12 +432,12 @@ INSERT INTO `comprobantecompra` (`idComprobanteCompra`, `fecha`, `idProveedor`) 
 -- Estructura de tabla para la tabla `comprobanteventa`
 --
 
-CREATE TABLE `comprobanteventa` (
+CREATE TABLE IF NOT EXISTS `comprobanteventa` (
   `idComprobanteVenta` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `descripcion` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `importe` decimal(7,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `comprobanteventa`
@@ -214,13 +477,13 @@ INSERT INTO `comprobanteventa` (`idComprobanteVenta`, `fecha`, `descripcion`, `i
 -- Estructura de tabla para la tabla `detallecompra`
 --
 
-CREATE TABLE `detallecompra` (
+CREATE TABLE IF NOT EXISTS `detallecompra` (
   `idDetalleCompra` int(11) NOT NULL,
   `Cantidad` int(11) NOT NULL,
   `MontoTotal` decimal(8,2) NOT NULL,
   `idComprobanteCompra` int(11) NOT NULL,
   `idRepuesto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `detallecompra`
@@ -246,14 +509,14 @@ INSERT INTO `detallecompra` (`idDetalleCompra`, `Cantidad`, `MontoTotal`, `idCom
 -- Estructura de tabla para la tabla `detalleoperacion`
 --
 
-CREATE TABLE `detalleoperacion` (
+CREATE TABLE IF NOT EXISTS `detalleoperacion` (
   `idDetalleOperacion` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precio` decimal(6,2) NOT NULL,
   `subTotal` decimal(7,2) NOT NULL,
   `idOperacion` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `detalleoperacion`
@@ -293,13 +556,13 @@ INSERT INTO `detalleoperacion` (`idDetalleOperacion`, `cantidad`, `precio`, `sub
 -- Estructura de tabla para la tabla `detallepermiso`
 --
 
-CREATE TABLE `detallepermiso` (
+CREATE TABLE IF NOT EXISTS `detallepermiso` (
   `idDetallePermiso` int(11) NOT NULL,
   `idLogin` int(11) NOT NULL,
   `idPermiso` int(11) NOT NULL,
   `accion` char(1) COLLATE utf8_spanish_ci NOT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `detallepermiso`
@@ -409,11 +672,11 @@ INSERT INTO `detallepermiso` (`idDetallePermiso`, `idLogin`, `idPermiso`, `accio
 -- Estructura de tabla para la tabla `detalleventa`
 --
 
-CREATE TABLE `detalleventa` (
+CREATE TABLE IF NOT EXISTS `detalleventa` (
   `idDetalleVenta` int(11) NOT NULL,
   `idComprobanteVenta` int(11) NOT NULL,
   `idDetalleOperacion` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `detalleventa`
@@ -452,11 +715,11 @@ INSERT INTO `detalleventa` (`idDetalleVenta`, `idComprobanteVenta`, `idDetalleOp
 -- Estructura de tabla para la tabla `empleado`
 --
 
-CREATE TABLE `empleado` (
+CREATE TABLE IF NOT EXISTS `empleado` (
   `idEmpleado` int(11) NOT NULL,
   `idPersona` int(11) NOT NULL,
   `idTipoEmpleado` varchar(6) COLLATE utf8_spanish_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `empleado`
@@ -476,10 +739,10 @@ INSERT INTO `empleado` (`idEmpleado`, `idPersona`, `idTipoEmpleado`) VALUES
 -- Estructura de tabla para la tabla `factura`
 --
 
-CREATE TABLE `factura` (
+CREATE TABLE IF NOT EXISTS `factura` (
   `idFactura` int(11) NOT NULL,
   `idComprobanteVenta` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `factura`
@@ -504,7 +767,7 @@ INSERT INTO `factura` (`idFactura`, `idComprobanteVenta`) VALUES
 -- Estructura de tabla para la tabla `kardex`
 --
 
-CREATE TABLE `kardex` (
+CREATE TABLE IF NOT EXISTS `kardex` (
   `idKardex` int(11) NOT NULL,
   `detalle` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `cantidadIngreso` int(11) DEFAULT NULL,
@@ -512,7 +775,7 @@ CREATE TABLE `kardex` (
   `cantidadSalida` int(11) DEFAULT NULL,
   `precioSalida` decimal(6,2) DEFAULT NULL,
   `idRepuesto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `kardex`
@@ -576,13 +839,13 @@ INSERT INTO `kardex` (`idKardex`, `detalle`, `cantidadIngreso`, `precioIngreso`,
 -- Estructura de tabla para la tabla `login`
 --
 
-CREATE TABLE `login` (
+CREATE TABLE IF NOT EXISTS `login` (
   `idLogin` int(11) NOT NULL,
   `idPersona` int(11) NOT NULL,
   `usuario` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
   `pass` varchar(32) COLLATE utf8_spanish_ci NOT NULL,
   `imagen` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `login`
@@ -602,13 +865,13 @@ INSERT INTO `login` (`idLogin`, `idPersona`, `usuario`, `pass`, `imagen`) VALUES
 -- Estructura de tabla para la tabla `operacion`
 --
 
-CREATE TABLE `operacion` (
+CREATE TABLE IF NOT EXISTS `operacion` (
   `idOperacion` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `idPersonaCliente` int(11) NOT NULL,
   `idPersonaEmpleado` int(11) NOT NULL,
   `idVehiculo` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `operacion`
@@ -644,10 +907,10 @@ INSERT INTO `operacion` (`idOperacion`, `estado`, `idPersonaCliente`, `idPersona
 -- Estructura de tabla para la tabla `permiso`
 --
 
-CREATE TABLE `permiso` (
+CREATE TABLE IF NOT EXISTS `permiso` (
   `idPermiso` int(11) NOT NULL,
   `descripcion` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `permiso`
@@ -665,59 +928,58 @@ INSERT INTO `permiso` (`idPermiso`, `descripcion`) VALUES
 -- Estructura de tabla para la tabla `persona`
 --
 
-CREATE TABLE `persona` (
+CREATE TABLE IF NOT EXISTS `persona` (
   `idPersona` int(11) NOT NULL,
   `numeroDocumento` varchar(13) COLLATE utf8_spanish_ci NOT NULL,
   `nombres` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
-  `razonSocial` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
   `direccion` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
   `telefono` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
   `email` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
   `idTipoDocumento` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `persona`
 --
 
-INSERT INTO `persona` (`idPersona`, `numeroDocumento`, `nombres`, `razonSocial`, `direccion`, `telefono`, `email`, `idTipoDocumento`) VALUES
-(1, '20131524545', 'ALCARAZO IBÁÑEZ FREDDY DANIEL', 'MOSTACERO ABANTO ANGHELA YOSHELY S.A.C', 'AV. LARCO # 556', '674226', 'AIBANEZF@crece.uss.edu.pe', 2),
-(2, '001157046757', 'AMAYA DIAZ CHRISTIAN OMAR', '', 'JR.JUNIN # 555', '251145', 'ADIAZCHRI@crece.uss.edu.pe', 3),
-(3, '45786218', 'ANTONIO SANTAMARIA LUISA LORENA', '', 'AV. NICOLAS DE PIEROLA # 1170', '251621', 'ALUISAL@crece.uss.edu.pe', 1),
-(4, '43219865', 'ARBULU CASTILLO PIERRE GIANCARLO', '', 'AV.ESPAÑA # 551', '208210', 'ACASTILLOP@crece.uss.edu.pe', 1),
-(5, '49872325', 'BARNUEVO CORNEJO LUIS EDUARDO', '', 'AV.CESAR VALLEJO # 310', '203966', 'BCORNEJOL@crece.uss.edu.pe', 1),
-(6, '46110087', 'CANTOS MORANTE AUGUSTO ENRIQUE', '', 'DIEGO DE ALMAGRO # 257', '249381', 'CANTOSMO@crece.uss.edu.pe', 1),
-(7, '001416340551', 'CASTILLO CÁRDENAS JOSÉ LEONARDO', '', 'JR.SAN MARTIN # 552', '242723', 'CASTCARDJO@crece.uss.edu.pe', 3),
-(8, '001564345985', 'CASTRO TERRONES JHAN CARLOS', '', 'O`DONOVAN 445(FRENTE CUARTEL)', '295076', 'CTERRONESJHAN@crece.uss.edu.pe', 3),
-(9, '10088045853', 'DIAZ CASTAÑEDA RUDY SLAYTONW', 'NECIOSUP CABANILLAS JOSE ANTONIO S.A.C', 'AV.MANSICHE # 430', '232951', 'DCASTANEDAR@crece.uss.edu.pe', 2),
-(10, '20131543337', 'FLORES TELLO JAIME NICOLAS', 'OMEGA PERU S.A', 'GONZALES PRADA 901, URB.EL SOL', '243915', 'FTELLOJAIME@crece.uss.edu.pe', 2),
-(11, '48756294', 'GUEVARA BARRETO JOSÉ ALBERTO', '', 'AV.CESAR VALLEJO # 278', '254731', 'GBARRETOJOSE@crece.uss.edu.pe', 1),
-(12, '42136782', 'GUTIERREZ BALCAZAR JOSÉ FRANCISCO', '', 'ISABEL DE BOBADILLA 268 URB EL RECREO', '220861', 'GVALCAZARJ@crece.uss.edu.pe', 1),
-(13, '20440229825', 'HERNANDEZ NERIA MARCO ANTONIO', 'ROSASPLANNING EST.S.A', 'Jr.SAN MARTIN Nº256', '222446', 'HNERIAMARCO@crece.uss.edu.pe', 2),
-(14, '10178267359', 'LOPEZ BONILLA CESAR ALBERTO', 'POLYSISTEMAS S.A.C', 'AV. ESPAÑA # 2152', '200358', 'LBONILLACA@crece.uss.edu.pe', 2),
-(15, '20253604434', 'MARTÍNEZ PANTA VICTOR MANUEL', 'RECONOR S.R.L', 'JR. BOLIVAR # 682-684', '232141', 'MPANTAVICTO@crece.uss.edu.pe', 2),
-(16, '20397132847', 'MONJA SANDOVAL ELMER ANTHONY', 'RECORD MULTIMOTRIZ S.A', 'JR. AYACUCHO # 812', '251327', 'MSANDOVALELMER@crece.uss.edu.pe', 2),
-(17, '45789234', 'OTERO ARRASCUE DANNY FRANK', '', 'AV. AMERICA SUR # 2269', '262811', 'OARRASCUEDANNYF@crece.uss.edu.pe', 1),
-(18, '001179224181', 'PÉREZ SUCLUPE JHON ADDERLY', '', 'JR. ZEPITA # 566 OF.2', '250184', 'PSUCLUPEJ@crece.uss.edu.pe', 3),
-(19, '20314512643', 'PISFIL CORONADO JOSÉ LUIS FELIPE GIOVANY', 'SELMA PERU S.R.L', 'DIEGO DE ALMAGRO 746-TRUJILLO', '201818', 'PCORONADOJOSE@crece.uss.edu.pe', 2),
-(20, '49736549', 'RAMIREZ RAMOS LUIS ROBERT', '', 'AV. AMERICA NORTE # 967', '246065', 'RRAMOSLUIS@crece.uss.edu.pe', 1),
-(21, '49878234', 'REQUEJO MEJIA GUSTAVO ADOLFO', '', 'AV. SIMÓN BOLIVAR # 810', '265966', 'RMEJIAGUA@crece.uss.edu.pe', 1),
-(22, '10634875819', 'SANCHEZ ELESCANO CESAR MANUEL', 'SERVICENTRO OCHOA S.R.L', 'DIEGO MARADONA # 347', '267881', 'SELESCANOC@crece.uss.edu.pe', 2),
-(23, '46879528', 'SANTISTEBAN AYASTA LEONARDO EULER', '', 'JR. JUNIN # 882', '243943', 'SAYASTALEONA@crece.uss.edu.pe', 1),
-(24, '001569964585', 'SANTISTEBAN QUISPE MIGUEL ANGEL', '', 'O`DIVALON 445(FRENTE CUARTEL)', '236776', 'SQUISPEMIGU@crece.uss.edu.pe', 3),
-(25, '10890045853', 'SILVA PARRAGUEZ MAXIMO GABRIEL', 'TALLERES GRAFICOS SILVA S.R.L', 'AV. FERREÑAFE # 530', '298651', 'SPARRAGUEZMAXI@crece.uss.edu.pe', 2),
-(26, '20994743337', 'VÁSQUEZ CERCADO DARWIN ALAIN', 'TIENDAS EFE S.A', 'GONZALES PRIVADO 991, URB.EL SOL', '287915', 'VCERCADODARWI@crece.uss.edu.pe', 2),
-(27, '48993794', 'ZARATE ZARATE ELVER YOEL', '', 'AV.CESAR VALLEJO # 308', '292031', 'ZZARATEELVER@crece.uss.edu.pe', 1),
-(28, '45651230', 'ZEÑA ZEÑA EDINSON OMAR', '', 'ISABEL PANTOJA 358 URB EL RECREO', '229871', 'ZZENAEDINS@crece.uss.edu.pe', 1),
-(29, '20440988225', 'CARRASCO MANAY JUAN', 'TOTAL ARTEFACTOS S.A', 'Jr.SAN BORJA Nº986', '226896', 'CMANAYJUA@crece.uss.edu.pe', 2),
-(30, '10178321659', 'CASTRO ALVITES ANTHONY GIUSEPPE', 'VISUAL DATA COMERCIAL S.A.C', 'AV. MEXICO # 9852', '209638', 'GIUSEPPEAN@crece.uss.edu.pe', 2),
-(31, '29953875624', 'CASTRO FERNANDEZ IRVIN GREGORY', 'LIBRERIA BAZAR STOCK S.R.L', 'JR. BOLIVAR # 965', '290041', 'FECASTROIR@CRECE.USS.EDU.PE', 2),
-(32, '77506743', 'CHINGUEL RODRIGUEZ MILAGROS MARIBEL', '', 'JR. ATAHUALPA # 772', '296027', 'CRODRIGUEZMILAG@crece.uss.edu.pe', 1),
-(33, '001196547826', 'MUÑOZ ZUTA MAYRA ALEJANDRA', '', 'AV. AMERICA ESTE # 9852', '260991', 'MAYRAZUTA@crece.uss.edu.pe', 3),
-(34, '49982159', 'NERIA COLMENARES JACQUELIN LISET', '', 'AV. AMERICA SUR # 852', '252865', 'NCOLMENARESJ@crece.uss.edu.pe', 1),
-(35, '49826500', 'NUÑEZ FERNÁNDEZ NOLBERTO ROMARIO', '', 'AV. SIMÓN # 920', '289366', 'NFERNANDEZNOLBE@crece.uss.edu.pe', 1),
-(36, '49858749', 'ACUÑA COTRINA ERICK JOEL', '', 'ULTIMA DE KENEDY # 920', '285996', 'ACOTRINAE@crece.uss.edu.pe', 1),
-(37, '18523075819', 'OLANO CHÁVEZ WILFREDO CRISTOBAL', 'MADERERA LOS CEDROS S.R.L', 'DIEGO PELE # 357', '286781', 'OCHAVEZWILFREDC@crece.uss.edu.pe', 2);
+INSERT INTO `persona` (`idPersona`, `numeroDocumento`, `nombres`, `direccion`, `telefono`, `email`, `idTipoDocumento`) VALUES
+(1, '20131524545', 'ALCARAZO IBÁÑEZ FREDDY DANIEL', 'AV. LARCO # 556', '674226', 'AIBANEZF@crece.uss.edu.pe', 2),
+(2, '001157046757', 'AMAYA DIAZ CHRISTIAN OMAR', 'JR.JUNIN # 555', '251145', 'ADIAZCHRI@crece.uss.edu.pe', 3),
+(3, '45786218', 'ANTONIO SANTAMARIA LUISA LORENA', 'AV. NICOLAS DE PIEROLA # 1170', '251621', 'ALUISAL@crece.uss.edu.pe', 1),
+(4, '43219865', 'ARBULU CASTILLO PIERRE GIANCARLO', 'AV.ESPAÑA # 551', '208210', 'ACASTILLOP@crece.uss.edu.pe', 1),
+(5, '49872325', 'BARNUEVO CORNEJO LUIS EDUARDO', 'AV.CESAR VALLEJO # 310', '203966', 'BCORNEJOL@crece.uss.edu.pe', 1),
+(6, '46110087', 'CANTOS MORANTE AUGUSTO ENRIQUE', 'DIEGO DE ALMAGRO # 257', '249381', 'CANTOSMO@crece.uss.edu.pe', 1),
+(7, '001416340551', 'CASTILLO CÁRDENAS JOSÉ LEONARDO', 'JR.SAN MARTIN # 552', '242723', 'CASTCARDJO@crece.uss.edu.pe', 3),
+(8, '001564345985', 'CASTRO TERRONES JHAN CARLOS', 'O`DONOVAN 445(FRENTE CUARTEL)', '295076', 'CTERRONESJHAN@crece.uss.edu.pe', 3),
+(9, '10088045853', 'DIAZ CASTAÑEDA RUDY SLAYTONW', 'AV.MANSICHE # 430', '232951', 'DCASTANEDAR@crece.uss.edu.pe', 2),
+(10, '20131543337', 'FLORES TELLO JAIME NICOLAS', 'GONZALES PRADA 901, URB.EL SOL', '243915', 'FTELLOJAIME@crece.uss.edu.pe', 2),
+(11, '48756294', 'GUEVARA BARRETO JOSÉ ALBERTO', 'AV.CESAR VALLEJO # 278', '254731', 'GBARRETOJOSE@crece.uss.edu.pe', 1),
+(12, '42136782', 'GUTIERREZ BALCAZAR JOSÉ FRANCISCO', 'ISABEL DE BOBADILLA 268 URB EL RECREO', '220861', 'GVALCAZARJ@crece.uss.edu.pe', 1),
+(13, '20440229825', 'HERNANDEZ NERIA MARCO ANTONIO', 'Jr.SAN MARTIN Nº256', '222446', 'HNERIAMARCO@crece.uss.edu.pe', 2),
+(14, '10178267359', 'LOPEZ BONILLA CESAR ALBERTO', 'AV. ESPAÑA # 2152', '200358', 'LBONILLACA@crece.uss.edu.pe', 2),
+(15, '20253604434', 'MARTÍNEZ PANTA VICTOR MANUEL', 'JR. BOLIVAR # 682-684', '232141', 'MPANTAVICTO@crece.uss.edu.pe', 2),
+(16, '20397132847', 'MONJA SANDOVAL ELMER ANTHONY', 'JR. AYACUCHO # 812', '251327', 'MSANDOVALELMER@crece.uss.edu.pe', 2),
+(17, '45789234', 'OTERO ARRASCUE DANNY FRANK', 'AV. AMERICA SUR # 2269', '262811', 'OARRASCUEDANNYF@crece.uss.edu.pe', 1),
+(18, '001179224181', 'PÉREZ SUCLUPE JHON ADDERLY', 'JR. ZEPITA # 566 OF.2', '250184', 'PSUCLUPEJ@crece.uss.edu.pe', 3),
+(19, '20314512643', 'PISFIL CORONADO JOSÉ LUIS FELIPE GIOVANY', 'DIEGO DE ALMAGRO 746-TRUJILLO', '201818', 'PCORONADOJOSE@crece.uss.edu.pe', 2),
+(20, '49736549', 'RAMIREZ RAMOS LUIS ROBERT', 'AV. AMERICA NORTE # 967', '246065', 'RRAMOSLUIS@crece.uss.edu.pe', 1),
+(21, '49878234', 'REQUEJO MEJIA GUSTAVO ADOLFO', 'AV. SIMÓN BOLIVAR # 810', '265966', 'RMEJIAGUA@crece.uss.edu.pe', 1),
+(22, '10634875819', 'SANCHEZ ELESCANO CESAR MANUEL', 'DIEGO MARADONA # 347', '267881', 'SELESCANOC@crece.uss.edu.pe', 2),
+(23, '46879528', 'SANTISTEBAN AYASTA LEONARDO EULER', 'JR. JUNIN # 882', '243943', 'SAYASTALEONA@crece.uss.edu.pe', 1),
+(24, '001569964585', 'SANTISTEBAN QUISPE MIGUEL ANGEL', 'O`DIVALON 445(FRENTE CUARTEL)', '236776', 'SQUISPEMIGU@crece.uss.edu.pe', 3),
+(25, '10890045853', 'SILVA PARRAGUEZ MAXIMO GABRIEL', 'AV. FERREÑAFE # 530', '298651', 'SPARRAGUEZMAXI@crece.uss.edu.pe', 2),
+(26, '20994743337', 'VÁSQUEZ CERCADO DARWIN ALAIN', 'GONZALES PRIVADO 991, URB.EL SOL', '287915', 'VCERCADODARWI@crece.uss.edu.pe', 2),
+(27, '48993794', 'ZARATE ZARATE ELVER YOEL', 'AV.CESAR VALLEJO # 308', '292031', 'ZZARATEELVER@crece.uss.edu.pe', 1),
+(28, '45651230', 'ZEÑA ZEÑA EDINSON OMAR', 'ISABEL PANTOJA 358 URB EL RECREO', '229871', 'ZZENAEDINS@crece.uss.edu.pe', 1),
+(29, '20440988225', 'CARRASCO MANAY JUAN', 'Jr.SAN BORJA Nº986', '226896', 'CMANAYJUA@crece.uss.edu.pe', 2),
+(30, '10178321659', 'CASTRO ALVITES ANTHONY GIUSEPPE', 'AV. MEXICO # 9852', '209638', 'GIUSEPPEAN@crece.uss.edu.pe', 2),
+(31, '29953875624', 'CASTRO FERNANDEZ IRVIN GREGORY', 'JR. BOLIVAR # 965', '290041', 'FECASTROIR@CRECE.USS.EDU.PE', 2),
+(32, '77506743', 'CHINGUEL RODRIGUEZ MILAGROS MARIBEL', 'JR. ATAHUALPA # 772', '296027', 'CRODRIGUEZMILAG@crece.uss.edu.pe', 1),
+(33, '001196547826', 'MUÑOZ ZUTA MAYRA ALEJANDRA', 'AV. AMERICA ESTE # 9852', '260991', 'MAYRAZUTA@crece.uss.edu.pe', 3),
+(34, '49982159', 'NERIA COLMENARES JACQUELIN LISET', 'AV. AMERICA SUR # 852', '252865', 'NCOLMENARESJ@crece.uss.edu.pe', 1),
+(35, '49826500', 'NUÑEZ FERNÁNDEZ NOLBERTO ROMARIO', 'AV. SIMÓN # 920', '289366', 'NFERNANDEZNOLBE@crece.uss.edu.pe', 1),
+(36, '49858749', 'ACUÑA COTRINA ERICK JOEL', 'ULTIMA DE KENEDY # 920', '285996', 'ACOTRINAE@crece.uss.edu.pe', 1),
+(37, '18523075819', 'OLANO CHÁVEZ WILFREDO CRISTOBAL', 'DIEGO PELE # 357', '286781', 'OCHAVEZWILFREDC@crece.uss.edu.pe', 2);
 
 -- --------------------------------------------------------
 
@@ -725,13 +987,13 @@ INSERT INTO `persona` (`idPersona`, `numeroDocumento`, `nombres`, `razonSocial`,
 -- Estructura de tabla para la tabla `producto`
 --
 
-CREATE TABLE `producto` (
+CREATE TABLE IF NOT EXISTS `producto` (
   `idProducto` int(11) NOT NULL,
   `descripcion` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
   `precio` decimal(6,2) NOT NULL,
   `precioPorMayor` decimal(6,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `producto`
@@ -885,31 +1147,32 @@ INSERT INTO `producto` (`idProducto`, `descripcion`, `stock`, `precio`, `precioP
 -- Estructura de tabla para la tabla `proveedor`
 --
 
-CREATE TABLE `proveedor` (
+CREATE TABLE IF NOT EXISTS `proveedor` (
   `idProveedor` int(11) NOT NULL,
+  `razonSocial` varchar(150) COLLATE utf8_spanish_ci NOT NULL,
   `idPersona` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `proveedor`
 --
 
-INSERT INTO `proveedor` (`idProveedor`, `idPersona`) VALUES
-(1, 1),
-(2, 9),
-(3, 10),
-(4, 13),
-(5, 14),
-(6, 15),
-(7, 16),
-(8, 19),
-(9, 22),
-(10, 25),
-(11, 26),
-(12, 29),
-(13, 30),
-(14, 31),
-(16, 37);
+INSERT INTO `proveedor` (`idProveedor`, `razonSocial`, `idPersona`) VALUES
+(1, 'MOSTACERO ABANTO ANGELA JOSEL S.A.C', 1),
+(2, 'NECIOSUP CABANILLAS JOSE ANTONIO S.A.C', 9),
+(3, 'OMEGA PERU S.A', 10),
+(4, 'ROSAS PLANNING EST S.A', 13),
+(5, 'POLISSISTEMAS S.A.C', 14),
+(6, 'RECONOR S.R.L', 15),
+(7, 'RECORD MULTIMOTRIZ S.A', 16),
+(8, 'SELMA PERU S.R.L', 19),
+(9, 'SERVICENTRO OCHOA S.R.L', 22),
+(10, 'TALLERES GRAFICOS SILVA S.R.L', 25),
+(11, 'TIENDAS EFE S.A', 26),
+(12, 'TOTAL ARTEFACTOS S.A', 29),
+(13, 'VISUAL DATA COMERCIAL S.A.C', 30),
+(14, 'LIBRERIA BAZAR STOCK S.R.L', 31),
+(16, 'MADERERA LOS CEDROS S.R.L', 37);
 
 -- --------------------------------------------------------
 
@@ -917,10 +1180,10 @@ INSERT INTO `proveedor` (`idProveedor`, `idPersona`) VALUES
 -- Estructura de tabla para la tabla `repuesto`
 --
 
-CREATE TABLE `repuesto` (
+CREATE TABLE IF NOT EXISTS `repuesto` (
   `idRepuesto` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `repuesto`
@@ -1034,11 +1297,11 @@ INSERT INTO `repuesto` (`idRepuesto`, `idProducto`) VALUES
 -- Estructura de tabla para la tabla `servicio`
 --
 
-CREATE TABLE `servicio` (
+CREATE TABLE IF NOT EXISTS `servicio` (
   `idServicio` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL,
   `idTipoServicio` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `servicio`
@@ -1092,10 +1355,10 @@ INSERT INTO `servicio` (`idServicio`, `idProducto`, `idTipoServicio`) VALUES
 -- Estructura de tabla para la tabla `tipodocumento`
 --
 
-CREATE TABLE `tipodocumento` (
+CREATE TABLE IF NOT EXISTS `tipodocumento` (
   `idTipoDocumento` int(11) NOT NULL,
   `descripcion` varchar(15) COLLATE utf8_spanish_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `tipodocumento`
@@ -1112,7 +1375,7 @@ INSERT INTO `tipodocumento` (`idTipoDocumento`, `descripcion`) VALUES
 -- Estructura de tabla para la tabla `tipoempleado`
 --
 
-CREATE TABLE `tipoempleado` (
+CREATE TABLE IF NOT EXISTS `tipoempleado` (
   `idTipoEmpleado` varchar(6) COLLATE utf8_spanish_ci NOT NULL,
   `descripcion` varchar(25) COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
@@ -1125,7 +1388,21 @@ INSERT INTO `tipoempleado` (`idTipoEmpleado`, `descripcion`) VALUES
 ('EMP001', 'Vendedor'),
 ('EMP002', 'Mecanico'),
 ('EMP003', 'Jefe de Almacen'),
-('EMP004', 'Administrador');
+('EMP004', 'Administrador'),
+('EMP005', 'Acuña'),
+('EMP006', 'Cantos'),
+('EMP007', 'Cotrina'),
+('EMP008', 'Cotrina'),
+('EMP009', 'asasas'),
+('EMP010', 'asdasdasd'),
+('EMP011', 'HOLAAAA'),
+('EMP012', 'ASDASDASDASD'),
+('EMP013', 'empleado 13'),
+('EMP014', 'AAAAAAAAAAA'),
+('EMP015', 'Zeña'),
+('EMP016', 'DVBYTHBGTY'),
+('EMP017', 'WKEDMKW'),
+('EMP10', 'ASDSADASD');
 
 -- --------------------------------------------------------
 
@@ -1133,10 +1410,10 @@ INSERT INTO `tipoempleado` (`idTipoEmpleado`, `descripcion`) VALUES
 -- Estructura de tabla para la tabla `tiposervicio`
 --
 
-CREATE TABLE `tiposervicio` (
+CREATE TABLE IF NOT EXISTS `tiposervicio` (
   `idTipoServicio` int(11) NOT NULL,
   `descripcion` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `tiposervicio`
@@ -1157,14 +1434,14 @@ INSERT INTO `tiposervicio` (`idTipoServicio`, `descripcion`) VALUES
 -- Estructura de tabla para la tabla `vehiculo`
 --
 
-CREATE TABLE `vehiculo` (
+CREATE TABLE IF NOT EXISTS `vehiculo` (
   `idVehiculo` int(11) NOT NULL,
   `placa` varchar(10) COLLATE utf8_spanish_ci NOT NULL,
   `marca` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
   `modelo` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
   `observaciones` varchar(250) COLLATE utf8_spanish_ci DEFAULT NULL,
   `idCliente` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `vehiculo`
@@ -1417,112 +1694,112 @@ ALTER TABLE `vehiculo`
 -- AUTO_INCREMENT de la tabla `boleta`
 --
 ALTER TABLE `boleta`
-  MODIFY `idBoleta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `idBoleta` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT de la tabla `comprobantecompra`
 --
 ALTER TABLE `comprobantecompra`
-  MODIFY `idComprobanteCompra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idComprobanteCompra` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT de la tabla `comprobanteventa`
 --
 ALTER TABLE `comprobanteventa`
-  MODIFY `idComprobanteVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `idComprobanteVenta` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT de la tabla `detallecompra`
 --
 ALTER TABLE `detallecompra`
-  MODIFY `idDetalleCompra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idDetalleCompra` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT de la tabla `detalleoperacion`
 --
 ALTER TABLE `detalleoperacion`
-  MODIFY `idDetalleOperacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `idDetalleOperacion` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT de la tabla `detallepermiso`
 --
 ALTER TABLE `detallepermiso`
-  MODIFY `idDetallePermiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `idDetallePermiso` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=97;
 --
 -- AUTO_INCREMENT de la tabla `detalleventa`
 --
 ALTER TABLE `detalleventa`
-  MODIFY `idDetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `idDetalleVenta` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `idEmpleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idEmpleado` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `idFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idFactura` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT de la tabla `kardex`
 --
 ALTER TABLE `kardex`
-  MODIFY `idKardex` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `idKardex` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=51;
 --
 -- AUTO_INCREMENT de la tabla `login`
 --
 ALTER TABLE `login`
-  MODIFY `idLogin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idLogin` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `operacion`
 --
 ALTER TABLE `operacion`
-  MODIFY `idOperacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idOperacion` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT de la tabla `permiso`
 --
 ALTER TABLE `permiso`
-  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `idPersona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `idPersona` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=38;
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=141;
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `idProveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idProveedor` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT de la tabla `repuesto`
 --
 ALTER TABLE `repuesto`
-  MODIFY `idRepuesto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `idRepuesto` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=101;
 --
 -- AUTO_INCREMENT de la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=41;
 --
 -- AUTO_INCREMENT de la tabla `tipodocumento`
 --
 ALTER TABLE `tipodocumento`
-  MODIFY `idTipoDocumento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idTipoDocumento` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT de la tabla `tiposervicio`
 --
 ALTER TABLE `tiposervicio`
-  MODIFY `idTipoServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idTipoServicio` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT de la tabla `vehiculo`
 --
 ALTER TABLE `vehiculo`
-  MODIFY `idVehiculo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `idVehiculo` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=70;
 --
 -- Restricciones para tablas volcadas
 --
@@ -1640,4 +1917,3 @@ ALTER TABLE `vehiculo`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-login
