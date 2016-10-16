@@ -144,7 +144,7 @@ public class RepuestoControlador extends HttpServlet {
                 }
                 sesion.setAttribute("listaRepuesto", lstRepuesto);
             }else{
-                mensaje = FuncionesMensajes.buscarEror("Repuesto", desc);
+                mensaje = FuncionesMensajes.buscarError("Repuesto", desc);
                 sesion.setAttribute("msgListado", mensaje);
             }
             response.sendRedirect("RepuestoLst.jsp");

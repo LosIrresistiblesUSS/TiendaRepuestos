@@ -63,8 +63,8 @@ public class LoginControlador extends HttpServlet {
             if (user != null) {
                 sesion.setAttribute("usuario", user);
                 System.out.println("---(Sesión Iniciada)---");
-                TipoServicioControlador tipoServicioControlador = new TipoServicioControlador();
-                tipoServicioControlador.buscar(request, response);
+                EmpleadoControlador empleadoControlador = new EmpleadoControlador();
+                empleadoControlador.buscar(request, response);
             } else {
                 mensaje = "Usuario y/o Contraseña incorrectos";
                 sesion.setAttribute("msgSesion", mensaje);
