@@ -97,9 +97,12 @@
             <h4 class="text-collapse">Mantenimientos</h4>
             <div class="btn-group btn-group-sm " role="group" aria-label="">
                 <a href="EmpleadoControlador?accion=buscar" class="btn btn-primary">Empleado</a>
+                <a href="ProveedorControlador?accion=buscar" class="btn btn-primary">Proveedor</a>
+                <a href="ClienteControlador?accion=buscar" class="btn btn-primary">Cliente</a>
                 <a href="RepuestoControlador?accion=buscar" class="btn btn-primary">Repuesto</a>
                 <a href="TipoEmpleadoControlador?accion=buscar" class="btn btn-primary">Tipo Empleado</a>
                 <a href="TipoServicioControlador?accion=buscar" class="btn btn-primary">Tipo Servicio</a>                
+                <a href="TipoDocumentoControlador?accion=buscar" class="btn btn-primary">Tipo Documento</a>
             </div>
         </div>
     </div>

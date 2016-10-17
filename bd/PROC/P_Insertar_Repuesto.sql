@@ -17,7 +17,7 @@ DELIMITER $$
 		SELECT count(*) into contador_rep from Producto
 		WHERE descripcion = _descrip;
 		
-		IF (contador_rep != 0) THEN
+		IF (contador_rep > 1) THEN
 			SET flag_exitoso = 2;
 		ELSE
 			select idProducto into contadorProducto from Producto order by idProducto desc limit 1;

@@ -1,9 +1,8 @@
 <%-- 
-    Document   : TipoServicioMnt
-    Created on : 24-sep-2016, 14:45:55
+    Document   : RepuestoMnt
+    Created on : 17/10/2016, 02:12:43 PM
     Author     : Los Irresistibles
 --%>
-
 <%@page import="Modelo.Repuesto"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -14,62 +13,43 @@
     <%
     Repuesto repuesto = (Repuesto) session.getAttribute("repuestoActualizar");
     repuesto = repuesto == null ? new Repuesto() : repuesto;
-    
-    String descripcion;
-    int idproducto,stock;
-    double precio,preciopormayor;
-    
-    if (repuesto != null) {
-        idproducto = repuesto.getIdproducto();
-        
-        descripcion = repuesto.getDescripcion();
-        stock = repuesto.getStock();
-        precio = repuesto.getPrecio();
-        preciopormayor = repuesto.getPreciopormayor();
-        
-    }else{
-        idproducto = 0;
-        descripcion = " ";
-        stock = 0;
-        precio = 0;
-        preciopormayor = 0;
-        
-    }
-
- 
+    int idRepuesto = (String.valueOf(repuesto.getIdrepuesto()) == null) ? 0 : repuesto.getIdrepuesto();
+    String descripcion = repuesto.getDescripcion() == null ? "" : repuesto.getDescripcion() ;
+    int stock  = (String.valueOf(repuesto.getStock()) == null) ? 0 : repuesto.getStock();
+    double precio  = (String.valueOf(repuesto.getPrecio()) == null) ? 0 : repuesto.getPrecio();
+    double PrecioPorMayor  = (String.valueOf(repuesto.getPreciopormayor()) == null) ? 0 : repuesto.getPreciopormayor();
     %>
+    
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
         <title>Mantenimiento de Repuestos</title>
         <script type="text/javascript">
             function insertar(){
-                
-                var idproducto = document.getElementById("txtidproducto").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
                 var stock = document.getElementById("txtStock").value;
                 var precio = document.getElementById("txtPrecio").value;
-                var precioxmayor = document.getElementById("txtPreciopormayor").value;
+                var PrecioPorMayor = document.getElementById("txtPrecioPorMayor").value;
                 
-                if(idproducto == "" || descripcion == "" || stock == "" || precio == "" || precioxmayor == ""){
+                if(descripcion == "" || stock == "" || precio == "" || PrecioPorMayor == ""){
                     alert("Todos los campos son obligatorio.");
                 }else{
-                    document.frmMnt.action = "RepuestoControlador?accion=insertar&idproducto=" + idproducto + "&descripcion=" + descripcion + "&stock=" + stock   + "&precio=" + precio  + "&precioxmayor=" + precioxmayor   ;
+                    document.frmMnt.action = "RepuestoControlador?accion=insertar&descripcion=" + descripcion  + "&stock=" + stock   + "&precio=" + precio  + "&precioPorMayor=" + PrecioPorMayor  ;
                     
                     document.frmMnt.submit();
                 }
             }
             
             function actualizar(id){
-                var idproducto = document.getElementById("txtidproducto").value;
+               
                 var descripcion = document.getElementById("txtDescripcion").value;
                 var stock = document.getElementById("txtStock").value;
                 var precio = document.getElementById("txtPrecio").value;
-                var precioxmayor = document.getElementById("txtPreciopormayor").value;
-                if(idproducto == "" || descripcion == "" || stock == "" || precio == "" || precioxmayor == ""){
+                var PrecioPorMayor = document.getElementById("txtPreciopormayor").value;
+                if(descripcion == "" || stock == "" || precio == "" || PrecioPorMayor == ""){
                     
                     alert("Todos los campos son obligatorio.");
                 }else{
-                    document.frmMnt.action = "RepuestoControlador?accion=actualizar&idproducto=" + idproducto + "&descripcion=" + descripcion + "&stock=" + stock   + "&precio=" + precio  + "&precioxmayor=" + precioxmayor   ;
+                    document.frmMnt.action = "RepuestoControlador?accion=actualizar&id=" + id + "&descripcion=" + descripcion + "&stock=" + stock   + "&precio=" + precio  + "&precioPorMayor=" + PrecioPorMayor;
                     document.frmMnt.submit();
                 }
             }
@@ -105,15 +85,6 @@
                     <div class="panel-heading panel-heading-2"></div>
                     <div class="panel-body">
                         <form name="frmMnt" method="post" class="form-horizontal col-md-offset-3 form-principal">
-                            <div class="form-group">
-                                    <label class="control-label col-md-3" for="txtidproducto">Id Producto</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtidproducto" value="<%=idproducto%>" autofocus="autofocus"/>
-                                        
-
-                                    </div>
-                                </div>
-                                
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDescripcion">Descripcion:</label>
                                     <div class="col-md-4">
@@ -135,9 +106,9 @@
                                     </div>
                                 </div>
                                <div class="form-group">
-                                    <label class="control-label col-md-3" for="txtPreciopormayor">Precio por Mayor:</label>
+                                    <label class="control-label col-md-3" for="txtPrecioPorMayor">Precio por Mayor:</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtPreciopormayor" value="<%=preciopormayor%>" autofocus="autofocus" />
+                                        <input class="form-control" type="text" id="txtPrecioPorMayor" value="<%=PrecioPorMayor%>" autofocus="autofocus" />
                                     </div>
                                 </div>
                                
@@ -146,7 +117,9 @@
                                         <% if(session.getAttribute("productoActualizar") == null){ %>
                                         <input class="btn btn-primary" type="submit" value="Insertar" onclick="insertar()" id="btnInsertar" />
                                         <% }else{ %>
-                                        <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar(<%=repuesto.getIdrepuesto()%>)" id="btnActualizar" />
+                                        
+                                        
+                                        <input class="btn btn-primary" type="submit" value="Actualizar" onclick="actualizar(<%=idRepuesto%>)" id="btnActualizar" />
                                         <% } %>
                                         <input class="btn btn-primary" type="button" value="Cancelar" onclick="cancelar()" id="btnCancelar" />
                                     </div>

@@ -23,27 +23,27 @@ public class RepuestoDAO implements iRepuestoDAO {
     @Override
     public int insertar(Repuesto repuesto) {
         logger.info("Insertando Repuesto");
-        sql= "{CALL P_Insertar_Repuesto(?,?,?,?,?,?)}";
+        sql= "{CALL P_Insertar_Repuesto(?,?,?,?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-           cs.setInt(1, repuesto.getIdproducto());
-           cs.setString(2, repuesto.getDescripcion().trim());
-           cs.setDouble(3, repuesto.getStock());
-            cs.setDouble(4, repuesto.getPrecio());
-            cs.setDouble(5, repuesto.getpreciopormayor()); 
-            cs.registerOutParameter(6, java.sql.Types.INTEGER);
+
+           cs.setString(1, repuesto.getDescripcion().trim());
+           cs.setDouble(2, repuesto.getStock());
+            cs.setDouble(3, repuesto.getPrecio());
+            cs.setDouble(4, repuesto.getpreciopormayor()); 
+            cs.registerOutParameter(5, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(6).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(5).toString());
             if(flgOperacion==1){
                 cn.commit();
             }else{
                 cn.rollback();
             }
         }catch(Exception e){
-            logger.info("Error al insertar" + e.getMessage());
+            logger.info("Error  al insertar" + e.getMessage());
         }finally{
             con.cerrarConexion(cn);
         }

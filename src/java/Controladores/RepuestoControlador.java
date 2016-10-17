@@ -1,7 +1,6 @@
 package Controladores;
 
 import Funciones.FuncionesMensajes;
-
 import Interfaces.iRepuestoLogica;
 import Logica.RepuestoLogica; 
 import Modelo.Repuesto;
@@ -69,15 +68,15 @@ public class RepuestoControlador extends HttpServlet {
     }
         protected void insertar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("insertar");
-        int idproducto = Integer.parseInt(request.getParameter("idproducto") == null ? "0" : request.getParameter("idproducto"));
+
         String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
         int stock = Integer.parseInt(request.getParameter("stock") == null ? "0" : request.getParameter("stock"));
         double precio = Double.parseDouble(request.getParameter("precio") == null ? "0" : request.getParameter("precio"));
-        double precioPorMayor = Double.parseDouble(request.getParameter("precioPorMayor") == null ? "0" : request.getParameter("precprecioPorMayor"));
+        double precioPorMayor = Double.parseDouble(request.getParameter("precioPorMayor") == null ? "0" : request.getParameter("precioPorMayor"));
         
         try{
             repuesto = new Repuesto();
-            repuesto.setIdproducto(idproducto);
+
             repuesto.setDescripcion(descripcion);
             repuesto.setStock(stock);
             repuesto.setPrecio(precio);
