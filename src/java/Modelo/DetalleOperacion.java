@@ -6,18 +6,17 @@ import java.util.List;
 public class DetalleOperacion {
     private int idDetalleOperacion;
     private OperacionRepuesto operacionRespuesto;
-    
-    private List<DetalleVentaRepuesto> lstDetalleVentaRepuesto;
+    private List<DetalleOperacionRepuesto> lstDetalleRepuesto;
 
     public DetalleOperacion() {
         this.operacionRespuesto = new OperacionRepuesto();
-        this.lstDetalleVentaRepuesto = new ArrayList<>();
+        this.lstDetalleRepuesto = new ArrayList<>();
     }
 
-    public DetalleOperacion(int idDetalleOperacion, OperacionRepuesto operacionRespuesto, List<DetalleVentaRepuesto> lstDetalleVentaRepuesto) {
+    public DetalleOperacion(int idDetalleOperacion, OperacionRepuesto operacionRespuesto, List<DetalleOperacionRepuesto> lstDetalleRepuesto) {
         this.idDetalleOperacion = idDetalleOperacion;
         this.operacionRespuesto = operacionRespuesto;
-        this.lstDetalleVentaRepuesto = lstDetalleVentaRepuesto;
+        this.lstDetalleRepuesto = lstDetalleRepuesto;
     }
 
     public int getIdDetalleOperacion() {
@@ -36,11 +35,11 @@ public class DetalleOperacion {
         this.operacionRespuesto = operacionRespuesto;
     }
 
-    public List<DetalleVentaRepuesto> getLstDetalleVentaRepuesto() {
-        return lstDetalleVentaRepuesto;
+    public List<DetalleOperacionRepuesto> getLstDetalleRepuesto() {
+        return lstDetalleRepuesto;
     }
 
-    public void setLstDetalleVentaRepuesto(List<DetalleVentaRepuesto> lstDetalleVentaRepuesto) {
-        this.lstDetalleVentaRepuesto = lstDetalleVentaRepuesto;
-    } 
+    public void setLstDetalleRepuesto(List<DetalleOperacionRepuesto> lstDetalleRepuesto) {
+        this.lstDetalleRepuesto = lstDetalleRepuesto;
+    }
 }

@@ -5,19 +5,32 @@
     {
         $('#nav-enlace-mantenimientos').toggleClass('active');
         $('#collapseReportes').removeClass('in');
+        $('#collapseOperaciones').removeClass('in');
         $('#nav-enlace-reportes').removeClass('active');
+        $('#nav-enlace-operaciones').removeClass('active');
     }
     function cambiaClaseReporte()
     {
         $('#nav-enlace-reportes').toggleClass('active');
         $('#collapseMantenimientos').removeClass('in');
+        $('#collapseOperaciones').removeClass('in');
         $('#nav-enlace-mantenimientos').removeClass('active');
+        $('#nav-enlace-operaciones').removeClass('active');
+    }
+    function cambiaClaseOperaciones()
+    {
+        $('#nav-enlace-operaciones').toggleClass('active');
+        $('#collapseMantenimientos').removeClass('in');
+        $('#collapseReportes').removeClass('in');
+        $('#nav-enlace-mantenimientos').removeClass('active');
+        $('#nav-enlace-reportes').removeClass('active');
     }
     
     window.onload = function()
     {
         document.getElementById("nav-enlace-mantenimientos").addEventListener( 'click' , cambiaClaseMantenimiento );
         document.getElementById("nav-enlace-reportes").addEventListener( 'click' , cambiaClaseReporte );
+        document.getElementById("nav-enlace-operaciones").addEventListener('click', cambiaClaseOperaciones)
     }    
 </script>
 <header>
@@ -34,6 +47,7 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
+                    <li id="nav-enlace-operaciones"><a role="button" data-toggle="collapse" href="#collapseOperaciones" aria-expanded="false" aria-controls="collapseOperaciones">Operaciones</a></li>
                     <li id="nav-enlace-mantenimientos"><a role="button" data-toggle="collapse" href="#collapseMantenimientos" aria-expanded="false" aria-controls="collapseMantenimientos">Mantenimientos</a></li>
                     <li id="nav-enlace-reportes"><a role="button" data-toggle="collapse" href="#collapseReportes" aria-expanded="false" aria-controls="collapseReportes">Reportes</a></li>
                     <% if(session.getAttribute("usuario") != null){
@@ -69,7 +83,15 @@
             </div>
         </div>
     </nav>
-                    
+                
+    <div class="collapse mi-collapse" id="collapseOperaciones">
+        <div class="container btn-group1">
+            <h4 class="text-collapse">Operaciones</h4>
+            <div class="btn-group btn-group-sm " role="group" aria-label="">
+                <a href="DetalleVentaControlador?accion=buscar" class="btn btn-primary">Venta Repuestos</a>           
+            </div>
+        </div>
+    </div>
     <div class="collapse mi-collapse" id="collapseMantenimientos">
         <div class="container btn-group1">
             <h4 class="text-collapse">Mantenimientos</h4>
@@ -81,6 +103,7 @@
             </div>
         </div>
     </div>
+                    
     <div class="collapse mi-collapse" id="collapseReportes">
         <div class="container btn-group1">
             <h4 class="text-collapse">Reportes</h4>

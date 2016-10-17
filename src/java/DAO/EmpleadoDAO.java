@@ -79,7 +79,7 @@ public class EmpleadoDAO implements iEmpleadoDAO{
             cn.setAutoCommit(false);
             ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();
-            lstEmpleado = new ArrayList<Empleado>();
+            lstEmpleado = new ArrayList<>();
             while(rs.next()){
                 //Todos los campos que vamos a mostrar de la consulta
                 empleado = new Empleado();

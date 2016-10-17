@@ -2,7 +2,6 @@ DELIMITER $$
 
 	CREATE PROCEDURE P_Insertar_Repuesto
 	(
-		 IN _idProducto int,
 	    IN _descrip varchar(150),
        IN _stock int,
 	    IN _precio double(6,2),
@@ -10,34 +9,27 @@ DELIMITER $$
 	    OUT flag_exitoso int
 	)
 	BEGIN
-		DECLARE contador INT DEFAULT 0;
+		DECLARE contadorProducto INT DEFAULT 0;
+		DECLARE contadorRepuesto INT DEFAULT 0;
 		DECLARE contador_rep INT DEFAULT 0;
 		SET flag_exitoso = 0;
 	
 		SELECT count(*) into contador_rep from Producto
-		WHERE idProducto = _idProducto or descripcion = _descrip;
+		WHERE descripcion = _descrip;
 		
 		IF (contador_rep != 0) THEN
 			SET flag_exitoso = 2;
 		ELSE
-			select idRepuesto into contador from Repuesto order by idRepuesto desc limit 1;
-			IF (contador = 0) THEN
-				INSERT INTO Producto(idProducto, descripcion,stock,precio,precioPorMayor)
-	    		VALUES(_idProducto, _descrip, _stock, _precio, _precioPorMayor);
-	    		
-	    		INSERT INTO Repuesto(idRepuesto, idProducto)
-	    		VALUES(1, _idProducto);
-	    		
-				SET flag_exitoso = 1;
-			ELSE
-				INSERT INTO Producto(idProducto, descripcion,stock,precio,precioPorMayor)
-	    		VALUES(_idProducto, _descrip, _stock, _precio, _precioPorMayor);
+			select idProducto into contadorProducto from Producto order by idProducto desc limit 1;
+			select idRepuesto into contadorRepuesto from Repuesto order by idRepuesto desc limit 1;
 
-				INSERT INTO Repuesto(idRepuesto, idProducto)
-	    		VALUES(contador+1, _idProducto);
-
-				SET flag_exitoso = 1;
-			END IF;
+			INSERT INTO Producto(idProducto,descripcion,stock,precio,precioPorMayor)
+    		VALUES(contadorProducto+1, _descrip, _stock, _precio, _precioPorMayor);
+    		
+    		INSERT INTO Repuesto(idRepuesto, idProducto)
+    		VALUES(contadorRepuesto+1, contadorProducto+1);
+    		
+			SET flag_exitoso = 1;
 		END IF;
 		SELECT flag_exitoso;
 	END $$

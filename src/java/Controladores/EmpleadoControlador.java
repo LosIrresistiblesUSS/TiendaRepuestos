@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 @WebServlet(name = "EmpleadoControlador", urlPatterns = {"/EmpleadoControlador"})/*url para el navegador*/
 
 public class EmpleadoControlador extends HttpServlet {
-     private static Logger logger = Logger.getLogger(EmpleadoControlador.class.getName());
+    private static Logger logger = Logger.getLogger(EmpleadoControlador.class.getName());
     
     private iEmpleadoLogica empleadoService;
     private Empleado empleado;

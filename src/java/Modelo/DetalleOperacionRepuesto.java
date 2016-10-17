@@ -1,31 +1,31 @@
 package Modelo;
 
-public class DetalleVentaRepuesto {
-    private int idDetalleVentaRepuesto;
+public class DetalleOperacionRepuesto {
+    private int idDetalleOperacionRepuesto;
     private int cantidad;
     private double precio;
     private double subTotal;
     private Repuesto repuesto;
 
 
-    public DetalleVentaRepuesto() {
+    public DetalleOperacionRepuesto() {
         this.repuesto = new Repuesto();
     }
 
-    public DetalleVentaRepuesto(int idDetalleVentaRepuesto, int cantidad, double precio, double subTotal, Repuesto repuesto) {
-        this.idDetalleVentaRepuesto = idDetalleVentaRepuesto;
+    public DetalleOperacionRepuesto(int idDetalleOperacionRepuesto, int cantidad, double precio, double subTotal, Repuesto repuesto) {
+        this.idDetalleOperacionRepuesto = idDetalleOperacionRepuesto;
         this.cantidad = cantidad;
         this.precio = precio;
         this.subTotal = subTotal;
         this.repuesto = repuesto;
     }
 
-    public int getIdDetalleVentaRepuesto() {
-        return idDetalleVentaRepuesto;
+    public int getIdDetalleOperacionRepuesto() {
+        return idDetalleOperacionRepuesto;
     }
 
-    public void setIdDetalleVentaRepuesto(int idDetalleVentaRepuesto) {
-        this.idDetalleVentaRepuesto = idDetalleVentaRepuesto;
+    public void setIdDetalleOperacionRepuesto(int idDetalleOperacionRepuesto) {
+        this.idDetalleOperacionRepuesto = idDetalleOperacionRepuesto;
     }
 
     public int getCantidad() {

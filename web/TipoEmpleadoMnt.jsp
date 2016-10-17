@@ -43,10 +43,23 @@
                     document.frmMnt.submit();
             }
         }
-            
             function cancelar(){
                 document.location = "TipoEmpleadoControlador?accion=buscar";
             }
+            /* Para guardar con AJAX
+            function guardar(){
+                var data = new FormData($('#frmMnt')[0]);
+                $.ajax({
+                    url : "TipoEmpleadoControlador",
+                    type : "post",
+                    data : data,
+                    contentType: false,
+                    processData: false,
+                    success : function(data){
+                        alert(data);
+                    }
+                });
+            }*/
         </script>
     </head>
     
@@ -74,22 +87,24 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading panel-heading-2"></div>
                     <div class="panel-body">
-                        <form name="frmMnt" method="post" class="form-horizontal col-md-offset-3 form-principal">
+                        <form name="frmMnt" id="frmMnt" action="TipoEmpleadoControlador" method="post" class="form-horizontal col-md-offset-3 form-principal">
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDescripcion">Id Tipo de Empleado:</label>
                                     <div class="col-md-4">
                                         <% if(session.getAttribute("tipoEmpleadoActualizar") == null){ %>
-                                        <input class="form-control" type="text" id="txtId" value="<%=ListasObjetos.ultimoCodigoEmpleado()%>" maxlength='6' autofocus="autofocus" placeholder="" />
+                                        <input class="form-control" type="text" id="txtId" name="id" value="<%=ListasObjetos.ultimoCodigoEmpleado()%>" maxlength='6' autofocus="autofocus" placeholder="" />
                                         <% }else{ %>
-                                        <input class="form-control" type="text" id="txtId" value="<%=idTe%>" maxlength='6' placeholder="" disabled />
+                                        <input class="form-control" type="text" id="txtId" name="id" value="<%=idTe%>" maxlength='6' placeholder="" disabled />
                                         <% } %>
                                     </div>
                                 </div>
                                     
+                                    
+                                <input type="hidden" value="insertar" name="accion" />
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDescripcion">Tipo de Empleado:</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" maxlength='25' autofocus />
+                                        <input class="form-control" type="text" id="txtDescripcion" name="descripcion" value="<%=descripcion%>" maxlength='25' autofocus />
                                     </div>
                                 </div>
                                     
