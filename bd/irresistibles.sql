@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-10-2016 a las 21:09:51
+-- Tiempo de generación: 22-10-2016 a las 21:31:18
 -- Versión del servidor: 5.6.26
 -- Versión de PHP: 5.6.12
 
@@ -420,6 +420,7 @@ INSERT INTO `comprobantecompra` (`idComprobanteCompra`, `fecha`, `idProveedor`) 
 
 CREATE TABLE IF NOT EXISTS `comprobanteventa` (
   `idComprobanteVenta` int(11) NOT NULL,
+  `numero` varchar(15) COLLATE utf8_spanish_ci NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `descripcion` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `importe` decimal(7,2) DEFAULT NULL,
@@ -431,33 +432,33 @@ CREATE TABLE IF NOT EXISTS `comprobanteventa` (
 -- Volcado de datos para la tabla `comprobanteventa`
 --
 
-INSERT INTO `comprobanteventa` (`idComprobanteVenta`, `fecha`, `descripcion`, `importe`, `estado`, `idTipoComprobanteVenta`) VALUES
-(1, '2016-08-05 05:00:00', 'Realizando Ventas', '400.00', b'1', 2),
-(2, '2016-09-05 05:00:00', 'Realizando Ventas', '240.00', b'1', 1),
-(3, '2016-05-10 05:00:00', 'Realizando Ventas', '240.00', b'1', 2),
-(4, '2016-05-11 05:00:00', 'Realizando Ventas', '80.00', b'1', 1),
-(5, '2016-05-12 05:00:00', 'Realizando Ventas', '200.00', b'1', 2),
-(6, '2016-05-13 05:00:00', 'Realizando Ventas', '880.00', b'1', 1),
-(7, '2016-05-14 05:00:00', 'Realizando Ventas', '840.00', b'1', 2),
-(8, '2016-05-15 05:00:00', 'Realizando Ventas', '160.00', b'1', 1),
-(9, '2016-05-16 05:00:00', 'Realizando Ventas', '440.00', b'1', 2),
-(10, '2016-05-17 05:00:00', 'Realizando Ventas', '1300.00', b'1', 1),
-(11, '2016-05-18 05:00:00', 'Realizando Ventas', '1240.00', b'1', 2),
-(12, '2016-05-19 05:00:00', 'Realizando Ventas', '2500.00', b'1', 1),
-(13, '2016-05-20 05:00:00', 'Realizando Ventas', '1400.00', b'1', 2),
-(14, '2016-05-21 05:00:00', 'Realizando Ventas', '1280.00', b'1', 1),
-(15, '2016-05-22 05:00:00', 'Realizando Ventas', '1400.00', b'1', 2),
-(16, '2016-05-23 05:00:00', 'Realizando Ventas', '60.00', b'1', 1),
-(17, '2016-05-24 05:00:00', 'Realizando Ventas', '40.00', b'1', 2),
-(18, '2016-05-25 05:00:00', 'Realizando Ventas', '160.00', b'1', 1),
-(19, '2016-05-26 05:00:00', 'Realizando Ventas', '1180.00', b'1', 2),
-(20, '2016-05-27 05:00:00', 'Realizando Ventas', '1140.00', b'1', 1),
-(21, '2016-05-08 05:00:00', 'Realizando Ventas', '2000.00', b'1', 2),
-(22, '2016-05-29 05:00:00', 'Realizando Ventas', '1240.00', b'1', 1),
-(23, '2016-05-30 05:00:00', 'Realizando Ventas', '1240.00', b'1', 2),
-(24, '2016-05-31 05:00:00', 'Realizando Ventas', '2320.00', b'1', 1),
-(25, '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00', b'0', 2),
-(26, '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00', b'1', 1);
+INSERT INTO `comprobanteventa` (`idComprobanteVenta`, `numero`, `fecha`, `descripcion`, `importe`, `estado`, `idTipoComprobanteVenta`) VALUES
+(1, 'F-001-000001', '2016-08-05 05:00:00', 'Realizando Ventas', '400.00', b'1', 2),
+(2, 'B-001-000001', '2016-09-05 05:00:00', 'Realizando Ventas', '240.00', b'1', 1),
+(3, 'F-001-000002', '2016-05-10 05:00:00', 'Realizando Ventas', '240.00', b'1', 2),
+(4, 'B-001-000002', '2016-05-11 05:00:00', 'Realizando Ventas', '80.00', b'1', 1),
+(5, 'F-001-000003', '2016-05-12 05:00:00', 'Realizando Ventas', '200.00', b'1', 2),
+(6, 'B-001-000003', '2016-05-13 05:00:00', 'Realizando Ventas', '880.00', b'1', 1),
+(7, 'F-001-000004', '2016-05-14 05:00:00', 'Realizando Ventas', '840.00', b'1', 2),
+(8, 'B-001-000004', '2016-05-15 05:00:00', 'Realizando Ventas', '160.00', b'1', 1),
+(9, 'F-001-000005', '2016-05-16 05:00:00', 'Realizando Ventas', '440.00', b'1', 2),
+(10, 'B-001-000005', '2016-05-17 05:00:00', 'Realizando Ventas', '1300.00', b'1', 1),
+(11, 'F-001-000006', '2016-05-18 05:00:00', 'Realizando Ventas', '1240.00', b'1', 2),
+(12, 'B-001-000006', '2016-05-19 05:00:00', 'Realizando Ventas', '2500.00', b'1', 1),
+(13, 'F-001-000007', '2016-05-20 05:00:00', 'Realizando Ventas', '1400.00', b'1', 2),
+(14, 'B-001-000007', '2016-05-21 05:00:00', 'Realizando Ventas', '1280.00', b'1', 1),
+(15, 'F-001-000008', '2016-05-22 05:00:00', 'Realizando Ventas', '1400.00', b'1', 2),
+(16, 'B-001-000008', '2016-05-23 05:00:00', 'Realizando Ventas', '60.00', b'1', 1),
+(17, 'F-001-000009', '2016-05-24 05:00:00', 'Realizando Ventas', '40.00', b'1', 2),
+(18, 'B-001-000009', '2016-05-25 05:00:00', 'Realizando Ventas', '160.00', b'1', 1),
+(19, 'F-001-000010', '2016-05-26 05:00:00', 'Realizando Ventas', '1180.00', b'1', 2),
+(20, 'B-001-000010', '2016-05-27 05:00:00', 'Realizando Ventas', '1140.00', b'1', 1),
+(21, 'F-001-000011', '2016-05-08 05:00:00', 'Realizando Ventas', '2000.00', b'1', 2),
+(22, 'B-001-000012', '2016-05-29 05:00:00', 'Realizando Ventas', '1240.00', b'1', 1),
+(23, 'F-001-000012', '2016-05-30 05:00:00', 'Realizando Ventas', '1240.00', b'1', 2),
+(24, 'B-001-000013', '2016-05-31 05:00:00', 'Realizando Ventas', '2320.00', b'1', 1),
+(25, 'F-001-000013', '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00', b'0', 2),
+(26, 'B-001-000014', '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00', b'1', 1);
 
 -- --------------------------------------------------------
 
