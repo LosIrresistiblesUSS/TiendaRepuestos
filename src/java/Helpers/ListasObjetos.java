@@ -1,5 +1,6 @@
 package Helpers;
 
+import Modelo.TipoCliente;
 import Modelo.TipoDocumento;
 import Modelo.TipoEmpleado;
 import Util.Conexion;
@@ -111,10 +112,33 @@ public class ListasObjetos {
                 default:
                     break;
             }
-        } 
-        
-        
-        
+        }
         return codigo;
+    }
+    
+    public static List<TipoCliente> listaTipoCliente(){
+        logger.info("listaTipoCliente");
+        sql = "select idTipoCliente, descripcion from TipoCliente";
+        List<TipoCliente> lstTipoCliente = null;
+        TipoCliente tipoCliente;
+        try {
+            con = new Conexion();
+            cn = con.getConexion();
+            cn.setAutoCommit(false);
+            ps = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            lstTipoCliente = new ArrayList<>();
+            while(rs.next()){
+                tipoCliente = new TipoCliente();
+                tipoCliente.setIdTipoCliente(rs.getInt("idTipoCliente"));
+                tipoCliente.setNomDescripcion(rs.getString("descripcion"));
+                lstTipoCliente.add(tipoCliente);
+            }
+        } catch (Exception e) {
+            logger.info("Error listaTipoEmpleado: " + e.getMessage());
+        } finally{
+            con.cerrarConexion(cn);
+        }
+        return lstTipoCliente;
     }
 }

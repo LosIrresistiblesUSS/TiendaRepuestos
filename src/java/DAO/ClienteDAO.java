@@ -1,8 +1,8 @@
 package DAO;
 
-
 import Interfaces.iClienteDAO;
 import Modelo.Cliente;
+import Modelo.TipoCliente;
 import Modelo.TipoDocumento;
 import Util.Conexion;
 import java.sql.CallableStatement;
@@ -63,8 +63,10 @@ public class ClienteDAO implements iClienteDAO{
         sql = "select " + 
                 "c.idCliente " +
                 ",c.razonSocial " +
-                ",p.nombres " +
-                ",tp.descripcion " +
+                ",p.nombres"+
+                ",c.apellidos " +
+                ",tc.descripcion as tipocliente" +
+                ",tp.descripcion as tipodocumento" +
                 ",p.numeroDocumento " +
                 ",p.direccion " +
                 ",p.telefono " +
@@ -75,12 +77,15 @@ public class ClienteDAO implements iClienteDAO{
                 "on c.idPersona = p.idPersona " +
                 "inner join tipodocumento tp " +
                 "on tp.idTipoDocumento = p.idTipoDocumento " +
-                "where p.nombres like '%" + (nombres.trim()) + "%' "
+                "inner join tipocliente tc " +
+                "on tc.idTipoCliente = c.idTipoCliente " +
+                "where c.apellidos like '%" + (nombres.trim()) + "%' or c.razonSocial like '%" + (nombres.trim()) + "%' "
                 + "order by idCliente LIMIT " + inicio + ", " + registrosPorPagina;
 
         List<Cliente> lstCliente = null;
         Cliente cliente;
         TipoDocumento tipodocumento;
+        TipoCliente tipocliente;
         try{
             con = new Conexion();
             cn = con.getConexion();
@@ -92,18 +97,27 @@ public class ClienteDAO implements iClienteDAO{
             while(rs.next()){
                 cliente = new Cliente();
                 cliente.setIdCliente(rs.getInt("IdCliente"));
-                System.out.println("HOLAAAA");
+             
                 cliente.setIdPersona(rs.getInt("idpersona"));
                 cliente.setRazonSocial(rs.getString("razonSocial"));
                 cliente.setNombres(rs.getString("nombres"));
+                cliente.setApellidos(rs.getString("apellidos"));
+               
+                tipocliente=new TipoCliente();
+                tipocliente.setNomDescripcion(rs.getString("tipocliente"));
+                cliente.setTipoCliente(tipocliente);
+                
+                
                 cliente.setNumeroDocumento(rs.getString("numeroDocumento"));
                 cliente.setDireccion(rs.getString("direccion"));
                 cliente.setTelefono(rs.getString("telefono"));
                 cliente.setEmail(rs.getString("email"));
                 
                 tipodocumento= new TipoDocumento();
-                tipodocumento.setDescripcion(rs.getString("descripcion"));
+                tipodocumento.setDescripcion(rs.getString("tipodocumento"));
                 cliente.setTipoDocumento(tipodocumento);
+                
+                
                 
                 lstCliente.add(cliente);
                 
@@ -124,7 +138,9 @@ public class ClienteDAO implements iClienteDAO{
         sql = "select count(*) as total " +
               "from cliente c inner join persona p " +
               "on c.idpersona = p.idpersona " +
-               "where nombres like '%" + (nombres.trim()) + "%'";
+              "inner join tipocliente tc "+
+               "on tc.idTipoCliente=c.idTipoCliente " +
+               "where apellidos like '%" + (nombres.trim()) + "%'";
         try{
             con = new Conexion();
             cn = con.getConexion();
@@ -146,7 +162,7 @@ public class ClienteDAO implements iClienteDAO{
     @Override
     public Cliente obtenerPorId(int id) {
         logger.info("buscarPorId");
-        sql = "select c.idCliente, c.razonSocial, p.nombres,p.numeroDocumento, "
+        sql = "select c.idCliente, c.razonSocial, c.apellidos, p.numeroDocumento, "
                 + "p.direccion, p.telefono, p.email "
                 + "from cliente c inner join persona p "
                 + "on c.idpersona=p.idpersona " +
@@ -167,7 +183,7 @@ public class ClienteDAO implements iClienteDAO{
                 cliente = new Cliente();
                 cliente.setIdCliente(rs.getInt("idCliente"));
                 cliente.setRazonSocial(rs.getString("RazonSocial"));
-                cliente.setNombres(rs.getString("nombres"));
+                cliente.setApellidos(rs.getString("nombres"));
                 cliente.setNumeroDocumento(rs.getString("numeroDocumento"));
                 cliente.setDireccion(rs.getString("Direccion"));
                 cliente.setTelefono(rs.getString("telefono"));
