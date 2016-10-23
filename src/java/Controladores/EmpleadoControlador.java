@@ -76,6 +76,7 @@ public class EmpleadoControlador extends HttpServlet {
         logger.info("insertar");
         
         String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
+        String apellidos = request.getParameter("apellidos") == null ? "" : request.getParameter("apellidos");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email = request.getParameter("email") == null ? "" : request.getParameter("email");
@@ -86,6 +87,7 @@ public class EmpleadoControlador extends HttpServlet {
             empleado = new Empleado();
             
             empleado.setNombres(nombres);
+            empleado.setApellidos(apellidos);
             empleado.setDireccion(direccion);
             empleado.setTelefono(telefono);
             empleado.setEmail(email);
@@ -194,6 +196,7 @@ public class EmpleadoControlador extends HttpServlet {
         logger.info("actualizar");
         int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
         String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
+        String apellidos = request.getParameter("apellidos") == null ? "" : request.getParameter("apellidos");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email = request.getParameter("email") == null ? "" : request.getParameter("email");
@@ -205,6 +208,7 @@ public class EmpleadoControlador extends HttpServlet {
             
             empleado.setIdEmpleado(id);
             empleado.setNombres(nombres);
+            empleado.setApellidos(apellidos);
             empleado.setDireccion(direccion);
             empleado.setTelefono(telefono);
             empleado.setEmail(email);
@@ -218,10 +222,6 @@ public class EmpleadoControlador extends HttpServlet {
             tipoEmpleado = new TipoEmpleado();
             tipoEmpleado.setIdTipoEmpleado(idTipoEmpleado);
             empleado.setTipoEmpleado(tipoEmpleado);
-           
-            
-            Empleado empleadoAnterior = new Empleado();
-            empleadoAnterior = (Empleado) sesion.getAttribute("empleadoActualizar");
             
             empleadoService = new EmpleadoLogica();
             flgOperacion = empleadoService.actualizar(empleado);

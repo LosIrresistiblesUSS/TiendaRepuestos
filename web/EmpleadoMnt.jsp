@@ -22,6 +22,7 @@
     int idEmpleado = (String.valueOf(empleado.getIdEmpleado()) == null) ? 0 : empleado.getIdEmpleado();
     String nroDocumento = empleado.getNumeroDocumento() == null ? "" : empleado.getNumeroDocumento();
     String nombres = empleado.getNombres() == null ? "" : empleado.getNombres();
+    String apellidos = empleado.getApellidos() == null ? "" : empleado.getApellidos();
     String direccion = empleado.getDireccion() == null ? "" : empleado.getDireccion();
     String telefono = empleado.getTelefono() == null ? "" : empleado.getTelefono();
     String email = empleado.getEmail() == null ? "" : empleado.getEmail();
@@ -35,6 +36,7 @@
         <script type="text/javascript">
             function insertar(){
                 var nombres = document.getElementById("txtNombres").value;
+                var apellidos = document.getElementById("txtApellidos").value;
                 var direccion = document.getElementById("txtDireccion").value;
                 var telefono = document.getElementById("txtTelefono").value;
                 var email = document.getElementById("txtEmail").value;
@@ -42,16 +44,17 @@
                 var nroDocumento = document.getElementById("txtNroDocumento").value;
                 var idTipoEmpleado = document.getElementById("idTipoEmpleado").value;
                 
-                if(nombres === "" || direccion === "" || telefono === "" || email=== "" || nroDocumento === ""){
+                if(nombres === "" || apellidos === "" || direccion === "" || telefono === "" || email=== "" || nroDocumento === ""){
                     alert("Todos los campos son obligatorios.");
                 }else{
-                    document.frmMnt.action = "EmpleadoControlador?accion=insertar&nombres=" + nombres + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email + "&idTipoDocumento=" + idTipoDocumento + "&nroDocumento=" + nroDocumento + "&idTipoEmpleado=" + idTipoEmpleado;
+                    document.frmMnt.action = "EmpleadoControlador?accion=insertar&nombres=" + nombres + "&apellidos=" + apellidos + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email + "&idTipoDocumento=" + idTipoDocumento + "&nroDocumento=" + nroDocumento + "&idTipoEmpleado=" + idTipoEmpleado;
                     document.frmMnt.submit();
                 }
             }
             
             function actualizar(id){
                 var nombres = document.getElementById("txtNombres").value;
+                var apellidos = document.getElementById("txtApellidos").value;
                 var direccion = document.getElementById("txtDireccion").value;
                 var telefono = document.getElementById("txtTelefono").value;
                 var email = document.getElementById("txtEmail").value;
@@ -61,7 +64,7 @@
                 if(nombres === "" || direccion === "" || telefono === "" || email=== "" || nroDocumento === ""){
                     alert("Todos los campos son obligatorios.");
                 }else{
-                    document.frmMnt.action = "EmpleadoControlador?accion=actualizar&id=" + id + "&nombres=" + nombres + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email + "&idTipoDocumento=" + idTipoDocumento + "&nroDocumento=" + nroDocumento + "&idTipoEmpleado=" + idTipoEmpleado;
+                    document.frmMnt.action = "EmpleadoControlador?accion=actualizar&id=" + id + "&nombres=" + nombres + "&apellidos=" + apellidos + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email + "&idTipoDocumento=" + idTipoDocumento + "&nroDocumento=" + nroDocumento + "&idTipoEmpleado=" + idTipoEmpleado;
                     document.frmMnt.submit();
                 }
             }
@@ -100,6 +103,13 @@
                                     <label class="control-label col-md-3" for="txtNombres">Nombres:</label>
                                     <div class="col-md-4">
                                         <input class="form-control" type="text" id="txtNombres" value="<%=nombres%>" autofocus="autofocus" />
+                                    </div>
+                                </div>
+                                    
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="txtNombres">Apellidos</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" id="txtApellidos" value="<%=apellidos%>" autofocus="autofocus" />
                                     </div>
                                 </div>
                                     

@@ -27,7 +27,7 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public int insertar(Empleado empleado) {
     logger.info("Insertando Empleado");
-        sql= "{CALL P_Insertar_Empleado(?,?,?,?,?,?,?,?)}";
+        sql= "{CALL P_Insertar_Empleado(?,?,?,?,?,?,?,?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
@@ -35,14 +35,15 @@ public class EmpleadoDAO implements iEmpleadoDAO{
             cs = cn.prepareCall(sql.trim());
             cs.setString(1, empleado.getNumeroDocumento().trim());
             cs.setString(2, empleado.getNombres().trim());
-            cs.setString(3, empleado.getDireccion().trim());
-            cs.setString(4, empleado.getTelefono().trim());
-            cs.setString(5, empleado.getEmail().trim());
-            cs.setInt(6, empleado.getTipoDocumento().getIdTipoDocumento());
-            cs.setString(7, empleado.getTipoEmpleado().getIdTipoEmpleado().trim());
-            cs.registerOutParameter(8, java.sql.Types.INTEGER);
+            cs.setString(3, empleado.getApellidos().trim());
+            cs.setString(4, empleado.getDireccion().trim());
+            cs.setString(5, empleado.getTelefono().trim());
+            cs.setString(6, empleado.getEmail().trim());
+            cs.setInt(7, empleado.getTipoDocumento().getIdTipoDocumento());
+            cs.setString(8, empleado.getTipoEmpleado().getIdTipoEmpleado().trim());
+            cs.registerOutParameter(9, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(8).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(9).toString());
             
             if(flgOperacion==1){
                 cn.commit();
@@ -60,7 +61,7 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public List<Empleado> buscar(String nombres, int inicio, int registrosPorPagina) {
         logger.info("buscar");
-        sql = "select idEmpleado,p.idpersona, p.nombres, td.descripcion, p.numerodocumento, p.email, p.direccion, p.telefono, te.descripcion "
+        sql = "select e.idEmpleado, p.nombres, e.apellidos, td.descripcion, p.numerodocumento, p.email, p.direccion, p.telefono, te.descripcion "
                 + "from tipoempleado as te inner join empleado as e " +
                 "on te.idtipoempleado=e.idtipoempleado " +
                 "inner join persona as p " +
@@ -87,8 +88,8 @@ public class EmpleadoDAO implements iEmpleadoDAO{
                 tipoDocumento = new TipoDocumento();
                 
                 empleado.setIdEmpleado(rs.getInt("idEmpleado"));
-                empleado.setIdPersona(rs.getInt("idpersona"));
                 empleado.setNombres(rs.getString("nombres"));
+                empleado.setApellidos(rs.getString("apellidos"));
                 
                 tipoDocumento.setDescripcion(rs.getString("td.descripcion"));
                 empleado.setTipoDocumento(tipoDocumento);
@@ -142,7 +143,7 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public Empleado obtenerPorId(int id) {
         logger.info("buscarPorId");
-        sql = "select idEmpleado,p.idpersona, p.nombres, td.idTipoDocumento, p.numerodocumento, "
+        sql = "select e.idEmpleado, p.idpersona, p.nombres, e.apellidos, td.idTipoDocumento, p.numerodocumento, "
                 + "p.direccion, p.telefono, p.email, te.idtipoempleado, te.descripcion "
                 + "from tipoempleado as te inner join empleado as e "
                 + "on te.idtipoempleado=e.idtipoempleado "
@@ -167,6 +168,7 @@ public class EmpleadoDAO implements iEmpleadoDAO{
                 empleado.setIdEmpleado(rs.getInt("idEmpleado"));
                 empleado.setNumeroDocumento(rs.getString("numerodocumento"));
                 empleado.setNombres(rs.getString("nombres")); 
+                empleado.setApellidos(rs.getString("apellidos")); 
                 empleado.setDireccion(rs.getString("direccion")); 
                 empleado.setTelefono(rs.getString("telefono"));
                 empleado.setEmail(rs.getString("email"));
@@ -190,7 +192,7 @@ public class EmpleadoDAO implements iEmpleadoDAO{
     @Override
     public int actualizar(Empleado empleado) {
         logger.info("actualizar");
-        sql = "{CALL P_Actualizar_Empleado(?,?,?,?,?,?,?,?,?)}";
+        sql = "{CALL P_Actualizar_Empleado(?,?,?,?,?,?,?,?,?,?)}";
         try{
             con = new Conexion();
             cn = con.getConexion();
@@ -199,14 +201,15 @@ public class EmpleadoDAO implements iEmpleadoDAO{
             cs.setInt(1, empleado.getIdEmpleado());
             cs.setString(2, empleado.getNumeroDocumento().trim());
             cs.setString(3, empleado.getNombres().trim());
-            cs.setString(4, empleado.getDireccion().trim());
-            cs.setString(5, empleado.getTelefono().trim());
-            cs.setString(6, empleado.getEmail().trim());
-            cs.setInt(7, empleado.getTipoDocumento().getIdTipoDocumento());
-            cs.setString(8, empleado.getTipoEmpleado().getIdTipoEmpleado().trim());
-            cs.registerOutParameter(9, java.sql.Types.INTEGER);
+            cs.setString(4, empleado.getApellidos().trim());
+            cs.setString(5, empleado.getDireccion().trim());
+            cs.setString(6, empleado.getTelefono().trim());
+            cs.setString(7, empleado.getEmail().trim());
+            cs.setInt(8, empleado.getTipoDocumento().getIdTipoDocumento());
+            cs.setString(9, empleado.getTipoEmpleado().getIdTipoEmpleado().trim());
+            cs.registerOutParameter(10, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(9).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(10).toString());
             if(flgOperacion == 1){
                 cn.commit();
             }else{

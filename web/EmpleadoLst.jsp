@@ -95,6 +95,7 @@
                             <thead align="center">
                                 <td><b>#</b></td>
                                 <td><b>Nombres</b></td>
+                                <td><b>Apellidos</b></td>
                                 <td><b>Tipo</b></td>
                                 <td><b>Doc</b></td>
                                 <td><b># Doc</b></td>
@@ -110,6 +111,7 @@
                             <tbody>
                                 <td><center><%=(((int)session.getAttribute("pagina")*(int)session.getAttribute("registrosPorPagina"))-(int)session.getAttribute("registrosPorPagina"))+i+1 %></center></td>
                                 <td><%=empleado.getNombres()%></td>
+                                <td><%=empleado.getApellidos()%></td>
                                 <td><%=empleado.getTipoEmpleado().getDescripcion() %></td>
                                 <td><%=empleado.getTipoDocumento().getDescripcion()%></td>
                                 <td><%=empleado.getNumeroDocumento()%></td>

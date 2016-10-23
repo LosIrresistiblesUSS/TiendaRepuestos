@@ -2,15 +2,17 @@ package Modelo;
 
 public class Empleado extends Persona{
     private int idEmpleado;
+    private String apellidos;
     private TipoEmpleado tipoEmpleado;
 
     public Empleado() {
         tipoEmpleado = new TipoEmpleado();
     }
 
-    public Empleado(int idEmpleado, TipoEmpleado tipoEmpleado, int idPersona, String numeroDocumento, String nombres, String direccion, String telefono, String email, TipoDocumento tipoDocumento) {
+    public Empleado(int idEmpleado, String apellidos, TipoEmpleado tipoEmpleado, int idPersona, String numeroDocumento, String nombres, String direccion, String telefono, String email, TipoDocumento tipoDocumento) {
         super(idPersona, numeroDocumento, nombres, direccion, telefono, email, tipoDocumento);
         this.idEmpleado = idEmpleado;
+        this.apellidos = apellidos;
         this.tipoEmpleado = tipoEmpleado;
     }
 
@@ -20,6 +22,14 @@ public class Empleado extends Persona{
 
     public void setIdEmpleado(int idEmpleado) {
         this.idEmpleado = idEmpleado;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
     }
 
     public TipoEmpleado getTipoEmpleado() {
