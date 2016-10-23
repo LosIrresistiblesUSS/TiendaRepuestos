@@ -92,6 +92,8 @@
                             <thead align="center">
                                 <td><b>#</b></td>
                                 <td><b>Razon Comercial</b></td>
+                                <td><b>tipo Doc</b></td>
+                                <td><b># Doc</b></td>
                                 <td><b>Direccion</b></td>
                                 <td><b>Telefono</b></td>
                                 <td><b>Email</b></td>
@@ -106,6 +108,8 @@
                             <tbody>
                                 <td><center><%=(((int)session.getAttribute("pagina")*(int)session.getAttribute("registrosPorPagina"))-(int)session.getAttribute("registrosPorPagina"))+i+1 %></center></td>      
                                 <td><%=proveedor.getRazonComercial()%></td>
+                                <td><%=proveedor.getTipoDocumento().getDescripcion()%></td>
+                                <td><%=proveedor.getNumeroDocumento()%></td>
                                 <td><%=proveedor.getDireccion()%></td>        
                                 <td><%=proveedor.getTelefono()%></td>
                                 <td><%=proveedor.getEmail()%></td>  

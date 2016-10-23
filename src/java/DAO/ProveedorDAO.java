@@ -25,22 +25,22 @@ public class ProveedorDAO implements iProveedorDAO{
     @Override
     public int insertar(Proveedor pro) {
         logger.info("Insertando Proveedor");
-        sql= "{CALL P_Insertar_Proveedor(?,?,?,?,?,?,?,?)}";
+        sql= "{CALL P_Insertar_Proveedor(?,?,?,?,?,?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setInt(1, pro.getIdPersona());
-            cs.setString(2,pro.getNumeroDocumento().trim());
-            cs.setString(3,pro.getNombres().trim());
-            cs.setString(4,pro.getDireccion().trim());
-            cs.setString(5,pro.getTelefono().trim());
-            cs.setString(6,pro.getEmail().trim());
-            cs.setString(7,pro.getRazonComercial().trim());
-            cs.registerOutParameter(8, java.sql.Types.INTEGER);
+            cs.setString(1,pro.getNumeroDocumento().trim());
+            cs.setString(2,pro.getRazonComercial().trim());
+            cs.setString(3,pro.getDireccion().trim());
+            cs.setString(4,pro.getTelefono().trim());
+            cs.setString(5,pro.getEmail().trim());
+            cs.setInt(6,pro.getTipoDocumento().getIdTipoDocumento());
+            
+            cs.registerOutParameter(7, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(8).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(7).toString());
             if(flgOperacion==1){
                 cn.commit();
             }else{
@@ -59,7 +59,6 @@ public class ProveedorDAO implements iProveedorDAO{
         sql = "select " +
                 "pr.idProveedor" +
                 ",p.idPersona " +
-                ",p.nombres " +
                 ",pr.razonComercial " +
                 ",p.numeroDocumento " +
                 ",td.descripcion " +
@@ -89,7 +88,6 @@ public class ProveedorDAO implements iProveedorDAO{
             while(rs.next()){
                 proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
-                proveedor.setNombres(rs.getString("nombres"));
                 proveedor.setRazonComercial(rs.getString("razonComercial"));
                 proveedor.setNumeroDocumento(rs.getString("numeroDocumento"));
                 proveedor.setDireccion(rs.getString("direccion"));

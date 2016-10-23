@@ -71,11 +71,9 @@ public class ProveedorControlador extends HttpServlet{
     }
         protected void insertar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("insertar");
-        int idPersona = Integer.parseInt(request.getParameter("idPersona") == null ? "0" : request.getParameter("idPersona"));
-        String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
+        
         String razonComercial = request.getParameter("razonComercial") == null ? "" : request.getParameter("razonComercial");
         String numeroDocumento = request.getParameter("numeroDocumento") == null ? "" : request.getParameter("numeroDocumento");
-        String descripcion= request.getParameter("descripcion")==null?"0" : request.getParameter("descripcion");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email = request.getParameter("email") == null ? "" : request.getParameter("email");
@@ -83,18 +81,16 @@ public class ProveedorControlador extends HttpServlet{
         
         try{
             proveedor = new Proveedor();
-            persona = new Persona();
             tipoDocumento= new TipoDocumento();
-            
-            persona.setNombres(nombres);
+       
             proveedor.setRazonComercial(razonComercial);
-            persona.setNumeroDocumento(numeroDocumento);
-            tipoDocumento.setDescripcion(descripcion);
-            persona.setDireccion(direccion);
-            persona.setTelefono(telefono);
-            persona.setEmail(email);
+            proveedor.setNumeroDocumento(numeroDocumento);
+            proveedor.setDireccion(direccion);
+            proveedor.setTelefono(telefono);
+            proveedor.setEmail(email);
+            
             tipoDocumento.setIdTipoDocumento(idTipoDocumento);
-            proveedor.setIdPersona(idPersona);
+            proveedor.setTipoDocumento(tipoDocumento);
             
             proveedorService = new ProveedorLogica();
             flgOperacion = proveedorService.insertar(proveedor);
@@ -190,10 +186,8 @@ public class ProveedorControlador extends HttpServlet{
     protected void actualizar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("actualizar");
         int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
-        String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
         String razonComercial = request.getParameter("razonComercial") == null ? "" : request.getParameter("razonComercial");
         String numeroDocumento = request.getParameter("numeroDocumento") == null ? "" : request.getParameter("numeroDocumento");
-        String descripcion= request.getParameter("descripcion")==null?"0" : request.getParameter("descripcion");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email = request.getParameter("email") == null ? "" : request.getParameter("email");
@@ -205,10 +199,8 @@ public class ProveedorControlador extends HttpServlet{
             tipoDocumento= new TipoDocumento();
             
             proveedor.setIdProveedor(id);
-            persona.setNombres(nombres);
             proveedor.setRazonComercial(razonComercial);
             persona.setNumeroDocumento(numeroDocumento);
-            tipoDocumento.setDescripcion(descripcion);
             persona.setDireccion(direccion);
             persona.setTelefono(telefono);
             persona.setEmail(email);

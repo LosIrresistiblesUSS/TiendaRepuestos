@@ -22,9 +22,9 @@
     int idCliente = String.valueOf(cliente.getIdCliente()) == null ? 0 : cliente.getIdCliente();
     String razonsocial = cliente.getRazonSocial() == null ? "" : cliente.getRazonSocial();
     String apellidos = cliente.getApellidos() == null ? "" : cliente.getApellidos();
-     String nombre = cliente.getNombres() == null ? "" : cliente.getNombres();
+    String nombre = cliente.getNombres() == null ? "" : cliente.getNombres();
     String ndocumento=cliente.getNumeroDocumento()== null ? "": cliente.getNumeroDocumento();
-    String direccion=cliente.getDireccion() == null ? "": cliente.getNumeroDocumento();
+    String direccion=cliente.getDireccion() == null ? "": cliente.getDireccion();
     String telefono=cliente.getTelefono()== null ? "": cliente.getTelefono();
     String email=cliente.getEmail()== null ? "": cliente.getEmail();
     int idtipo = (String.valueOf(cliente.getTipoDocumento().getIdTipoDocumento()) == null) ? 0 : cliente.getTipoDocumento().getIdTipoDocumento();
@@ -52,7 +52,7 @@
                     alert(" Todos los campos son  obligatorio.");
                 }else{
                   
-                    document.frmMnt.action = "ClienteControlador?accion=insertar&razonsocial=" + razonsocial + "&nombre" + nombre + "&ndocumento" +"&apellidos" +apellidos + ndocumento + "&direccion" + direccion + "&telefono" + telefono + "&email" + email + "&idtipo" + idtipo ;
+                    document.frmMnt.action = "ClienteControlador?accion=insertar&razonsocial=" + razonsocial + "&nombre" + nombre + "&apellidos" + apellidos + "&ndocumento" + ndocumento  +  "&direccion" + direccion + "&telefono" + telefono + "&email" + email + "&idtipo" + idtipo ;
                     document.frmMnt.submit();
                 }
             }
@@ -143,13 +143,15 @@
                                         <input class="form-control" type="text" id="txtNombre" value="<%=nombre%>" autofocus="autofocus" />
                                     </div>
                                 </div>
+                                    
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtApellidos">Apellidos :</label>
                                     <div class="col-md-4">
                                         <input class="form-control" type="text" id="txtApellidos" value="<%=apellidos%>" autofocus="autofocus" />
                                     </div>
                                 </div>
-                                     <div class="form-group">
+                                    
+                                <div class="form-group">
                                     <label class="control-label col-md-3" for="idtipo">Tipo Documento:</label>
                                     <div class="col-md-4">
                                         <select class="form-control" id="idtipo">
@@ -165,7 +167,7 @@
                                     </div>
                                 </div>
                                     
-                                    <div class="form-group">
+                                <div class="form-group">
                                     <label class="control-label col-md-3" for="txtnDocumento">N°Documento :</label>
                                     <div class="col-md-4">
                                         <input class="form-control" type="text" id="txtnDocumento" value="<%=ndocumento%>" autofocus="autofocus" />

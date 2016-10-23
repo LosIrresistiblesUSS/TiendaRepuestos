@@ -5,6 +5,9 @@
 --%>
 
 
+<%@page import="Helpers.ListasObjetos"%>
+<%@page import="Modelo.TipoDocumento"%>
+<%@page import="java.util.List"%>
 <%@page import="Modelo.Proveedor"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -18,9 +21,12 @@
     
     int idProveedor= (String.valueOf(proveedor.getIdProveedor()) == null) ? 0 : proveedor.getIdProveedor();
     String razonComercial= proveedor.getRazonComercial() == null ? "" : proveedor.getRazonComercial();
+    String ndocumento=proveedor.getNumeroDocumento()== null ? "": proveedor.getNumeroDocumento();
     String direccion = proveedor.getDireccion() == null ? "" : proveedor.getDireccion();
     String telefono = proveedor.getTelefono() == null ? "" : proveedor.getTelefono();
     String email = proveedor.getEmail() == null ? "" : proveedor.getEmail();
+    int idtipo = (String.valueOf(proveedor.getTipoDocumento().getIdTipoDocumento()) == null) ? 0 : proveedor.getTipoDocumento().getIdTipoDocumento();
+    
     %>
         
     <head>
@@ -29,28 +35,32 @@
         <script type="text/javascript">
             function insertar(){
                 var razonComercial=document.getElementById("txtrazonComercial").value;
+                var ndocumento = document.getElementById("txtnDocumento").value;
                 var direccion = document.getElementById("txtDireccion").value;
                 var telefono = document.getElementById("txtTelefono").value;
                 var email = document.getElementById("txtEmail").value;
+                var idtipo = document.getElementById("idtipo").value;
 
-                if(razonComercial == "" || direccion === "" || telefono === "" || email=== ""){
+                if(razonComercial == "" || ndocumento === "" || direccion === "" || telefono === "" || email=== ""){
                     alert("El Campo razonComercial es obligatorio.");
                 }else{
-                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" +razonComercial + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
+                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" + razonComercial + "&ndocumento" + ndocumento + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
                     document.frmMnt.submit();
                     }   
             }
 
             function actualizar(id){
                 var razonComercial=document.getElementById("txtrazonComercial").value;
+                var ndocumento = document.getElementById("txtnDocumento").value;
                 var direccion = document.getElementById("txtDireccion").value;
                 var telefono = document.getElementById("txtTelefono").value;
                 var email = document.getElementById("txtEmail").value;
+                var idtipo = document.getElementById("idtipo").value;
 
-                if(razonComercial == "" || direccion === "" || telefono === "" || email=== ""){
+                if(razonComercial == "" || ndocumento === "" || direccion === "" || telefono === "" || email=== ""){
                     alert("El Campo razonComercial es obligatorio.");
                 }else{
-                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" +razonComercial + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
+                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" + razonComercial + "&ndocumento" + ndocumento + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
                     document.frmMnt.submit();
                 }
             }
@@ -95,6 +105,29 @@
                                 </div>
                                     
                                 <div class="form-group">
+                                    <label class="control-label col-md-3" for="idtipo">Tipo Documento:</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" id="idtipo">
+                                            <% List<TipoDocumento> lstTipoDocumento = ListasObjetos.listaTipoDocumento(); %>
+                                            <% for(TipoDocumento tipoDocumento : lstTipoDocumento){ %>
+                                                <% if (idtipo == tipoDocumento.getIdTipoDocumento()){%>
+                                                    <option value="<%=tipoDocumento.getIdTipoDocumento()%>" selected><%=tipoDocumento.getDescripcion()%></option>
+                                                <% }else{ %>
+                                                    <option value="<%=tipoDocumento.getIdTipoDocumento()%>"><%=tipoDocumento.getDescripcion()%></option>
+                                                <% } %>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                                        
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="txtnDocumento">N°Documento :</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" id="txtnDocumento" value="<%=ndocumento%>" autofocus="autofocus" />
+                                    </div>
+                                </div>
+                                    
+                                <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDireccion">Dirección:</label>
                                     <div class="col-md-4">
                                         <input class="form-control" type="text" id="txtDireccion" value="<%=direccion%>"/>
@@ -131,7 +164,6 @@
                 </div>
             </section>
         </main>
-        
         <%@include file="WEB-INF/jspf/footer.jspf"%>    
     </body>
 </html>
