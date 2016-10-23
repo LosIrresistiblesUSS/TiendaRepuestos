@@ -1,26 +1,19 @@
 DELIMITER $$
 
-	CREATE PROCEDURE P_Actualizar_TipoServicio
-	(
-		IN id INT,
-		IN descrip VARCHAR(100),
-		OUT flag_exitoso INT
-	)
-	BEGIN
-		DECLARE contador_rep INT DEFAULT 0;
-		SET flag_exitoso = 0;
-		
-		SELECT count(*) into contador_rep from tiposervicio
-		WHERE descripcion = descrip;
-		
-		IF (contador_rep != 0) THEN
-			SET flag_exitoso = 2;
-		ELSE
-			UPDATE TipoServicio SET descripcion = descrip
-			WHERE idTipoServicio = id;
+CREATE PROCEDURE P_Actualizar_TipoServicio
+(
+	IN _id int,
+	IN _descrip varchar(100),
+	OUT flag_exitoso INT
+)
+BEGIN
+	SET flag_exitoso = 0;
+		START TRANSACTION;
+			UPDATE TipoServicio SET descripcion = _descrip
+			WHERE idTipoServicio = _id;
 			SET flag_exitoso = 1;
-		END IF;
-		SELECT flag_exitoso;
-	END $$
+		COMMIT;
+	SELECT flag_exitoso;
+END $$
 	
-DELIMITER
+DELIMITER ;
