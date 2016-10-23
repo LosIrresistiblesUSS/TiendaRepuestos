@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-10-2016 a las 07:54:58
+-- Tiempo de generación: 23-10-2016 a las 09:08:06
 -- Versión del servidor: 10.1.13-MariaDB
 -- Versión de PHP: 5.6.23
 
@@ -60,6 +60,25 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_Empleado` (IN `_idEmpl
 			COMMIT;
 		SELECT flag_exitoso;
 	END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_Proveedor` (IN `_idProveedor` INT, IN `_numeroDocumento` VARCHAR(13), IN `_razonComercial` VARCHAR(150), IN `_direccion` VARCHAR(150), IN `_telefono` VARCHAR(10), IN `_email` VARCHAR(100), IN `_idTipoDocumento` INT, OUT `flag_exitoso` INT)  BEGIN
+	DECLARE _idPersona INT;
+	SET flag_exitoso = 0;		
+	select idPersona into _idPersona from Proveedor
+	where idProveedor = _idProveedor limit 1;
+		
+		START TRANSACTION;
+			UPDATE Persona SET numeroDocumento = _numeroDocumento,
+			direccion = _direccion, telefono = _telefono, email = _email,
+			idTipoDocumento = _idTipoDocumento WHERE idPersona = _idPersona;
+			
+			UPDATE Proveedor SET razonComercial = _razonComercial
+			WHERE idProveedor = _idProveedor;
+			SET flag_exitoso = 1;
+		COMMIT;
+		
+	SELECT flag_exitoso;
+END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Actualizar_Repuesto` (IN `_idRepuesto` INT, IN `_descrip` VARCHAR(150), IN `_stock` INT, IN `_precio` DOUBLE(6,2), IN `_precioPorMayor` DOUBLE(6,2), OUT `flag_exitoso` INT)  BEGIN
 	DECLARE _idProducto INT;
@@ -148,6 +167,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Eliminar_Empleado` (IN `_idEmplea
 	
 	START TRANSACTION;
 		DELETE FROM Empleado WHERE idEmpleado = _idEmpleado;
+		DELETE FROM Persona WHERE idPersona = _idPersona;
+		SET flag_exitoso = 1;
+	COMMIT;
+	SELECT flag_exitoso;		
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Eliminar_Proveedor` (IN `_idProveedor` INT, OUT `flag_exitoso` INT)  BEGIN
+	DECLARE _idPersona int;
+	SET flag_exitoso = 0;
+
+	select idPersona into _idPersona from Proveedor
+	where idProveedor = _idProveedor limit 1;
+	
+	START TRANSACTION;
+		DELETE FROM Proveedor WHERE idProveedor = _idProveedor;
 		DELETE FROM Persona WHERE idPersona = _idPersona;
 		SET flag_exitoso = 1;
 	COMMIT;
