@@ -4,7 +4,7 @@
     Author     : AUGUSTO
 --%>
 
-<%@page import="Funciones.ListasObjetos"%>
+<%@page import="Helpers.ListasObjetos"%>
 <%@page import="Modelo.TipoEmpleado"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 

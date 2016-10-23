@@ -16,52 +16,50 @@
     Proveedor proveedor=(Proveedor) session.getAttribute("proveedorActualizar");
     proveedor = proveedor == null ? new Proveedor():proveedor;
     
-    int idProveedor;
-    String razonSocial;
-    //int idPersona;
-    
-    if(proveedor != null){
-       idProveedor=proveedor.getIdProveedor();
-       razonSocial= proveedor.getRazonsocial();
-       //idPersona= proveedor.getIdPersona();
-    }else{
-        idProveedor=0;
-        razonSocial=" ";
-        //idPersona=0;
-      }
+    int idProveedor= (String.valueOf(proveedor.getIdProveedor()) == null) ? 0 : proveedor.getIdProveedor();
+    String razonComercial= proveedor.getRazonComercial() == null ? "" : proveedor.getRazonComercial();
+    String direccion = proveedor.getDireccion() == null ? "" : proveedor.getDireccion();
+    String telefono = proveedor.getTelefono() == null ? "" : proveedor.getTelefono();
+    String email = proveedor.getEmail() == null ? "" : proveedor.getEmail();
     %>
         
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
         <title>Mantenimiento de Proveedores</title>
         <script type="text/javascript">
-        function insertar(){
-        var razonSocial=document.getElementById("txtrazonSocial").value;
-        
-        if(razonSocial == " "){
-            alert("El Campo razonSocial es obligatorio.");
-        }else{
-            documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial="+razonSocial;
-            document.frmMnt.submit();
-            }   
-        }
-        
-        function actualizar(id){
-            var razonSocial=document.getElementById("txtrazonSocial").value;
-        
-            if(razonSocial==""){
-                alert("El Campo razonSocial es obligatorio.");
-            }else{
-                documento.frmMnt.action="ProveedorControlador?accion=actualizar&razonSocial="+razonSocial+"&id=" + id;
-                document.frmMnt.submit();
-                } 
+            function insertar(){
+                var razonComercial=document.getElementById("txtrazonComercial").value;
+                var direccion = document.getElementById("txtDireccion").value;
+                var telefono = document.getElementById("txtTelefono").value;
+                var email = document.getElementById("txtEmail").value;
+
+                if(razonComercial == "" || direccion === "" || telefono === "" || email=== ""){
+                    alert("El Campo razonComercial es obligatorio.");
+                }else{
+                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" +razonComercial + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
+                    document.frmMnt.submit();
+                    }   
             }
-        function cancelar(){
-            document.location="ProveedorControlador?accion=buscar";
-        }
+
+            function actualizar(id){
+                var razonComercial=document.getElementById("txtrazonComercial").value;
+                var direccion = document.getElementById("txtDireccion").value;
+                var telefono = document.getElementById("txtTelefono").value;
+                var email = document.getElementById("txtEmail").value;
+
+                if(razonComercial == "" || direccion === "" || telefono === "" || email=== ""){
+                    alert("El Campo razonComercial es obligatorio.");
+                }else{
+                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" +razonComercial + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
+                    document.frmMnt.submit();
+                }
+            }
+            
+            function cancelar(){
+                document.location = "ProveedorControlador?accion=buscar";
+            }
       
         </script>
-       
     </head>
     <body>
 
@@ -69,7 +67,7 @@
         <main>
             <section class="jumbotron">
                 <div class="container">
-                    <h2><strong>Proveedor</strong></h2><h4>Mantenimiento</h4>
+                    <h2><strong>Proveedor</strong></h2>
                 </div>
             </section> 
             <div class="page-header">
@@ -90,11 +88,33 @@
                     <div class="panel-body">
                         <form name="frmMnt" method="post" class="form-horizontal col-md-offset-3 form-principal">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3" for="txtDescripcion">Proveedor:</label>
+                                    <label class="control-label col-md-3" for="txtrazonComercial">Proveedor:</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=razonSocial %>" autofocus="autofocus" />
+                                        <input class="form-control" type="text" id="txtrazonComercial" value="<%=razonComercial %>" autofocus="autofocus" />
                                     </div>
                                 </div>
+                                    
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="txtDireccion">Dirección:</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" id="txtDireccion" value="<%=direccion%>"/>
+                                    </div>
+                                </div>
+                                    
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="txtTelefono">Telefono:</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" id="txtTelefono" maxlength="10" value="<%=telefono%>"/>
+                                    </div>
+                                </div>
+                                    
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="txtEmail">Email:</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="email" id="txtEmail" value="<%=email%>"/>
+                                    </div>
+                                </div>
+                                    
                                 <div class="form-group">
                                     <div class="col-md-4 col-md-offset-3">
                                         <% if(session.getAttribute("proveedorActualizar") == null){ %>

@@ -37,7 +37,7 @@ public class ProveedorDAO implements iProveedorDAO{
             cs.setString(4,pro.getDireccion().trim());
             cs.setString(5,pro.getTelefono().trim());
             cs.setString(6,pro.getEmail().trim());
-            cs.setString(7,pro.getRazonsocial().trim());
+            cs.setString(7,pro.getRazonComercial().trim());
             cs.registerOutParameter(8, java.sql.Types.INTEGER);
             cs.executeUpdate();
             flgOperacion = Integer.parseInt(cs.getObject(8).toString());
@@ -54,13 +54,13 @@ public class ProveedorDAO implements iProveedorDAO{
         return flgOperacion;    }
 
     @Override
-    public List<Proveedor> buscar(String nombre, int inicio, int registrosPorPagina) {
+    public List<Proveedor> buscar(String razonComercial, int inicio, int registrosPorPagina) {
         logger.info("buscar");
         sql = "select " +
                 "pr.idProveedor" +
                 ",p.idPersona " +
                 ",p.nombres " +
-                ",pr.razonSocial " +
+                ",pr.razonComercial " +
                 ",p.numeroDocumento " +
                 ",td.descripcion " +
                 ",p.direccion " +
@@ -72,7 +72,7 @@ public class ProveedorDAO implements iProveedorDAO{
                 "on pr.idpersona=p.idpersona " +
                 "inner join tipodocumento as td " +
                 "on p.idtipodocumento=td.idtipodocumento " +
-                "where razonSocial like '%" + (nombre.trim()) + "%' "+
+                "where razonComercial like '%" + (razonComercial.trim()) + "%' "+
                 "order by idpersona desc Limit "+ inicio + ", " + registrosPorPagina;
         
         List<Proveedor> lstProveedor = null;
@@ -90,7 +90,7 @@ public class ProveedorDAO implements iProveedorDAO{
                 proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
                 proveedor.setNombres(rs.getString("nombres"));
-                proveedor.setRazonsocial(rs.getString("razonsocial"));
+                proveedor.setRazonComercial(rs.getString("razonComercial"));
                 proveedor.setNumeroDocumento(rs.getString("numeroDocumento"));
                 proveedor.setDireccion(rs.getString("direccion"));
                 proveedor.setTelefono(rs.getString("telefono"));
@@ -110,12 +110,12 @@ public class ProveedorDAO implements iProveedorDAO{
     }
 
     @Override
-    public int totalRegistros(String nombre, int inicio, int registrosPorPagina) {
+    public int totalRegistros(String razonComercial, int inicio, int registrosPorPagina) {
         int total = 0;
         logger.info("Total de Registros");
         sql = "select count(*) as total "
                 + "from proveedor "
-                + "where razonSocial like '%" + (nombre.trim()) + "%'";
+                + "where razonComercial like '%" + (razonComercial.trim()) + "%'";
         try{
             con = new Conexion();
             cn = con.getConexion();
@@ -167,18 +167,15 @@ public class ProveedorDAO implements iProveedorDAO{
                     tipoDocumento = new TipoDocumento();
                     proveedor.setIdPersona(rs.getInt("idPersona"));
                     proveedor.setNombres(rs.getString("nombres"));
-                    proveedor.setRazonsocial(rs.getString("razonsocial"));
+                    proveedor.setRazonComercial(rs.getString("razonsocial"));
                     proveedor.setNumeroDocumento(rs.getString("numeroDocumento"));
                     proveedor.setDireccion(rs.getString("direccion"));
                     proveedor.setTelefono(rs.getString("telefono"));
-                    proveedor.setEmail(rs.getString("email"));
-                    
+                    proveedor.setEmail(rs.getString("email"));   
                     
                     tipoDocumento.setDescripcion(rs.getString("descripcion"));
                 
                     proveedor.setTipoDocumento(tipoDocumento);
-                    
-                    
                     
                 }
             }catch(Exception e){
@@ -189,7 +186,6 @@ public class ProveedorDAO implements iProveedorDAO{
             return proveedor;
         }
     
-
     @Override
     public int actualizar(Proveedor pro) {
     logger.info("actualizar");
@@ -200,7 +196,7 @@ public class ProveedorDAO implements iProveedorDAO{
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
             cs.setString(1,pro.getNombres());
-            cs.setString(2,pro.getRazonsocial().trim());
+            cs.setString(2,pro.getRazonComercial().trim());
             cs.setString(3,pro.getNumeroDocumento().trim());
             cs.setString(4,pro.getTipoDocumento().getDescripcion().trim());
             cs.setString(5,pro.getDireccion().trim());
@@ -221,8 +217,7 @@ public class ProveedorDAO implements iProveedorDAO{
             con.cerrarConexion(cn);
         }
         return flgOperacion;
-
-}
+    }
 
     @Override
     public int eliminar(int id) {
@@ -247,5 +242,4 @@ public class ProveedorDAO implements iProveedorDAO{
         }
         return flgOperacion;    
     }
-    
 }

@@ -114,9 +114,8 @@ public class RepuestoControlador extends HttpServlet {
         logger.info("buscar");
         
         String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
-        String pag = request.getParameter("pag") == null ? "1" : request.getParameter("pag");
-        int pagina = Integer.parseInt(pag);
-        int registrosPorPagina = 10; //Numero de registros por pagina 
+        int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
+        int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
        
         try{

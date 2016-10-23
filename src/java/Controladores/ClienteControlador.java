@@ -4,6 +4,7 @@ import Helpers.FuncionesMensajes;
 import Interfaces.iClienteLogica;
 import Logica.ClienteLogica;
 import Modelo.Cliente;
+import Modelo.TipoCliente;
 import Modelo.TipoDocumento;
 
 import java.io.IOException;
@@ -74,24 +75,34 @@ public class ClienteControlador extends HttpServlet{
         String razonSocial = request.getParameter("razonSocial") == null ? "" : request.getParameter("razonSocial");
         //int idpersona = Integer.parseInt(request.getParameter("idPersona") == null ? "0" : request.getParameter("idPersona"));
         String nombres=request.getParameter("nombres")==null ? "" : request.getParameter("nombres");
+         String apellidos = request.getParameter("apellidos") == null ? "" : request.getParameter("apellidos");
         String ndocumento = request.getParameter("numeroDocumento") == null ? "" : request.getParameter("numeroDocumento");
         String direccion=request.getParameter("direccion")==null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email=request.getParameter("email")==null ? "" : request.getParameter("email");
         int idtipod = Integer.parseInt(request.getParameter("idtipodocumento") == null ? "0" : request.getParameter("idtipodocumento"));
-       // String descripcion=request.getParameter("descripcion")==null ? "" : request.getParameter("descripcion");
+        int idtipoc = Integer.parseInt(request.getParameter("idtipocliente") == null ? "0" : request.getParameter("idtipocliente"));
+// String descripcion=request.getParameter("descripcion")==null ? "" : request.getParameter("descripcion");
         TipoDocumento tipodocumento;
+        TipoCliente tipocliente;
         try{
             cliente = new Cliente();
             cliente.setRazonSocial(razonSocial);
             cliente.setNombres(nombres);
+            cliente.setApellidos(nombres);
+            tipocliente =new TipoCliente();
+            tipocliente.setIdTipoCliente(idtipoc);
+            cliente.setTipoCliente(tipocliente);
+            
             cliente.setNumeroDocumento(ndocumento);
             cliente.setDireccion(direccion);
             cliente.setTelefono(telefono);
             cliente.setEmail(email);
+            
             tipodocumento=new TipoDocumento();
             tipodocumento.setIdTipoDocumento(idtipod);
             cliente.setTipoDocumento(tipodocumento);
+            
             flgOperacion = clienteService.insertar(cliente);
             
             switch (flgOperacion) {
@@ -121,10 +132,9 @@ public class ClienteControlador extends HttpServlet{
         protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
         String nom = request.getParameter("nom") == null ? "" : request.getParameter("nom");
+        int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
+        int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
         
-        String pag = request.getParameter("pag") == null ? "1" : request.getParameter("pag");
-        int pagina = Integer.parseInt(pag);
-        int registrosPorPagina = 5; //Numero de registros por pagina 
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
        
         try{
@@ -192,6 +202,7 @@ public class ClienteControlador extends HttpServlet{
         int idpersona = Integer.parseInt(request.getParameter("idPersona") == null ? "0" : request.getParameter("idPersona"));
         String nombres=request.getParameter("nombres")==null ? "" : request.getParameter("nombres");
         String ndocumento = request.getParameter("numeroDcocumento") == null ? "" : request.getParameter("numeroDcocumento");
+        String apellidos = request.getParameter("apellidos") == null ? "" : request.getParameter("apellidos");
         String direccion=request.getParameter("direccion")==null ? "" : request.getParameter("direccion");
         String telefono = request.getParameter("telefono") == null ? "" : request.getParameter("telefono");
         String email=request.getParameter("email")==null ? "" : request.getParameter("email");
@@ -205,6 +216,7 @@ public class ClienteControlador extends HttpServlet{
             cliente.setRazonSocial(razonSocial);
             cliente.setIdPersona(idpersona);
             cliente.setNombres(nombres);
+            cliente.setApellidos(apellidos);
             cliente.setNumeroDocumento(ndocumento);
             cliente.setDireccion(direccion);
             cliente.setTelefono(telefono);
@@ -258,9 +270,9 @@ public class ClienteControlador extends HttpServlet{
             System.out.println(id + " iddd");
             
             if(flgOperacion > 0){
-                mensaje = FuncionesMensajes.eliminarExitoso("Cliente", clienteEliminar.getNombres());
+                mensaje = FuncionesMensajes.eliminarExitoso("Cliente", clienteEliminar.getApellidos());
             }else{
-                mensaje = FuncionesMensajes.eliminarError("Cliente",  clienteEliminar.getNombres());
+                mensaje = FuncionesMensajes.eliminarError("Cliente",  clienteEliminar.getApellidos());
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");

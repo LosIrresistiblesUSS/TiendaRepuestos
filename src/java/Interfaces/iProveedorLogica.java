@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface iProveedorLogica {
     public int insertar(Proveedor proveedor);
-    public List<Proveedor> buscar(String descripcion, int inicio, int registrosPorPagina);
-    public int totalRegistros(String descripcion, int inicio, int registrosPorPagina);
+    public List<Proveedor> buscar(String razoncomercial, int inicio, int registrosPorPagina);
+    public int totalRegistros(String razoncomercial, int inicio, int registrosPorPagina);
     public Proveedor obtenerPorId(int id);
     public int actualizar(Proveedor proveedor);
     public int eliminar(int id);

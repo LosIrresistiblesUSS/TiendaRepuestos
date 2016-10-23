@@ -4,14 +4,18 @@ public class Cliente extends Persona {
     
     protected int idCliente;
     protected String razonSocial;
+    protected String apellidos;
+    protected TipoCliente tipoCliente;
 
     public Cliente() {
+        tipoCliente=new TipoCliente();
     }
 
-    public Cliente(int idCliente, String razonSocial, int idPersona, String numeroDocumento, String nombres, String direccion, String telefono, String email, TipoDocumento tipoDocumento) {
+    public Cliente(int idCliente, String apellidos, TipoCliente tipocliente, int idPersona, String numeroDocumento, String nombres, String direccion, String telefono, String email, TipoDocumento tipoDocumento) {
         super(idPersona, numeroDocumento, nombres, direccion, telefono, email, tipoDocumento);
         this.idCliente = idCliente;
-        this.razonSocial = razonSocial;
+        this.apellidos = apellidos;
+        this.tipoCliente = tipocliente;
     }
 
     public int getIdCliente() {
@@ -30,73 +34,84 @@ public class Cliente extends Persona {
         this.razonSocial = razonSocial;
     }
 
-    @Override
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public TipoCliente getTipoCliente() {
+        return tipoCliente;
+    }
+
+    public void setTipoCliente(TipoCliente tipoCliente) {
+        this.tipoCliente = tipoCliente;
+    }
+
     public int getIdPersona() {
         return idPersona;
     }
 
-    @Override
     public void setIdPersona(int idPersona) {
         this.idPersona = idPersona;
     }
 
-    @Override
     public String getNumeroDocumento() {
         return numeroDocumento;
     }
 
-    @Override
     public void setNumeroDocumento(String numeroDocumento) {
         this.numeroDocumento = numeroDocumento;
     }
 
-    @Override
     public String getNombres() {
         return nombres;
     }
 
-    @Override
     public void setNombres(String nombres) {
         this.nombres = nombres;
     }
 
-    @Override
     public String getDireccion() {
         return direccion;
     }
 
-    @Override
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 
-    @Override
     public String getTelefono() {
         return telefono;
     }
 
-    @Override
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
-    @Override
     public String getEmail() {
         return email;
     }
 
-    @Override
     public void setEmail(String email) {
         this.email = email;
     }
 
-    @Override
     public TipoDocumento getTipoDocumento() {
         return tipoDocumento;
     }
 
-    @Override
     public void setTipoDocumento(TipoDocumento tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
     }
+
+ 
+   
+
+  
+    
+    
+
+   
 }
