@@ -63,7 +63,7 @@
                         
                         <div class="col-md-9 col-sm-8 col-xs-12">
                             <div class="espacio-buscar"></div>
-                            <div class=" row col-md-10 col-sm-9 col-xs-8">
+                            <div class="row col-md-10 col-sm-9 col-xs-8">
                                 <input type="submit" onclick="buscar(1)" id="btnBuscar" class="btn btn-primary" value="Buscar" />
                                 <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary">Nuevo</button>
                             </div>
@@ -87,8 +87,6 @@
                         ${msgPostOperacion}
                         <% } %>
                     </div>
-                    
-                    
                     
                     <div class="table-responsive"> <!-- Activar para tabla responsiva -->
                         <table border="1" class="table table-hover tabla-resultados">

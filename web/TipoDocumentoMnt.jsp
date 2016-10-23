@@ -74,7 +74,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtDescripcion">Tipo de Documento:</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" autofocus="autofocus" />
+                                        <input class="form-control" type="text" id="txtDescripcion" value="<%=descripcion%>" maxlength="15" autofocus="autofocus" />
                                     </div>
                                 </div>
                                 <div class="form-group">
