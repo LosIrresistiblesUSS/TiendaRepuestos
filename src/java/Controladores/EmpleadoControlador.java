@@ -135,7 +135,6 @@ public class EmpleadoControlador extends HttpServlet {
         int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
         int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
         
-        //int registrosPorPagina = 10; Numero de registros por pagina 
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
        
         try{

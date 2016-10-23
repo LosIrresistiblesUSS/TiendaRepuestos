@@ -73,7 +73,7 @@ public class ProveedorControlador extends HttpServlet{
         logger.info("insertar");
         int idPersona = Integer.parseInt(request.getParameter("idPersona") == null ? "0" : request.getParameter("idPersona"));
         String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
-        String razonSocial = request.getParameter("razonSocial") == null ? "" : request.getParameter("razonSocial");
+        String razonComercial = request.getParameter("razonComercial") == null ? "" : request.getParameter("razonComercial");
         String numeroDocumento = request.getParameter("numeroDocumento") == null ? "" : request.getParameter("numeroDocumento");
         String descripcion= request.getParameter("descripcion")==null?"0" : request.getParameter("descripcion");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
@@ -87,7 +87,7 @@ public class ProveedorControlador extends HttpServlet{
             tipoDocumento= new TipoDocumento();
             
             persona.setNombres(nombres);
-            proveedor.setRazonsocial(razonSocial);
+            proveedor.setRazonComercial(razonComercial);
             persona.setNumeroDocumento(numeroDocumento);
             tipoDocumento.setDescripcion(descripcion);
             persona.setDireccion(direccion);
@@ -101,13 +101,13 @@ public class ProveedorControlador extends HttpServlet{
             
             switch (flgOperacion) {
                 case 1:
-                    mensaje = FuncionesMensajes.insertarExitoso("Proveedor", razonSocial);
+                    mensaje = FuncionesMensajes.insertarExitoso("Proveedor", razonComercial);
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.insertarAdvertencia("Proveedor", razonSocial);
+                    mensaje = FuncionesMensajes.insertarAdvertencia("Proveedor", razonComercial);
                     break;
                 default:
-                    mensaje = FuncionesMensajes.insertarError("Proveedor", razonSocial);
+                    mensaje = FuncionesMensajes.insertarError("Proveedor", razonComercial);
                     break;
             }
             sesion = request.getSession();
@@ -125,11 +125,11 @@ public class ProveedorControlador extends HttpServlet{
 
         protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
-        String razonSocial = request.getParameter("razonSocial") == null ? "" : request.getParameter("razonSocial");
+        String razonComercial = request.getParameter("razonComercial") == null ? "" : request.getParameter("razonComercial");
         
-        String pag = request.getParameter("pag") == null ? "1" : request.getParameter("pag");
-        int pagina = Integer.parseInt(pag);
-        int registrosPorPagina = 10; //Numero de registros por pagina 
+        int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
+        int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
+        
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
        
         try{
@@ -139,21 +139,21 @@ public class ProveedorControlador extends HttpServlet{
             sesion.removeAttribute("proveedorActualizar");
             
             proveedorService = new ProveedorLogica();
-            List<Proveedor> lstProveedor = proveedorService.buscar((String)razonSocial, inicio, registrosPorPagina);
-            int totalRegistros = proveedorService.totalRegistros(razonSocial, inicio, registrosPorPagina);
+            List<Proveedor> lstProveedor = proveedorService.buscar((String)razonComercial, inicio, registrosPorPagina);
+            int totalRegistros = proveedorService.totalRegistros(razonComercial, inicio, registrosPorPagina);
             int numeroPaginas = (int)Math.ceil((double)totalRegistros / registrosPorPagina);
             sesion.setAttribute("pagina", pagina);
             sesion.setAttribute("nroPaginas", numeroPaginas);
-            sesion.setAttribute("descripcion", razonSocial);
+            sesion.setAttribute("razonComercial", razonComercial);
             sesion.setAttribute("registrosPorPagina", registrosPorPagina);
             if(lstProveedor.size() > 0){
-                if (!"".equals(razonSocial)) {
-                    mensaje = FuncionesMensajes.buscarExitoso(razonSocial);
+                if (!"".equals(razonComercial)) {
+                    mensaje = FuncionesMensajes.buscarExitoso(razonComercial);
                     sesion.setAttribute("msgListado", mensaje);
                 }
                 sesion.setAttribute("listaProveedor", lstProveedor);
             }else{
-                mensaje = FuncionesMensajes.buscarError("Proveedor", razonSocial);
+                mensaje = FuncionesMensajes.buscarError("Proveedor", razonComercial);
                 sesion.setAttribute("msgListado", mensaje);
             }
             response.sendRedirect("ProveedorLst.jsp");
@@ -191,7 +191,7 @@ public class ProveedorControlador extends HttpServlet{
         logger.info("actualizar");
         int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
         String nombres = request.getParameter("nombres") == null ? "" : request.getParameter("nombres");
-        String razonSocial = request.getParameter("razonSocial") == null ? "" : request.getParameter("razonSocial");
+        String razonComercial = request.getParameter("razonComercial") == null ? "" : request.getParameter("razonComercial");
         String numeroDocumento = request.getParameter("numeroDocumento") == null ? "" : request.getParameter("numeroDocumento");
         String descripcion= request.getParameter("descripcion")==null?"0" : request.getParameter("descripcion");
         String direccion = request.getParameter("direccion") == null ? "" : request.getParameter("direccion");
@@ -206,7 +206,7 @@ public class ProveedorControlador extends HttpServlet{
             
             proveedor.setIdProveedor(id);
             persona.setNombres(nombres);
-            proveedor.setRazonsocial(razonSocial);
+            proveedor.setRazonComercial(razonComercial);
             persona.setNumeroDocumento(numeroDocumento);
             tipoDocumento.setDescripcion(descripcion);
             persona.setDireccion(direccion);
@@ -223,13 +223,13 @@ public class ProveedorControlador extends HttpServlet{
             
             switch (flgOperacion) {
                 case 1:
-                    mensaje = FuncionesMensajes.actualizarExitoso("Proveedor", proveedorAnterior.getRazonsocial(), proveedor.getRazonsocial());
+                    mensaje = FuncionesMensajes.actualizarExitoso("Proveedor", proveedorAnterior.getRazonComercial(), proveedor.getRazonComercial());
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.actualizarAdvertencia("Proveedor", proveedor.getRazonsocial());
+                    mensaje = FuncionesMensajes.actualizarAdvertencia("Proveedor", proveedor.getRazonComercial());
                     break;
                 default:
-                    mensaje = FuncionesMensajes.actualizarError("Proveedor", proveedorAnterior.getRazonsocial(), proveedor.getRazonsocial());
+                    mensaje = FuncionesMensajes.actualizarError("Proveedor", proveedorAnterior.getRazonComercial(), proveedor.getRazonComercial());
                     break;
             }
             sesion = request.getSession();
@@ -257,9 +257,9 @@ public class ProveedorControlador extends HttpServlet{
             System.out.println(id);
             
             if(flgOperacion > 0){
-                mensaje = FuncionesMensajes.eliminarExitoso("Proveedor ", proveedorEliminar.getRazonsocial());
+                mensaje = FuncionesMensajes.eliminarExitoso("Proveedor ", proveedorEliminar.getRazonComercial());
             }else{
-                mensaje = FuncionesMensajes.eliminarError("Proveedor", proveedorEliminar.getRazonsocial());
+                mensaje = FuncionesMensajes.eliminarError("Proveedor", proveedorEliminar.getRazonComercial());
             }
             sesion = request.getSession();
             sesion.removeAttribute("msgPostOperacion");
@@ -273,11 +273,4 @@ public class ProveedorControlador extends HttpServlet{
             logger.error("eliminar: " + e.getMessage());
         }
     }
-    
-    
-    
-    
-    
-    
-    
 }

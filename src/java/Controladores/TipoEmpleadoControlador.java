@@ -107,6 +107,7 @@ public class TipoEmpleadoControlador extends HttpServlet{
         protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
         String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
+        
         int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
         int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;

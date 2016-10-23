@@ -16,15 +16,15 @@ public class ProveedorLogica  implements iProveedorLogica{
     }
 
     @Override
-    public List<Proveedor> buscar(String descripcion, int inicio, int registrosPorPagina) {
+    public List<Proveedor> buscar(String razoncomercial, int inicio, int registrosPorPagina) {
         proveedorDAO=new ProveedorDAO();
-        return proveedorDAO.buscar(descripcion, inicio, registrosPorPagina);
+        return proveedorDAO.buscar(razoncomercial, inicio, registrosPorPagina);
     }
 
     @Override
-    public int totalRegistros(String descripcion, int inicio, int registrosPorPagina) {
+    public int totalRegistros(String razoncomercial, int inicio, int registrosPorPagina) {
         proveedorDAO= new ProveedorDAO();
-        return proveedorDAO.totalRegistros(descripcion, inicio, registrosPorPagina);
+        return proveedorDAO.totalRegistros(razoncomercial, inicio, registrosPorPagina);
 
     }
 
@@ -44,6 +44,5 @@ public class ProveedorLogica  implements iProveedorLogica{
     public int eliminar(int id) {
         proveedorDAO=new ProveedorDAO();
         return proveedorDAO.eliminar(id);
-    }
-    
+    }  
 }
