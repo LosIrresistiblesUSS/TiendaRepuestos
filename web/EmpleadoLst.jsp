@@ -22,13 +22,15 @@
             
             function buscar(pagina){
                 var nom = document.getElementById("txtNombres").value;
-                document.frmLst.action = "EmpleadoControlador?accion=buscar&nom=" + nom + "&pag=" + pagina;
+                var nro = document.getElementById("numeroXpagina").value;
+                document.frmLst.action = "EmpleadoControlador?accion=buscar&nom=" + nom + "&pag=" + pagina + "&nro=" + nro;
                 document.frmLst.submit();
             }
             
             function buscarPag(pagina){
                 var nom = document.getElementById("nombres").value;
-                document.frmLst.action = "EmpleadoControlador?accion=buscar&nom=" + nom + "&pag=" + pagina;
+                var nro = document.getElementById("numeroXpagina").value;
+                document.frmLst.action = "EmpleadoControlador?accion=buscar&nom=" + nom + "&pag=" + pagina + "&nro=" + nro;
                 document.frmLst.submit();
             }
             
@@ -53,13 +55,26 @@
                 </div>
             </section>
             <section class="container">
-                <form name="frmLst" method="post" class="form-inline formulario-resultados">
-                    <div class="form-group">
-                        <label for="txtDescripcion">Empleado:</label>
-                        <input class="form-control" type="text" id="txtNombres" placeholder="Texto a buscar" autofocus />
-                        <div class="espacio-buscar"></div>
-                        <input type="submit" onclick="buscar(1)" id="btnBuscar" class="btn btn-primary" value="Buscar" />
-                        <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary">Nuevo</button>
+                <form name="frmLst" method="post" class="form formulario-resultados">
+                    <div class="form-group row">
+                        <div class="cuadro-busqueda col-md-3 col-sm-4 col-xs-12">
+                            <input class="form-control" type="text" id="txtNombres" placeholder="Busqueda por Nombres" autofocus />
+                        </div>
+                        
+                        <div class="col-md-9 col-sm-8 col-xs-12">
+                            <div class="espacio-buscar"></div>
+                            <div class=" row col-md-10 col-sm-9 col-xs-8">
+                                <input type="submit" onclick="buscar(1)" id="btnBuscar" class="btn btn-primary" value="Buscar" />
+                                <button type="button" onclick="nuevo()" id="btnNuevo" class="btn btn-primary">Nuevo</button>
+                            </div>
+                            <div class="row col-md-2 col-sm-3 col-xs-4">
+                            <!-- SELECT NRO POR PAGINA - INICIO -->
+                            <% if(session.getAttribute("usuario") != null){ %>
+                                <%@include file="WEB-INF/jspf/SelectNumeroXpagina.jspf" %>
+                            <% } %>
+                            <!-- SELECT NRO POR PAGINA - FIN -->
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mensajes">
@@ -72,6 +87,9 @@
                         ${msgPostOperacion}
                         <% } %>
                     </div>
+                    
+                    
+                    
                     <div class="table-responsive"> <!-- Activar para tabla responsiva -->
                         <table border="1" class="table table-hover tabla-resultados">
                             <thead align="center">
@@ -144,34 +162,11 @@
                         
                         <input type="hidden" value="<%=session.getAttribute("nombres")%>" id="nombres" />
                     </div>
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <% if((int)session.getAttribute("pagina") == 1){ %>
-                                <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                            <% }else{ %>
-                                <li><a href="#" onclick="buscarPag(<%=(int)session.getAttribute("pagina")-1%>)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                            <% } %>
-                            <%
-                            for(int i=1; i <= (int)session.getAttribute("nroPaginas"); i++){
-                            
-                                if((int)session.getAttribute("pagina") == i){       
-                            %>
-                                <li class="active"><a href="#"><%=i%></a></li>
-                            <%      
-                                }else{
-                            %>
-                                <li><a href="#" onclick="buscarPag(<%=i%>)"><%=i%></a></li>
-                            <%
-                                }
-                            }
-                            %>
-                            <% if((int)session.getAttribute("pagina") == (int)session.getAttribute("nroPaginas")){ %>
-                                <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                            <% }else{ %>
-                                <li><a href="#" onclick="buscarPag(<%=(int)session.getAttribute("pagina")+1%>)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                            <% } %>
-                        </ul>
-                    </nav>
+                    <!-- PAGINACIÓN - INICIO -->
+                    <% if(session.getAttribute("usuario") != null){ %>
+                        <%@include file="WEB-INF/jspf/paginacion.jspf" %>
+                    <% } %>
+                    <!-- PAGINACIÓN - FIN -->
                 </form>
             </section>
         </main>

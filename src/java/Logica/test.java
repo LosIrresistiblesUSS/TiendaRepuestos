@@ -1,7 +1,7 @@
 package Logica;
 
 import DAO.DetalleVentaDAO;
-import Funciones.ListasObjetos;
+import Helpers.ListasObjetos;
 import Modelo.Cliente;
 import Modelo.ComprobanteVenta;
 import Modelo.DetalleOperacion;

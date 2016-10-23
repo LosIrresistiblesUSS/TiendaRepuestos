@@ -1,6 +1,6 @@
 package Controladores;
 
-import Funciones.FuncionesMensajes;
+import Helpers.FuncionesMensajes;
 import Interfaces.iEmpleadoLogica;
 import Logica.EmpleadoLogica;
 import Modelo.Empleado;
@@ -130,9 +130,10 @@ public class EmpleadoControlador extends HttpServlet {
         protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
         String nom = request.getParameter("nom") == null ? "" : request.getParameter("nom");
-        String pag = request.getParameter("pag") == null ? "1" : request.getParameter("pag");
-        int pagina = Integer.parseInt(pag);
-        int registrosPorPagina = 5; //Numero de registros por pagina 
+        int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
+        int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
+        
+        //int registrosPorPagina = 10; Numero de registros por pagina 
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
        
         try{

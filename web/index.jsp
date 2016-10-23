@@ -33,7 +33,7 @@
     <body>
         <% if(session.getAttribute("usuario") != null){ %>
         <script>
-            document.location = "TipoServicioControlador?accion=buscar";
+            document.location = "EmpleadoControlador?accion=buscar";
         </script>
         <% } %>
         <form class="login" name="frmLst" method="post">

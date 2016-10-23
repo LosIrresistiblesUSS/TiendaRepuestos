@@ -1,6 +1,6 @@
 package Controladores;
 
-import Funciones.FuncionesMensajes;
+import Helpers.FuncionesMensajes;
 import Interfaces.iProveedorLogica;
 import Logica.ProveedorLogica;
 import Modelo.Persona;

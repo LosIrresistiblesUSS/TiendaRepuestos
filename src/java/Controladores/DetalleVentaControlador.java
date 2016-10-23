@@ -5,7 +5,7 @@
  */
 package Controladores;
 
-import Funciones.FuncionesMensajes;
+import Helpers.FuncionesMensajes;
 import Interfaces.iDetalleVentaLogica;
 import Logica.DetalleVentaLogica;
 import Logica.EmpleadoLogica;

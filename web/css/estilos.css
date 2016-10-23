@@ -17,6 +17,14 @@ body{
     color: #FFECB3;
 }
 
+#numeroXpagina{
+    margin-left: 80px;
+}
+
+.cuadro-busqueda{
+    margin-right: -20px;
+}
+
 .jumbotron{
     background: #337ab7;
     color: #fff;
@@ -143,6 +151,10 @@ thead{
     .espacio-buscar{
         height: 7px;
      }
+     
+    #numeroXpagina{
+        margin-left: 60px;
+    }
 }
 
 @media (min-width: 768px) {

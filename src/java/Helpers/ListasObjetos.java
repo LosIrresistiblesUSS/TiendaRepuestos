@@ -1,4 +1,4 @@
-package Funciones;
+package Helpers;
 
 import Modelo.TipoDocumento;
 import Modelo.TipoEmpleado;

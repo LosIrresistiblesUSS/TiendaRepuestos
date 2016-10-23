@@ -1,6 +1,6 @@
 package Controladores;
 
-import Funciones.FuncionesMensajes;
+import Helpers.FuncionesMensajes;
 import Interfaces.iTipoDocumentoLogica;
 import Logica.TipoDocumentoLogica;
 import Modelo.TipoDocumento;

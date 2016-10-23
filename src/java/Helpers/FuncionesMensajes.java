@@ -1,4 +1,4 @@
-package Funciones;
+package Helpers;
 
 public class FuncionesMensajes {
     public static String insertarExitoso(String clase, String desc){

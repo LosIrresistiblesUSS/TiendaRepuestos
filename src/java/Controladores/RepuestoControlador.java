@@ -1,6 +1,6 @@
 package Controladores;
 
-import Funciones.FuncionesMensajes;
+import Helpers.FuncionesMensajes;
 import Interfaces.iRepuestoLogica;
 import Logica.RepuestoLogica; 
 import Modelo.Repuesto;

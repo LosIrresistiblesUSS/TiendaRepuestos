@@ -5,7 +5,7 @@
 --%>
 
 <%@page import="Modelo.TipoEmpleado"%>
-<%@page import="Funciones.ListasObjetos"%>
+<%@page import="Helpers.ListasObjetos"%>
 <%@page import="java.util.List"%>
 <%@page import="Modelo.TipoDocumento"%>
 <%@page import="Modelo.Empleado"%>

@@ -1,6 +1,6 @@
 package Controladores;
 
-import Funciones.FuncionesMensajes;
+import Helpers.FuncionesMensajes;
 import Interfaces.iTipoEmpleadoLogica;
 import Logica.TipoEmpleadoLogica;
 import Modelo.TipoEmpleado;

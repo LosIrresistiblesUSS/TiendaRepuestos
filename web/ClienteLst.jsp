@@ -1,4 +1,8 @@
- 
+<%-- 
+    Document   : Cliente
+    Created on : 10-oct-2016, 16:40:50
+    Author     : Los Irresistibles
+--%> 
 
 <%@page import="Modelo.Cliente"%>
 <%@page import="java.util.List"%>

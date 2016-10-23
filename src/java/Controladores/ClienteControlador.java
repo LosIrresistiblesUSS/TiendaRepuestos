@@ -1,6 +1,6 @@
 package Controladores;
 
-import Funciones.FuncionesMensajes;
+import Helpers.FuncionesMensajes;
 import Interfaces.iClienteLogica;
 import Logica.ClienteLogica;
 import Modelo.Cliente;

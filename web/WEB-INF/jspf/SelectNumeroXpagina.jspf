@@ -1,0 +1,12 @@
+<%@page import="Helpers.Constantes"%>
+<% Constantes constantes = new Constantes(); int nro_registros[] = constantes.getNRO_REGISTROS_POR_PAGINA(); %>
+
+    <select class="form-control" id="numeroXpagina" onchange="buscar(1)">
+        <% for(int nro : nro_registros){ %>
+            <% if((int)session.getAttribute("registrosPorPagina") == nro){ %>
+                <option value="<%=nro%>" selected><%=nro%></option>
+            <% }else{ %>
+                <option value="<%=nro%>"><%=nro%></option>
+            <% } %>
+        <% } %>
+    </select>

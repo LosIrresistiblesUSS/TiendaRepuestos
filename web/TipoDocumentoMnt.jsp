@@ -9,8 +9,7 @@
 
 <%@include file="WEB-INF/jspf/validacion.jspf" %>
 <!DOCTYPE html>
-<html>
-   <html lang="es">
+<html lang="es">
     <%
     TipoDocumento tipoDocumento = (TipoDocumento) session.getAttribute("tipoDocumentoActualizar");
     tipoDocumento = tipoDocumento == null ? new TipoDocumento() : tipoDocumento;
