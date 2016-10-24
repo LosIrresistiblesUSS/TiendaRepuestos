@@ -52,7 +52,7 @@
                     alert(" Todos los campos son  obligatorio.");
                 }else{
                   
-                    document.frmMnt.action = "ClienteControlador?accion=insertar&razonsocial=" + razonsocial + "&nombre" + nombre + "&apellidos" + apellidos + "&ndocumento" + ndocumento  +  "&direccion" + direccion + "&telefono" + telefono + "&email" + email + "&idtipo" + idtipo ;
+                    document.frmMnt.action = "ClienteControlador?accion=insertar&razonsocial=" + razonsocial + "&nombre" + nombre + "&apellidos" + apellidos + "&ndocumento" + ndocumento  +  "&direccion" + direccion + "&telefono" + telefono + "&email" + email + "&idtipo" + idtipo;
                     document.frmMnt.submit();
                 }
             }

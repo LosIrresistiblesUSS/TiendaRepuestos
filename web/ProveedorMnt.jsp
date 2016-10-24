@@ -1,7 +1,7 @@
 <%--
     Document   : Proveedor
     Created on : 10-oct-2016, 16:43:31
-    Author     : milagros
+    Author     : Los Irresistibles
 --%>
 
 
@@ -16,59 +16,58 @@
 <!DOCTYPE html>
 <html lang="es">
     <%
-    Proveedor proveedor=(Proveedor) session.getAttribute("proveedorActualizar");
+    Proveedor proveedor=(Proveedor) session.getAttribute("ProveedorActualizar");
     proveedor = proveedor == null ? new Proveedor():proveedor;
     
     int idProveedor= (String.valueOf(proveedor.getIdProveedor()) == null) ? 0 : proveedor.getIdProveedor();
-    String razonComercial= proveedor.getRazonComercial() == null ? "" : proveedor.getRazonComercial();
+    String razoncomercial= proveedor.getRazonComercial() == null ? "" : proveedor.getRazonComercial();
     String ndocumento=proveedor.getNumeroDocumento()== null ? "": proveedor.getNumeroDocumento();
     String direccion = proveedor.getDireccion() == null ? "" : proveedor.getDireccion();
     String telefono = proveedor.getTelefono() == null ? "" : proveedor.getTelefono();
     String email = proveedor.getEmail() == null ? "" : proveedor.getEmail();
-    int idtipo = (String.valueOf(proveedor.getTipoDocumento().getIdTipoDocumento()) == null) ? 0 : proveedor.getTipoDocumento().getIdTipoDocumento();
+    int idTipoDocumento = (String.valueOf(proveedor.getTipoDocumento().getIdTipoDocumento()) == null) ? 0 : proveedor.getTipoDocumento().getIdTipoDocumento();
     
     %>
         
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
-        <title>Mantenimiento de Proveedores</title>
+        <title>Proveedores</title>
         <script type="text/javascript">
             function insertar(){
-                var razonComercial=document.getElementById("txtrazonComercial").value;
+                var razoncomercial= document.getElementById("txtrazonComercial").value;
                 var ndocumento = document.getElementById("txtnDocumento").value;
                 var direccion = document.getElementById("txtDireccion").value;
                 var telefono = document.getElementById("txtTelefono").value;
                 var email = document.getElementById("txtEmail").value;
-                var idtipo = document.getElementById("idtipo").value;
+                var idtipo=document.getElementById("idtipo");
 
-                if(razonComercial == "" || ndocumento === "" || direccion === "" || telefono === "" || email=== ""){
+                if(razoncomercial == "" || ndocumento === "" || direccion === "" || telefono === "" || email=== "" || idtipo === ""){
                     alert("El Campo razonComercial es obligatorio.");
                 }else{
-                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" + razonComercial + "&ndocumento" + ndocumento + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
+                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razoncomercial=" + razoncomercial + "&ndocumento" + ndocumento + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email + "&idtipo" + idtipo;
                     document.frmMnt.submit();
                     }   
             }
 
             function actualizar(id){
-                var razonComercial=document.getElementById("txtrazonComercial").value;
+                var razoncomercial= document.getElementById("txtrazonComercial").value;
                 var ndocumento = document.getElementById("txtnDocumento").value;
                 var direccion = document.getElementById("txtDireccion").value;
                 var telefono = document.getElementById("txtTelefono").value;
                 var email = document.getElementById("txtEmail").value;
-                var idtipo = document.getElementById("idtipo").value;
+                var idtipo=document.getElementById("idtipo");
 
-                if(razonComercial == "" || ndocumento === "" || direccion === "" || telefono === "" || email=== ""){
+                if(razoncomercial == "" || ndocumento === "" || direccion === "" || telefono === "" || email=== "" || idtipo === ""){
                     alert("El Campo razonComercial es obligatorio.");
                 }else{
-                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razonSocial=" + razonComercial + "&ndocumento" + ndocumento + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email;
+                    documento.frmMnt.action="ProveedorControlador?accion=insertar&razoncomercial=" + razoncomercial + "&ndocumento" + ndocumento + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email + "&idtipo" + idtipo;
                     document.frmMnt.submit();
                 }
             }
             
             function cancelar(){
                 document.location = "ProveedorControlador?accion=buscar";
-            }
-      
+            } 
         </script>
     </head>
     <body>
@@ -100,7 +99,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3" for="txtrazonComercial">Proveedor:</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" type="text" id="txtrazonComercial" value="<%=razonComercial %>" autofocus="autofocus" />
+                                        <input class="form-control" type="text" id="txtrazonComercial" value="<%=razoncomercial %>" autofocus="autofocus" />
                                     </div>
                                 </div>
                                     
@@ -110,7 +109,7 @@
                                         <select class="form-control" id="idtipo">
                                             <% List<TipoDocumento> lstTipoDocumento = ListasObjetos.listaTipoDocumento(); %>
                                             <% for(TipoDocumento tipoDocumento : lstTipoDocumento){ %>
-                                                <% if (idtipo == tipoDocumento.getIdTipoDocumento()){%>
+                                                <% if (idTipoDocumento == tipoDocumento.getIdTipoDocumento()){%>
                                                     <option value="<%=tipoDocumento.getIdTipoDocumento()%>" selected><%=tipoDocumento.getDescripcion()%></option>
                                                 <% }else{ %>
                                                     <option value="<%=tipoDocumento.getIdTipoDocumento()%>"><%=tipoDocumento.getDescripcion()%></option>

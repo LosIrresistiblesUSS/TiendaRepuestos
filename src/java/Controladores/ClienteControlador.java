@@ -82,7 +82,7 @@ public class ClienteControlador extends HttpServlet{
         String email=request.getParameter("email")==null ? "" : request.getParameter("email");
         int idtipod = Integer.parseInt(request.getParameter("idtipodocumento") == null ? "0" : request.getParameter("idtipodocumento"));
         int idtipoc = Integer.parseInt(request.getParameter("idtipocliente") == null ? "0" : request.getParameter("idtipocliente"));
-// String descripcion=request.getParameter("descripcion")==null ? "" : request.getParameter("descripcion");
+        // String descripcion=request.getParameter("descripcion")==null ? "" : request.getParameter("descripcion");
         TipoDocumento tipodocumento;
         TipoCliente tipocliente;
         try{

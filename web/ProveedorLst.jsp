@@ -92,7 +92,7 @@
                             <thead align="center">
                                 <td><b>#</b></td>
                                 <td><b>Razon Comercial</b></td>
-                                <td><b>tipo Doc</b></td>
+                                <td><b>Doc</b></td>
                                 <td><b># Doc</b></td>
                                 <td><b>Direccion</b></td>
                                 <td><b>Telefono</b></td>
@@ -158,7 +158,7 @@
                             %>
                         </table>
                         
-                        <input type="hidden" value="<%=session.getAttribute("razonSocial")%>" id="razonSocial" />
+                        <input type="hidden" value="<%=session.getAttribute("razonComercial")%>" id="razonComercial" />
                     </div>
                     <!-- PAGINACIÓN - INICIO -->
                     <% if(session.getAttribute("usuario") != null){ %>

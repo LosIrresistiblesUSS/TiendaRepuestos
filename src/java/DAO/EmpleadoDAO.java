@@ -100,7 +100,6 @@ public class EmpleadoDAO implements iEmpleadoDAO{
                 empleado.setTelefono(rs.getString("telefono"));              
                 
                 tipoEmpleado.setDescripcion(rs.getString("te.descripcion"));
-                
                 empleado.setTipoEmpleado(tipoEmpleado);
 
                 lstEmpleado.add(empleado);

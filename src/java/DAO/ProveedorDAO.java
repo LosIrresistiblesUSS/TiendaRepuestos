@@ -13,17 +13,18 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class ProveedorDAO implements iProveedorDAO{
+    
     private static Logger logger = Logger.getLogger(ProveedorDAO.class.getName());
-       private Conexion con;
-       private Connection cn;
-       private ResultSet rs;
-       private PreparedStatement ps;
-       private CallableStatement cs;
-       private int flgOperacion = 0;
-       private String sql;
-       
+    private Conexion con;
+    private Connection cn;
+    private ResultSet rs;
+    private PreparedStatement ps;
+    private CallableStatement cs;
+    private int flgOperacion = 0;
+    private String sql;
+
     @Override
-    public int insertar(Proveedor pro) {
+    public int insertar(Proveedor proveedor) {
         logger.info("Insertando Proveedor");
         sql= "{CALL P_Insertar_Proveedor(?,?,?,?,?,?,?)}";
         try{
@@ -31,16 +32,17 @@ public class ProveedorDAO implements iProveedorDAO{
             cn=con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setString(1,pro.getNumeroDocumento().trim());
-            cs.setString(2,pro.getRazonComercial().trim());
-            cs.setString(3,pro.getDireccion().trim());
-            cs.setString(4,pro.getTelefono().trim());
-            cs.setString(5,pro.getEmail().trim());
-            cs.setInt(6,pro.getTipoDocumento().getIdTipoDocumento());
             
+            cs.setString(1,proveedor.getNumeroDocumento().trim());
+            cs.setString(2,proveedor.getRazonComercial().trim());
+            cs.setString(3,proveedor.getDireccion().trim());
+            cs.setString(4,proveedor.getTelefono().trim());
+            cs.setString(5,proveedor.getEmail().trim());
+            cs.setInt(6,proveedor.getTipoDocumento().getIdTipoDocumento());
             cs.registerOutParameter(7, java.sql.Types.INTEGER);
             cs.executeUpdate();
             flgOperacion = Integer.parseInt(cs.getObject(7).toString());
+            
             if(flgOperacion==1){
                 cn.commit();
             }else{
@@ -51,14 +53,15 @@ public class ProveedorDAO implements iProveedorDAO{
         }finally{
             con.cerrarConexion(cn);
         }
-        return flgOperacion;    }
+        return flgOperacion;    
+    }
 
     @Override
     public List<Proveedor> buscar(String razonComercial, int inicio, int registrosPorPagina) {
         logger.info("buscar");
         sql = "select " +
-                "pr.idProveedor" +
-                ",p.idPersona " +
+                "p.idPersona" +
+                ",pr.idProveedor" +
                 ",pr.razonComercial " +
                 ",p.numeroDocumento " +
                 ",td.descripcion " +
@@ -72,7 +75,7 @@ public class ProveedorDAO implements iProveedorDAO{
                 "inner join tipodocumento as td " +
                 "on p.idtipodocumento=td.idtipodocumento " +
                 "where razonComercial like '%" + (razonComercial.trim()) + "%' "+
-                "order by idpersona desc Limit "+ inicio + ", " + registrosPorPagina;
+                "order by idProveedor desc Limit "+ inicio + ", " + registrosPorPagina;
         
         List<Proveedor> lstProveedor = null;
         Proveedor proveedor;
@@ -84,17 +87,19 @@ public class ProveedorDAO implements iProveedorDAO{
             ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();
             lstProveedor = new ArrayList<Proveedor>();
-            tipoDocumento = new TipoDocumento();
             while(rs.next()){
+                //Todos los campos que vamos a mostrar de la consulta
                 proveedor = new Proveedor();
+                tipoDocumento = new TipoDocumento();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
+                proveedor.setIdPersona(rs.getInt("idpersona"));
                 proveedor.setRazonComercial(rs.getString("razonComercial"));
                 proveedor.setNumeroDocumento(rs.getString("numeroDocumento"));
                 proveedor.setDireccion(rs.getString("direccion"));
                 proveedor.setTelefono(rs.getString("telefono"));
                 proveedor.setEmail(rs.getString("email"));
-                tipoDocumento.setDescripcion(rs.getString("descripcion"));
                 
+                tipoDocumento.setDescripcion(rs.getString("descripcion"));
                 proveedor.setTipoDocumento(tipoDocumento);
                 
                 lstProveedor.add(proveedor);
@@ -108,12 +113,15 @@ public class ProveedorDAO implements iProveedorDAO{
     }
 
     @Override
-    public int totalRegistros(String razonComercial, int inicio, int registrosPorPagina) {
+    public int totalRegistros(String razoncomercial, int inicio, int registrosPorPagina) {
         int total = 0;
         logger.info("Total de Registros");
-        sql = "select count(*) as total "
-                + "from proveedor "
-                + "where razonComercial like '%" + (razonComercial.trim()) + "%'";
+        //cuenta total de registros que existen con el mismo nombre
+        sql = "select count(*) as total " +
+               "from proveedor pr " +
+               "inner join persona p " +
+               "on pr.idpersona = p.idpersona " +
+               "where razonComercial like '% " + (razoncomercial.trim()) + "%'";
         try{
             con = new Conexion();
             cn = con.getConexion();
@@ -134,16 +142,13 @@ public class ProveedorDAO implements iProveedorDAO{
     @Override
     public Proveedor obtenerPorId(int id) {
     logger.info("buscarPorId");
-           sql = "select " +
-                "p.idPersona " +
-                ",p.nombres " +
-                ",pr.razonSocial " +
+           sql = "select pr.idProveedor " +
+                ",pr.razonComercial " +
                 ",p.numeroDocumento " +
                 ",td.descripcion " +
                 ",p.direccion " +
                 ",p.telefono " +
                 ",p.email " +
-                ",p.idTipoDocumento " +
                 "from proveedor pr " +
                 "inner join persona as p " +
                 "on pr.idpersona=p.idpersona " +
@@ -163,16 +168,14 @@ public class ProveedorDAO implements iProveedorDAO{
                 while(rs.next()){
                     proveedor = new Proveedor();
                     tipoDocumento = new TipoDocumento();
-                    proveedor.setIdPersona(rs.getInt("idPersona"));
-                    proveedor.setNombres(rs.getString("nombres"));
-                    proveedor.setRazonComercial(rs.getString("razonsocial"));
+                    //Todos los campos del empleado que se actualizara por ID
+                    proveedor.setRazonComercial(rs.getString("razonComercial"));
                     proveedor.setNumeroDocumento(rs.getString("numeroDocumento"));
                     proveedor.setDireccion(rs.getString("direccion"));
                     proveedor.setTelefono(rs.getString("telefono"));
                     proveedor.setEmail(rs.getString("email"));   
                     
                     tipoDocumento.setDescripcion(rs.getString("descripcion"));
-                
                     proveedor.setTipoDocumento(tipoDocumento);
                     
                 }
@@ -185,32 +188,31 @@ public class ProveedorDAO implements iProveedorDAO{
         }
     
     @Override
-    public int actualizar(Proveedor pro) {
+    public int actualizar(Proveedor proveedor) {
     logger.info("actualizar");
-        sql = "{CALL P_Actualizar_Proveedor(?,?,?,?,?,?,?,?,?)}";
+        sql = "{CALL P_Actualizar_Proveedor(?,?,?,?,?,?,?,?)}";
         try{
             con = new Conexion();
             cn = con.getConexion();
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
-            cs.setString(1,pro.getNombres());
-            cs.setString(2,pro.getRazonComercial().trim());
-            cs.setString(3,pro.getNumeroDocumento().trim());
-            cs.setString(4,pro.getTipoDocumento().getDescripcion().trim());
-            cs.setString(5,pro.getDireccion().trim());
-            cs.setString(6,pro.getTelefono().trim());
-            cs.setString(7,pro.getEmail().trim());
-            cs.setInt(8,pro.getTipoDocumento().getIdTipoDocumento());
-            cs.registerOutParameter(9, java.sql.Types.INTEGER);
+            cs.setInt(1, proveedor.getIdProveedor());
+            cs.setString(2,proveedor.getNumeroDocumento().trim());
+            cs.setString(3,proveedor.getRazonComercial().trim());
+            cs.setString(4,proveedor.getDireccion().trim());
+            cs.setString(5,proveedor.getTelefono().trim());
+            cs.setString(6,proveedor.getEmail().trim());
+            cs.setInt(7,proveedor.getTipoDocumento().getIdTipoDocumento());
+            cs.registerOutParameter(8, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(9).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(8).toString());
             if(flgOperacion == 1){
                 cn.commit();
             }else{
                 cn.rollback();
             }
         }catch(Exception e){
-            logger.info("Eror al actualizar: " + e.getMessage() + " --> "+pro.getIdProveedor());
+            logger.info("Eror al actualizar: " + e.getMessage() + " --> "+proveedor.getIdProveedor());
         }finally{
             con.cerrarConexion(cn);
         }
