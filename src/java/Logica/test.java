@@ -122,16 +122,6 @@ public class test {
 //            }
 //   
         
-        DetalleVentaDAO detalle = new DetalleVentaDAO();
-        List<ComprobanteVenta> lista = new ArrayList<>();
-        
-        lista = detalle.buscar("", 0, 30);
-        
-        
-        for(ComprobanteVenta cv : lista){
-            System.out.println(cv.getIdComprobanteVenta() + " " + cv.getFecha() + " " + cv.getCliente());
-        }
-        
 
 
     }

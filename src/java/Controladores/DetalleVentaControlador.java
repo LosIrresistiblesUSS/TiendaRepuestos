@@ -6,12 +6,17 @@
 package Controladores;
 
 import Helpers.FuncionesMensajes;
+import Interfaces.iClienteLogica;
 import Interfaces.iDetalleVentaLogica;
+import Interfaces.iRepuestoLogica;
+import Logica.ClienteLogica;
 import Logica.DetalleVentaLogica;
-import Logica.EmpleadoLogica;
+import Logica.RepuestoLogica;
+import Modelo.Cliente;
 import Modelo.ComprobanteVenta;
-import Modelo.Empleado;
+import Modelo.Repuesto;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,6 +36,9 @@ public class DetalleVentaControlador extends HttpServlet {
     private static Logger logger = Logger.getLogger(DetalleVentaControlador.class.getName());
 
     private iDetalleVentaLogica detalleVentaService;
+    private iClienteLogica clienteService;
+    private iRepuestoLogica repuestoService;
+    
     private ComprobanteVenta comprobanteVenta;
     
     private int flgOperacion = 0;
@@ -74,6 +82,12 @@ public class DetalleVentaControlador extends HttpServlet {
             if (accion.equals("eliminar")) {
                 eliminar(request, response);
             }
+            if (accion.equals("buscarCliente")) {
+                buscarCliente(request, response);
+            }
+            if (accion.equals("buscarRepuesto")) {
+                buscarRepuesto(request, response);
+            }
         }
     }
 
@@ -84,9 +98,9 @@ public class DetalleVentaControlador extends HttpServlet {
     private void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
         logger.info("buscar");
         String nom = request.getParameter("nom") == null ? "" : request.getParameter("nom");
-        String pag = request.getParameter("pag") == null ? "1" : request.getParameter("pag");
-        int pagina = Integer.parseInt(pag);
-        int registrosPorPagina = 5; //Numero de registros por pagina 
+        int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
+        int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
+        
         int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
        
         try{
@@ -99,10 +113,6 @@ public class DetalleVentaControlador extends HttpServlet {
             List<ComprobanteVenta> lstComprobanteVenta = detalleVentaService.buscar(nom, inicio, registrosPorPagina);
             
             int totalRegistros = detalleVentaService.totalRegistros(nom, inicio, registrosPorPagina);
-
-            System.out.println("");
-            System.out.println(totalRegistros);
-            System.out.println("");
             
             int numeroPaginas = (int)Math.ceil((double)totalRegistros / registrosPorPagina);
             sesion.setAttribute("pagina", pagina);
@@ -177,6 +187,61 @@ public class DetalleVentaControlador extends HttpServlet {
             busca(request, response);
         }catch(Exception e){
             logger.error("eliminar: " + e.getMessage());
+        }
+    }
+    
+    
+    private void buscarCliente(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
+        logger.info("buscarCliente");
+        
+        String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
+        int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
+        int registrosPorPagina = 10;
+        int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
+        
+        try{
+            PrintWriter out = response.getWriter();
+            clienteService = new ClienteLogica();
+            List<Cliente> lstCliente = clienteService.buscar(desc, inicio, registrosPorPagina);
+            int total = clienteService.totalRegistros(desc, inicio, registrosPorPagina);
+            int numeroPaginas = (int)Math.ceil((double)total / registrosPorPagina);
+            StringBuilder sb = new StringBuilder("");
+            sb.append(pagina).append("*").append(numeroPaginas).append("*");
+            for(Cliente cliente : lstCliente){
+                sb.append(cliente.getIdCliente()).append("-").append(cliente.getNombres()).append("-").append(cliente.getApellidos())
+                        .append(cliente.getRazonSocial()).append("-").append(cliente.getTipoCliente().getNomDescripcion()).append("-")
+                        .append(cliente.getTipoDocumento().getDescripcion()).append("-").append(cliente.getNumeroDocumento()).append(":");
+            }
+            out.write(sb.toString());
+        }catch(Exception e){
+            logger.error("buscarCliente: " + e.getMessage());
+        }
+    }
+    
+    private void buscarRepuesto(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
+        logger.info("buscarRepuesto");
+        
+        String desc = request.getParameter("desc") == null ? "" : request.getParameter("desc");
+        int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
+        int registrosPorPagina = 10;
+        int inicio = (pagina > 1) ? (pagina * registrosPorPagina - registrosPorPagina): 0;
+        
+        try{
+            PrintWriter out = response.getWriter();
+            repuestoService = new RepuestoLogica();
+            List<Repuesto> lstRepuesto = repuestoService.buscar(desc, inicio, registrosPorPagina);
+            int total = repuestoService.totalRegistros(desc, inicio, registrosPorPagina);
+            int numeroPaginas = (int)Math.ceil((double)total / registrosPorPagina);
+            StringBuilder sb = new StringBuilder("");
+            sb.append(pagina).append("*").append(numeroPaginas).append("*");
+            for(Repuesto repuesto : lstRepuesto){
+                sb.append(repuesto.getIdrepuesto()).append("-").append(repuesto.getDescripcion()).append("-")
+                        .append(repuesto.getStock()).append("-").append(repuesto.getPrecio()).append("-")
+                        .append(repuesto.getPreciopormayor()).append(":");
+            }
+            out.write(sb.toString());
+        }catch(Exception e){
+            logger.error("buscarRepuesto: " + e.getMessage());
         }
     }
     

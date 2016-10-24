@@ -2,6 +2,7 @@ package Modelo;
 
 public class Usuario {
     private int idLogin;
+    private int idEmpleado;
     private String nombres;
     private String cargo;
     private String usuario;
@@ -11,8 +12,9 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int idLogin, String nombres, String cargo, String usuario, String password, String imagen) {
+    public Usuario(int idLogin, int idEmpleado, String nombres, String cargo, String usuario, String password, String imagen) {
         this.idLogin = idLogin;
+        this.idEmpleado = idEmpleado;
         this.nombres = nombres;
         this.cargo = cargo;
         this.usuario = usuario;
@@ -26,6 +28,14 @@ public class Usuario {
 
     public void setIdLogin(int idLogin) {
         this.idLogin = idLogin;
+    }
+
+    public int getIdEmpleado() {
+        return idEmpleado;
+    }
+
+    public void setIdEmpleado(int idEmpleado) {
+        this.idEmpleado = idEmpleado;
     }
 
     public String getNombres() {

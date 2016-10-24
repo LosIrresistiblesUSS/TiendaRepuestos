@@ -1,6 +1,7 @@
 package Helpers;
 
 import Modelo.TipoCliente;
+import Modelo.TipoComprobanteVenta;
 import Modelo.TipoDocumento;
 import Modelo.TipoEmpleado;
 import Util.Conexion;
@@ -141,4 +142,31 @@ public class ListasObjetos {
         }
         return lstTipoCliente;
     }
+    
+    public static List<TipoComprobanteVenta> listaTipoComprobanteVenta(){
+        logger.info("listaTipoComprobanteVenta");
+        sql = "select idTipoComprobanteVenta, descripcion from TipoComprobanteVenta";
+        List<TipoComprobanteVenta> lstTipoComprobanteVenta = null;
+        TipoComprobanteVenta tipoComprobanteVenta;
+        try {
+            con = new Conexion();
+            cn = con.getConexion();
+            cn.setAutoCommit(false);
+            ps = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            lstTipoComprobanteVenta = new ArrayList<>();
+            while(rs.next()){
+                tipoComprobanteVenta = new TipoComprobanteVenta();
+                tipoComprobanteVenta.setIdTipoComprobanteventa(rs.getInt("idTipoComprobanteVenta"));
+                tipoComprobanteVenta.setDescripcion(rs.getString("descripcion"));
+                lstTipoComprobanteVenta.add(tipoComprobanteVenta);
+            }
+        } catch (Exception e) {
+            logger.info("Error listaTipoComprobanteVenta: " + e.getMessage());
+        } finally{
+            con.cerrarConexion(cn);
+        }
+        return lstTipoComprobanteVenta;
+    }
+    
 }

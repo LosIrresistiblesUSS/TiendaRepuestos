@@ -22,7 +22,7 @@ public class LoginDAO implements iLoginDAO {
     @Override
     public Usuario iniciarSesion(String user, String pass) {
         logger.info("iniciarSesion");
-        sql ="SELECT l.idLogin,l.usuario,l.pass,l.imagen,p.nombres,te.descripcion " +
+        sql ="SELECT l.idLogin,l.usuario,l.pass,l.imagen,p.nombres,te.descripcion,e.idEmpleado " +
             "FROM Login AS l " +
             "inner join Persona AS p " +
             "ON l.idPersona = p.idPersona " +
@@ -44,6 +44,7 @@ public class LoginDAO implements iLoginDAO {
             while(rs.next()){
                 usuario = new Usuario();
                 usuario.setIdLogin(rs.getInt("idLogin"));
+                usuario.setIdEmpleado(rs.getInt("idEmpleado"));
                 usuario.setNombres(rs.getString("nombres"));
                 usuario.setCargo(rs.getString("descripcion"));
                 usuario.setUsuario(rs.getString("usuario"));

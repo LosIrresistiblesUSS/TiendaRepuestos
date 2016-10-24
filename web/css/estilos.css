@@ -13,6 +13,29 @@ body{
     color: #fff;
 }
 
+.panel-productos-padre{
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.eliminar-producto{
+    color: #d42e2e;
+}
+
+.eliminar-producto:hover{
+    color: #b14646;
+}
+
+.panel-productos{
+    padding: 25px 20px 25px 20px;
+}
+
+.paginacionModal{
+    margin: -20px 15px -5px 15px;
+}
+
 .navbar-brand b:hover{
     color: #FFECB3;
 }
@@ -33,6 +56,11 @@ body{
 
 .panel-heading-2{
     padding: 7px;
+}
+
+.icono-text{
+    display: box;
+    padding: 3px;
 }
 
 .formulario-resultados{
@@ -142,7 +170,7 @@ main{
     margin-top: 8px;
 }
 
-thead{
+.thead-listado{
     background: #222;
     color: #fff;
 }

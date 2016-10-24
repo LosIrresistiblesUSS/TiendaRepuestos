@@ -90,7 +90,7 @@
                     </div>
                     <div class="table-responsive"> <!-- Activar para tabla responsiva -->
                         <table border="1" class="table table-hover tabla-resultados">
-                            <thead align="center">
+                            <thead align="center" class="thead-listado">
                                 <td><b>#</b></td>
                                 <td><b>Descripción</b></td>
                                 <td><b>Stock</b></td>
@@ -156,7 +156,7 @@
                         </table>
                         
                         <input type="hidden" value="<%=session.getAttribute("descripcion")%>" id="descripcion" />
-                   </div>
+                    </div>
                     <!-- PAGINACIÓN - INICIO -->
                     <% if(session.getAttribute("usuario") != null){ %>
                         <%@include file="WEB-INF/jspf/paginacion.jspf" %>

@@ -90,7 +90,7 @@
                     </div>
                     <div class="table-responsive"> <!-- Activar para tabla responsiva -->
                         <table border="1" class="table table-hover tabla-resultados">
-                            <thead align="center">
+                            <thead align="center" class="thead-listado">
                                 <td><b>#</b></td>
                                 <td><b>Id</b></td>
                                 <td><b>Descripción</b></td>
