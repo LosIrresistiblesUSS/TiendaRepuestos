@@ -61,6 +61,7 @@
                 var idTipoDocumento = document.getElementById("idTipoDocumento").value;
                 var nroDocumento = document.getElementById("txtNroDocumento").value;
                 var idTipoEmpleado = document.getElementById("idTipoEmpleado").value;
+                
                 if(nombres === "" || direccion === "" || telefono === "" || email=== "" || nroDocumento === ""){
                     alert("Todos los campos son obligatorios.");
                 }else{

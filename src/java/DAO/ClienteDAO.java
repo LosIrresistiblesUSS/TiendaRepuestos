@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class ClienteDAO implements iClienteDAO{
- private static Logger logger = Logger.getLogger(ClienteDAO.class.getName());
+    private static Logger logger = Logger.getLogger(ClienteDAO.class.getName());
     private Conexion con;
     private Connection cn;
     private ResultSet rs;
@@ -44,6 +44,7 @@ public class ClienteDAO implements iClienteDAO{
             cs.registerOutParameter(8, java.sql.Types.INTEGER);
             cs.executeUpdate();
             flgOperacion = Integer.parseInt(cs.getObject(8).toString());
+            
             if(flgOperacion==1){
                 cn.commit();
             }else{
@@ -116,9 +117,7 @@ public class ClienteDAO implements iClienteDAO{
                 tipodocumento= new TipoDocumento();
                 tipodocumento.setDescripcion(rs.getString("tipodocumento"));
                 cliente.setTipoDocumento(tipodocumento);
-                
-                
-                
+           
                 lstCliente.add(cliente);
                 
             }
@@ -136,7 +135,8 @@ public class ClienteDAO implements iClienteDAO{
         int total = 0;
         logger.info("Total de Registros");
         sql = "select count(*) as total " +
-              "from cliente c inner join persona p " +
+              "from cliente c " +
+              "inner join persona p " +
               "on c.idpersona = p.idpersona " +
               "inner join tipocliente tc "+
                "on tc.idTipoCliente=c.idTipoCliente " +

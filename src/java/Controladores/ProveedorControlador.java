@@ -3,7 +3,6 @@ package Controladores;
 import Helpers.FuncionesMensajes;
 import Interfaces.iProveedorLogica;
 import Logica.ProveedorLogica;
-import Modelo.Persona;
 import Modelo.Proveedor;
 import Modelo.TipoDocumento;
 import java.io.IOException;
@@ -17,12 +16,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 @WebServlet(name = "ProveedorControlador", urlPatterns = {"/ProveedorControlador"})/*url para el navegador*/
+
 public class ProveedorControlador extends HttpServlet{
     private static Logger logger = Logger.getLogger(ProveedorControlador.class.getName());
     
     private iProveedorLogica proveedorService;
     private Proveedor proveedor;
-    private Persona persona;
     private TipoDocumento tipoDocumento;
     
     private int flgOperacion = 0;
@@ -100,7 +99,7 @@ public class ProveedorControlador extends HttpServlet{
                     mensaje = FuncionesMensajes.insertarExitoso("Proveedor", razonComercial);
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.insertarAdvertencia("Proveedor", razonComercial);
+                    mensaje = FuncionesMensajes.insertarAdvertencia("Proveedor con Nro. de Documento ", numeroDocumento);
                     break;
                 default:
                     mensaje = FuncionesMensajes.insertarError("Proveedor", razonComercial);
@@ -115,14 +114,13 @@ public class ProveedorControlador extends HttpServlet{
             busca(request, response);
             
         }catch(Exception e){
-            logger.error("insertar: " + e.getMessage());
+            logger.error("insertar Proveedor Controlador: " + e.getMessage());
         }
     }
 
         protected void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("buscar");
         String razonComercial = request.getParameter("razonComercial") == null ? "" : request.getParameter("razonComercial");
-        
         int pagina = Integer.parseInt(request.getParameter("pag") == null ? "1" : request.getParameter("pag"));
         int registrosPorPagina = Integer.parseInt(request.getParameter("nro") == null ? "10" : request.getParameter("nro"));
         
@@ -135,7 +133,7 @@ public class ProveedorControlador extends HttpServlet{
             sesion.removeAttribute("proveedorActualizar");
             
             proveedorService = new ProveedorLogica();
-            List<Proveedor> lstProveedor = proveedorService.buscar((String)razonComercial, inicio, registrosPorPagina);
+            List<Proveedor> lstProveedor = proveedorService.buscar(razonComercial, inicio, registrosPorPagina);
             int totalRegistros = proveedorService.totalRegistros(razonComercial, inicio, registrosPorPagina);
             int numeroPaginas = (int)Math.ceil((double)totalRegistros / registrosPorPagina);
             sesion.setAttribute("pagina", pagina);
@@ -195,33 +193,30 @@ public class ProveedorControlador extends HttpServlet{
 
         try{
             proveedor = new Proveedor();
-            persona = new Persona();
             tipoDocumento= new TipoDocumento();
             
             proveedor.setIdProveedor(id);
             proveedor.setRazonComercial(razonComercial);
-            persona.setNumeroDocumento(numeroDocumento);
-            persona.setDireccion(direccion);
-            persona.setTelefono(telefono);
-            persona.setEmail(email);
-            tipoDocumento.setIdTipoDocumento(idTipoDocumento);
-            persona.setIdPersona(id);
+            proveedor.setNumeroDocumento(numeroDocumento);
+            proveedor.setDireccion(direccion);
+            proveedor.setTelefono(telefono);
+            proveedor.setEmail(email);
             
-            Proveedor proveedorAnterior = new Proveedor();
-            proveedorAnterior = (Proveedor) sesion.getAttribute("proveedorActualizar");
+            tipoDocumento.setIdTipoDocumento(idTipoDocumento);
+            proveedor.setTipoDocumento(tipoDocumento);
             
             proveedorService = new ProveedorLogica();
             flgOperacion = proveedorService.actualizar(proveedor);
             
             switch (flgOperacion) {
                 case 1:
-                    mensaje = FuncionesMensajes.actualizarExitoso("Proveedor", proveedorAnterior.getRazonComercial(), proveedor.getRazonComercial());
+                    mensaje = FuncionesMensajes.actualizarExitoso2("Proveedor", proveedor.getRazonComercial());
                     break;
                 case 2:
-                    mensaje = FuncionesMensajes.actualizarAdvertencia("Proveedor", proveedor.getRazonComercial());
+                    mensaje = FuncionesMensajes.actualizarAdvertencia2("Proveedor", proveedor.getNumeroDocumento());
                     break;
                 default:
-                    mensaje = FuncionesMensajes.actualizarError("Proveedor", proveedorAnterior.getRazonComercial(), proveedor.getRazonComercial());
+                    mensaje = FuncionesMensajes.actualizarError2("Proveedor", proveedor.getRazonComercial());
                     break;
             }
             sesion = request.getSession();
@@ -245,8 +240,6 @@ public class ProveedorControlador extends HttpServlet{
             Proveedor proveedorEliminar = new Proveedor();
             proveedorEliminar = proveedorService.obtenerPorId(id);
             flgOperacion = proveedorService.eliminar(id);
-            System.out.println(flgOperacion);
-            System.out.println(id);
             
             if(flgOperacion > 0){
                 mensaje = FuncionesMensajes.eliminarExitoso("Proveedor ", proveedorEliminar.getRazonComercial());

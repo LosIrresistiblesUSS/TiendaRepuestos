@@ -54,6 +54,7 @@ public class TipoServicioDAO implements iTipoServicioDAO  {
                 + "from tiposervicio "
                 + "where descripcion like '%" + (descripcion.trim()) + "%'"
                 + "order by idTipoServicio desc LIMIT " + inicio + ", " + registrosPorPagina;
+        
         List<TipoServicio> lstTipoServicio = null;
         TipoServicio tipoServicio;
         try{
