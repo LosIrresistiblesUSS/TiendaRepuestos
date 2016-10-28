@@ -1,128 +1,85 @@
 package Logica;
 
-import DAO.DetalleVentaDAO;
 import Helpers.ListasObjetos;
-import Modelo.Cliente;
-import Modelo.ComprobanteVenta;
-import Modelo.DetalleOperacion;
-import Modelo.DetalleOperacionRepuesto;
-import Modelo.Empleado;
-import Modelo.OperacionRepuesto;
-import Modelo.Producto;
-import Modelo.Repuesto;
-import Modelo.TipoDocumento;
-import Modelo.TipoEmpleado;
-import Modelo.Vehiculo;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class test {
-        
+
     public static void main(String[] args) {
 
-//        List<TipoDocumento> lstTipoDocumento = ListasObjetos.listaTipoDocumento();
-//        for (TipoDocumento tipoDocumento : lstTipoDocumento){
-//            System.out.println(tipoDocumento.getIdTipoDocumento()+" "+tipoDocumento.getDescripcion());
-//        }
+//        String number = "B-999-999998";
+//        String numeroGeneral = null;
+//        String numero = null;
+//        String codigo = null;
 //        
-//        List<TipoEmpleado> lstTipoEmpleado = ListasObjetos.listaTipoEmpleado();
-//        for (TipoEmpleado tipoEmpleado : lstTipoEmpleado){
-//            System.out.println(tipoEmpleado.getIdTipoEmpleado()+" "+tipoEmpleado.getDescripcion());
-//        }
-
-//        DetalleOperacion detalleOperacion = new DetalleOperacion();
+//        String num = number.substring(6);
+//        String cod = number.substring(2, 5);
 //        
-//        detalleOperacion.setIdDetalleOperacion(1);
+//        int numEntero = Integer.parseInt(num);
+//        int codEntero = Integer.parseInt(cod);
 //        
-//            OperacionRepuesto operacionRepuesto = new OperacionRepuesto();
-//            operacionRepuesto.setIdOperacionRepuesto(1);
-//            operacionRepuesto.setEstado(true);
-//
-//                Cliente cliente = new Cliente();
-//                cliente.setIdCliente(10);
-//                cliente.setNombres("Cantos");
-//
-//            operacionRepuesto.setCliente(cliente);
-//
-//                Empleado empleado = new Empleado();
-//                empleado.setIdEmpleado(10);
-//                empleado.setNombres("Acuña");
-//
-//            operacionRepuesto.setEmpleado(empleado);
-//
-//                Vehiculo vehiculo = new Vehiculo();
-//                vehiculo.setIdVehiculo(20);
-//                vehiculo.setMarca("Toyota");
-//                vehiculo.setModelo("Hiunday");
-//
-//            operacionRepuesto.setVehiculo(vehiculo);
-//        
-//        
-//        detalleOperacion.setOperacionRespuesto(operacionRepuesto);
-//        
-//        
-//        List<DetalleOperacionRepuesto> lista = new ArrayList<>();
-        
-        
-//            DetalleOperacionRepuesto repuesto1 = new DetalleOperacionRepuesto();
-//                repuesto1.setIdDetalleVentaRepuesto(1);
-//                repuesto1.setCantidad(20);
-//                repuesto1.setPrecio(10.5);
-//                repuesto1.setSubTotal(210);
-//
-//                    Repuesto re1 = new Repuesto();
-//                    re1.setDescripcion("llanta");
-//
-//            repuesto1.setRepuesto(re1);
-//            lista.add(repuesto1);
+//        if(numEntero != 999999){
+//            numEntero = numEntero + 1;
+//            String numEnteroString = String.valueOf(numEntero);
+//            char[] arrayNumEntero = numEnteroString.toCharArray();
+//            int totalCaracteresNumEntero = arrayNumEntero.length;
 //            
-//            DetalleOperacionRepuesto repuesto2 = new DetalleOperacionRepuesto();
-//
-//                repuesto2.setIdDetalleVentaRepuesto(2);
-//                repuesto2.setCantidad(10);
-//                repuesto2.setPrecio(10);
-//                repuesto2.setSubTotal(100);
-//
-//                    Repuesto re2 = new Repuesto();
-//                    re2.setDescripcion("timon");
-//
-//            repuesto2.setRepuesto(re2);
-//            lista.add(repuesto2);
-//            
-//            
-//            DetalleOperacionRepuesto repuesto3 = new DetalleOperacionRepuesto();
-//
-//                repuesto3.setIdDetalleVentaRepuesto(3);
-//                repuesto3.setCantidad(30);
-//                repuesto3.setPrecio(1);
-//                repuesto3.setSubTotal(30);
-//
-//                    Repuesto re3 = new Repuesto();
-//                    re3.setDescripcion("Parabrisas");
-//
-//            repuesto3.setRepuesto(re3);
-//            lista.add(repuesto3);
-//            
-            
-//            
-//            detalleOperacion.setLstDetalleVentaRepuesto(lista);
-//            
-//           
-//            System.out.println("El CLiente: " + detalleOperacion.getOperacionRespuesto().getCliente().getNombres());
-//            System.out.println("El Empleado: " + detalleOperacion.getOperacionRespuesto().getEmpleado().getNombres());
-//            System.out.println("Con vehiculo: " + detalleOperacion.getOperacionRespuesto().getVehiculo().getMarca());
-//     
-//            System.out.println("");
-//            System.out.println("Productos:");
-//            System.out.println("---------");
-//            for(DetalleOperacionRepuesto temp : detalleOperacion.getLstDetalleVentaRepuesto()){
-//                System.out.println(temp.getIdDetalleVentaRepuesto() +  " " + temp.getRepuesto().getDescripcion() + " " +temp.getPrecio() + " " + temp.getSubTotal());
+//            switch (totalCaracteresNumEntero) {
+//                case 1:
+//                    numero = "00000" + numEnteroString;
+//                    break;
+//                case 2:
+//                    numero = "0000" + numEnteroString;
+//                    break;
+//                case 3:
+//                    numero = "000" + numEnteroString;
+//                    break;
+//                case 4:
+//                    numero = "00" + numEnteroString;
+//                    break;
+//                case 5:
+//                    numero = "0" + numEnteroString;
+//                    break;
+//                case 6:
+//                    numero = numEnteroString;
+//                    break;
+//                default:
+//                    break;
 //            }
-//   
-        
+//            codigo = cod;
+//            numeroGeneral = "B-"+codigo+"-"+numero;
+//        } else {
+//            if (codEntero != 999) {
+//                codEntero = codEntero + 1;
+//                String codEnteroString = String.valueOf(codEntero);
+//                char[] arrayCodEntero = codEnteroString.toCharArray();
+//                int totalCaracteresCodEntero = arrayCodEntero.length;
+//                
+//                switch (totalCaracteresCodEntero) {
+//                    case 1:
+//                        codigo = "00" + codEnteroString;
+//                        break;
+//                    case 2:
+//                        codigo = "0" + codEnteroString;
+//                        break;
+//                    case 3:
+//                        codigo = codEnteroString;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                numero = "000001";
+//                numeroGeneral = "B-"+codigo+"-"+numero;
+//            } else {
+//                numeroGeneral = "Ya no existen codigos disponibles";
+//            }
+//        }
+//        
+//        System.out.println(numeroGeneral);
+//        System.out.println(ListasObjetos.ultimoNumeroBoleta());
+//        System.out.println(ListasObjetos.ultimoNumeroFactura());
 
+
+        System.out.println(ListasObjetos.ultimoIdComprobanteVenta());
 
     }
 }

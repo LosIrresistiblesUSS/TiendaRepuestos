@@ -25,7 +25,7 @@
                 var idTe = document.getElementById("txtId").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
                 
-                if(idTe == "" || descripcion == ""){
+                if(idTe === "" || descripcion === ""){
                     alert("Campo Id y Descripcion son obligatorios.");
                 }else{
                     document.frmMnt.action = "TipoEmpleadoControlador?accion=insertar&id=" + idTe + "&descripcion=" + descripcion;
@@ -36,30 +36,16 @@
             function actualizar(){
                 var idTe = document.getElementById("txtId").value;
                 var descripcion = document.getElementById("txtDescripcion").value;
-                if(idTe == "" || descripcion == ""){
+                if(idTe === "" || descripcion === ""){
                     alert("Campo Id y Descripcion son obligatorios.");
                 }else{
                     document.frmMnt.action = "TipoEmpleadoControlador?accion=actualizar&idTe=" + idTe + "&descripcion=" + descripcion;
                     document.frmMnt.submit();
+                }
             }
-        }
             function cancelar(){
                 document.location = "TipoEmpleadoControlador?accion=buscar";
             }
-            /* Para guardar con AJAX
-            function guardar(){
-                var data = new FormData($('#frmMnt')[0]);
-                $.ajax({
-                    url : "TipoEmpleadoControlador",
-                    type : "post",
-                    data : data,
-                    contentType: false,
-                    processData: false,
-                    success : function(data){
-                        alert(data);
-                    }
-                });
-            }*/
         </script>
     </head>
     

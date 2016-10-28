@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controladores;
 
 import Helpers.FuncionesMensajes;
+import Helpers.ListasObjetos;
 import Interfaces.iClienteLogica;
 import Interfaces.iDetalleVentaLogica;
 import Interfaces.iRepuestoLogica;
@@ -14,9 +10,17 @@ import Logica.DetalleVentaLogica;
 import Logica.RepuestoLogica;
 import Modelo.Cliente;
 import Modelo.ComprobanteVenta;
+import Modelo.DetalleOperacion;
+import Modelo.DetalleOperacionRepuesto;
+import Modelo.DetalleVenta;
+import Modelo.Empleado;
+import Modelo.OperacionRepuesto;
 import Modelo.Repuesto;
+import Modelo.TipoComprobanteVenta;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -92,7 +96,106 @@ public class DetalleVentaControlador extends HttpServlet {
     }
 
     private void insertar(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("insertar");
+        
+        int idCliente = Integer.parseInt(request.getParameter("idCliente") == null ? "0" : request.getParameter("idCliente"));
+        int idEmpleado = Integer.parseInt(request.getParameter("idEmpleado") == null ? "0" : request.getParameter("idEmpleado"));
+        int tipoComprobante = Integer.parseInt(request.getParameter("tipoComprobante") == null ? "0" : request.getParameter("tipoComprobante"));
+        String nroDocumento = request.getParameter("nroDocumento") == null ? "" : request.getParameter("nroDocumento");
+        String fecha = request.getParameter("fecha") == null ? "" : request.getParameter("fecha");
+        String descripcion = request.getParameter("descripcion") == null ? "" : request.getParameter("descripcion");
+        Double importe = Double.parseDouble(request.getParameter("importe") == null ? "0" : request.getParameter("importe"));
+        
+        int  tamano = Integer.parseInt(request.getParameter("tamano") == null ? "0" : request.getParameter("tamano"));
+        
+        List<DetalleOperacionRepuesto> lstDetalleRepuesto = new ArrayList<>();
+        
+        for(int i=1; i <= tamano ; i++){
+            Repuesto repuesto = new Repuesto();
+            DetalleOperacionRepuesto detalleOperacionRepuesto = new DetalleOperacionRepuesto();
+            int idRepuesto = Integer.parseInt(request.getParameter("id"+i) == null ? "0" : request.getParameter("id"+i));
+            int cantidad = Integer.parseInt(request.getParameter("cantidad"+i) == null ? "0" : request.getParameter("cantidad"+i));
+            Double precio = Double.parseDouble(request.getParameter("precio"+i) == null ? "0" : request.getParameter("precio"+i));
+            Double total = Double.parseDouble(request.getParameter("total"+i) == null ? "0" : request.getParameter("total"+i));
+            
+            repuesto.setIdrepuesto(idRepuesto);
+            detalleOperacionRepuesto.setRepuesto(repuesto);
+            detalleOperacionRepuesto.setCantidad(cantidad);
+            detalleOperacionRepuesto.setPrecio(precio);
+            detalleOperacionRepuesto.setSubTotal(total);
+            lstDetalleRepuesto.add(detalleOperacionRepuesto);
+        }
+        
+        System.out.println("");
+        for(DetalleOperacionRepuesto item : lstDetalleRepuesto){
+            System.out.println("Repuesto: " + item.getRepuesto().getIdrepuesto() + " Cantidad: " + item.getCantidad() + " Precio: " + item.getPrecio() + " Total: " + item.getSubTotal());
+        }
+        System.out.println("");
+        
+        
+        System.out.println("IdCliente: "+idCliente);
+        System.out.println("IdEmpleado: "+idEmpleado);
+        System.out.println("TipoComprobante: "+tipoComprobante);
+        System.out.println("nroDocumento: "+nroDocumento);
+        System.out.println("Fecha: "+fecha);
+        System.out.println("Descripcion: "+descripcion);
+        System.out.println("Importe: "+importe);
+        
+        System.out.println("");
+        
+        try{
+            OperacionRepuesto operacionRepuesto = new OperacionRepuesto();
+            Cliente cliente = new Cliente();
+            Empleado empleado = new Empleado();
+            cliente.setIdCliente(idCliente);
+            empleado.setIdEmpleado(idEmpleado);
+            operacionRepuesto.setIdOperacionRepuesto(ListasObjetos.ultimoIdOperacion());
+            operacionRepuesto.setCliente(cliente);
+            operacionRepuesto.setEmpleado(empleado);
+            
+            ComprobanteVenta comprobanteV= new ComprobanteVenta();
+            TipoComprobanteVenta tipoComprobanteVenta = new TipoComprobanteVenta();
+            tipoComprobanteVenta.setIdTipoComprobanteventa(tipoComprobante);
+            comprobanteV.setTipoComprobanteVenta(tipoComprobanteVenta);
+            comprobanteV.setNumero(nroDocumento);
+            comprobanteV.setFecha(Date.valueOf(fecha));
+            comprobanteV.setDescripcion(descripcion);
+            comprobanteV.setImporte(importe);
+            
+            DetalleOperacion detalleOperacion = new DetalleOperacion();
+            detalleOperacion.setOperacionRespuesto(operacionRepuesto);
+            detalleOperacion.setLstDetalleRepuesto(lstDetalleRepuesto);
+            
+            DetalleVenta detalleVenta = new DetalleVenta();
+            detalleVenta.setComprobanteVenta(comprobanteV);
+            detalleVenta.setDetalleOperacion(detalleOperacion);
+            
+            detalleVentaService = new DetalleVentaLogica();
+            flgOperacion = detalleVentaService.insertar(detalleVenta);
+            
+            switch (flgOperacion) {
+                case 1:
+                    mensaje = FuncionesMensajes.insertarExitoso("Venta de", "Repuestos");
+                    break;
+                case 2:
+                    mensaje = FuncionesMensajes.insertarAdvertencia("Venta de", "Repuestos");
+                    break;
+                default:
+                    mensaje = FuncionesMensajes.insertarError("Venta de", "Repuestos");
+                    break;
+            }
+            sesion = request.getSession();
+            sesion.removeAttribute("msgPostOperacion");
+            sesion.removeAttribute("listaComprobanteVenta");
+            sesion.removeAttribute("msgListado");
+            sesion.removeAttribute("comprobanteVentaActualizar");
+            sesion.setAttribute("msgPostOperacion", mensaje);
+            busca(request, response);
+            
+        }catch(Exception e){
+            logger.error("insertar VentaControlador: " + e.getMessage());
+        }
+        
     }
 
     private void busca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
@@ -168,8 +271,8 @@ public class DetalleVentaControlador extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id") == null ? "0" : request.getParameter("id"));
         try{
             detalleVentaService = new DetalleVentaLogica();
-            ComprobanteVenta comprobanteVentaEliminar = new ComprobanteVenta();
-            comprobanteVentaEliminar = detalleVentaService.obtenerPorId(id);
+            /*ComprobanteVenta comprobanteVentaEliminar = new ComprobanteVenta();
+            comprobanteVentaEliminar = detalleVentaService.obtenerPorId(id);*/
             flgOperacion = detalleVentaService.eliminar(id);
             
             if(flgOperacion > 0){
@@ -181,7 +284,7 @@ public class DetalleVentaControlador extends HttpServlet {
             sesion.removeAttribute("msgPostOperacion");
             sesion.removeAttribute("listaEmpleado");
             sesion.removeAttribute("msgListado");
-            sesion.removeAttribute("empleadoActualizar");
+            sesion.removeAttribute("detalleVentaActualizar");
             
             sesion.setAttribute("msgPostOperacion", mensaje);
             busca(request, response);
@@ -206,11 +309,11 @@ public class DetalleVentaControlador extends HttpServlet {
             int total = clienteService.totalRegistros(desc, inicio, registrosPorPagina);
             int numeroPaginas = (int)Math.ceil((double)total / registrosPorPagina);
             StringBuilder sb = new StringBuilder("");
-            sb.append(pagina).append("*").append(numeroPaginas).append("*");
+            sb.append(pagina).append("*").append(numeroPaginas).append("*").append(registrosPorPagina).append("*");
             for(Cliente cliente : lstCliente){
-                sb.append(cliente.getIdCliente()).append("-").append(cliente.getNombres()).append("-").append(cliente.getApellidos())
-                        .append(cliente.getRazonSocial()).append("-").append(cliente.getTipoCliente().getNomDescripcion()).append("-")
-                        .append(cliente.getTipoDocumento().getDescripcion()).append("-").append(cliente.getNumeroDocumento()).append(":");
+                sb.append(cliente.getIdCliente()).append("_").append(cliente.getNombres()).append("_").append(cliente.getApellidos())
+                        .append(cliente.getRazonSocial()).append("_").append(cliente.getTipoCliente().getNomDescripcion()).append("_")
+                        .append(cliente.getTipoDocumento().getDescripcion()).append("_").append(cliente.getNumeroDocumento()).append(":");
             }
             out.write(sb.toString());
         }catch(Exception e){
@@ -233,10 +336,10 @@ public class DetalleVentaControlador extends HttpServlet {
             int total = repuestoService.totalRegistros(desc, inicio, registrosPorPagina);
             int numeroPaginas = (int)Math.ceil((double)total / registrosPorPagina);
             StringBuilder sb = new StringBuilder("");
-            sb.append(pagina).append("*").append(numeroPaginas).append("*");
+            sb.append(pagina).append("*").append(numeroPaginas).append("*").append(registrosPorPagina).append("*");
             for(Repuesto repuesto : lstRepuesto){
-                sb.append(repuesto.getIdrepuesto()).append("-").append(repuesto.getDescripcion()).append("-")
-                        .append(repuesto.getStock()).append("-").append(repuesto.getPrecio()).append("-")
+                sb.append(repuesto.getIdrepuesto()).append("_").append(repuesto.getDescripcion()).append("_")
+                        .append(repuesto.getStock()).append("_").append(repuesto.getPrecio()).append("_")
                         .append(repuesto.getPreciopormayor()).append(":");
             }
             out.write(sb.toString());

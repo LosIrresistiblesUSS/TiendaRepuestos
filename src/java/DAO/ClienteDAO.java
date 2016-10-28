@@ -81,7 +81,7 @@ public class ClienteDAO implements iClienteDAO{
                 "inner join tipocliente tc " +
                 "on tc.idTipoCliente = c.idTipoCliente " +
                 "where c.apellidos like '%" + (nombres.trim()) + "%' or c.razonSocial like '%" + (nombres.trim()) + "%' "
-                + "order by idCliente LIMIT " + inicio + ", " + registrosPorPagina;
+                + "order by idCliente desc LIMIT " + inicio + ", " + registrosPorPagina;
 
         List<Cliente> lstCliente = null;
         Cliente cliente;
@@ -140,7 +140,7 @@ public class ClienteDAO implements iClienteDAO{
               "on c.idpersona = p.idpersona " +
               "inner join tipocliente tc "+
                "on tc.idTipoCliente=c.idTipoCliente " +
-               "where apellidos like '%" + (nombres.trim()) + "%'";
+               "where apellidos like '%" + (nombres.trim()) + "%' or razonSocial like '%" + (nombres.trim()) + "%'";
         try{
             con = new Conexion();
             cn = con.getConexion();

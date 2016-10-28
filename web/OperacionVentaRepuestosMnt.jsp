@@ -26,110 +26,6 @@
     <head>
         <%@include file="WEB-INF/jspf/head.jspf" %>
         <title>Empleado</title>
-        <script type="text/javascript">
-            function insertar(){
-                var nombres = document.getElementById("txtNombres").value;
-                var apellidos = document.getElementById("txtApellidos").value;
-                var direccion = document.getElementById("txtDireccion").value;
-                var telefono = document.getElementById("txtTelefono").value;
-                var email = document.getElementById("txtEmail").value;
-                var idTipoDocumento = document.getElementById("idTipoDocumento").value;
-                var nroDocumento = document.getElementById("txtNroDocumento").value;
-                var idTipoEmpleado = document.getElementById("idTipoEmpleado").value;
-                
-                if(nombres === "" || apellidos === "" || direccion === "" || telefono === "" || email=== "" || nroDocumento === ""){
-                    alert("Todos los campos son obligatorios.");
-                }else{
-                    document.frmMnt.action = "DetalleVentaControlador?accion=insertar&nombres=" + nombres + "&apellidos=" + apellidos + "&direccion=" + direccion + "&telefono=" + telefono + "&email=" + email + "&idTipoDocumento=" + idTipoDocumento + "&nroDocumento=" + nroDocumento + "&idTipoEmpleado=" + idTipoEmpleado;
-                    document.frmMnt.submit();
-                }
-            }
-            
-            function cancelar(){
-                document.location = "DetalleVentaControlador?accion=buscar";
-            }
-            
-            function incluirCliente(id){
-                var apellido = $('#txtApellidoRazonSocialModal'+id).val();
-                $('#txtIdCliente').val(id);
-                $('#txtCliente').val(apellido);
-                $('#modalAgregarCliente').modal('hide');
-            }
-            
-            
-            var arreglo, tamano, text, i, total=0;
-            arreglo = new Array();
-            function incluirRepuesto(id){
-                var descRepuesto = $('#txtDescripcion'+id).val();
-                var stock = $('#txtStockModal'+id).val();
-                var precio = parseFloat($('#txtPrecio'+id).val());
-                var precioXmayor = parseFloat($('#txtPrecioXmayor'+id).val());
-                var cantidad = $('#txtCantidad'+id).val();
-                
-                arreglo['#txtPrecio'+id] = '#txtPrecio'+id;
-                
-                $('#conjuntoRepuesto').append(
-                '<!-- REPUESTO AGREGADO - INICIO -->'+
-                '<div class="form-group" id="grupo'+id+'">'+
-                    '<div class="col-md-1 col-md-offset-1">'+
-                        '<br />'+
-                        '<label class="control-label" for="">Repuesto:</label>'+
-                    '</div>'+
-                    '<div class="col-md-5">'+
-                        '<br />'+
-                        '<input type="hidden" id="txtIdRepuesto'+id+'" value="'+id+'">'+
-                        '<input type="text" class="form-control" id="txtRepuesto'+id+'" placeholder="Repuesto" value="'+descRepuesto+'" disabled>'+
-                    '</div>'+
-                    '<div class="col-md-1">'+
-                        '<center>Cantidad:</center>'+
-                        '<input class="form-control" type="text" name="cantidad" id="txtCantidad'+id+'" value="1" />'+
-                    '</div>'+
-                    '<div class="col-md-2">'+
-                        '<center>Total:</center>'+
-                        '<div class="input-group">'+
-                            '<span class="input-group-addon">S/</span>'+
-                            '<input type="hidden" id="txtPrecio'+id+'" value="'+precio+'" >'+
-                            '<input type="hidden" id="txtPrecioXmayor'+id+'" value="'+precioXmayor+'" >'+
-                            '<input type="text" class="form-control" id="txtTotal'+id+'" value="'+precio+'" disabled>'+
-                        '</div>'+
-                    '</div>'+
-                    '<div class="col-md-2">'+
-                        '<br />'+
-                        '<div class="input-group">'+
-                            '<a class="btn btn-link eliminar-producto" id="eliminar-Repuesto'+id+'" onclick="eliminarRepuesto('+id+')">'+
-                                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Eliminar'+
-                            '</a>'+
-                        '</div>'+
-                    '</div>'+
-                '</div>'+
-                '<!-- REPUESTO AGREGADO - FIN -->'
-                );
-                
-                $('#modalAgregarRepuesto').modal('hide');
-                
-                $('#frmMnt :input').bind('change',function(){
-                    var id = $(this).attr("id").substr(11);
-                    var cantidad = parseFloat($('#txtCantidad'+id).val());
-                    var precio = parseFloat($('#txtPrecio'+id).val());
-                    
-                    var resul = parseFloat(cantidad*precio);
-                    
-                    $('#txtTotal'+id).val(resul);
-                    
-                    
-                    for (i = 0; i < arreglo.length; i++){
-                        total = total + parseFloat(arreglo['#txtPrecio'+id]);
-                        console.log(total);
-                        $('#txtTotalGeneral').val(total);
-                    }
-                });
-            }
-            
-            function eliminarRepuesto(id){
-                $('#grupo'+id).remove();
-            }
-            
-        </script>
     </head>
     <body>
         <%@include file="WEB-INF/jspf/header.jspf" %>
@@ -176,14 +72,15 @@
                                 </div>
                                 <label class="control-label col-md-2" for="txtNumero">Numero:</label>
                                 <div class="col-md-3">
-                                    <input class="form-control" type="text" id="txtNumero" value="<% %>" />
+                                    <input class="form-control txtNumero" type="text" id="txtNumeroBoleta" value="<%=ListasObjetos.ultimoNumeroBoleta()%>" disabled />
+                                    <input class="form-control" type="hidden" id="txtNumeroFactura" value="<%=ListasObjetos.ultimoNumeroFactura()%>" disabled />
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="control-label col-md-2" for="txtDireccion">Fecha</label>
+                                <label class="control-label col-md-2" for="txtFecha">Fecha</label>
                                 <div class="col-md-3">
-                                    <input class="form-control" type="date" id="txtDireccion" min="2016-01-01" max="2030-12-31" value="<%=fechaActual%>"/>
+                                    <input class="form-control" type="date" id="txtFecha" min="2016-01-01" max="2030-12-31" value="<%=fechaActual%>"/>
                                 </div>
                                 <label class="control-label col-md-2" for="txtDescripcion">Descripción:</label>
                                 <div class="col-md-3">
@@ -193,9 +90,7 @@
 
                             <div class="panel panel-default panel-productos-padre"> 
                                 <div class="panel-heading panel-productos" id="conjuntoRepuesto">
-
-                                    
-
+                                    <!-- Aquí aparecerán los productos seleccionados -->
                                 </div>
                                 <div class="panel-body">
                                     <div>
@@ -207,19 +102,40 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                                <label class="control-label col-md-5" for="txtSubTotalGeneral">Sub Total:</label>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">S/</span>
+                                        <input type="text" class="form-control" id="txtSubTotalGeneral"  value="0" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            <div class="form-group">
+                                <label class="control-label col-md-5" for="txtIgvGeneral">IGV:</label>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">S/</span>
+                                        <input type="text" class="form-control" id="txtIgvGeneral"  value="0" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                                
                             <div class="form-group">
                                     <label class="control-label col-md-5" for="txtTotalGeneral">Total:</label>
                                     <div class="col-md-2">
                                         <div class="input-group">
                                             <span class="input-group-addon">S/</span>
-                                            <input type="text" class="form-control" id="txtTotalGeneral">
+                                            <input type="text" class="form-control" id="txtTotalGeneral"  value="0" disabled>
                                         </div>
                                     </div>
                             </div>
                             <br />
                             <div class="form-group">
                                 <center>
-                                    <input class="btn btn-primary" type="submit" value="Registrar Venta" onclick="insertar()" id="btnInsertar" />
+                                    <input class="btn btn-primary" value="Registrar Venta" onclick="insertar()" id="btnInsertar" />
                                     <input class="btn btn-primary" type="button" value="Cancelar" onclick="cancelar()" id="btnCancelar" />
                                 </center>
                             </div>
@@ -235,7 +151,8 @@
                                     <div class="modal-body">
                                         <div class="form-group row">
                                             <div class="cuadro-busqueda col-md-3 col-sm-4 col-xs-12">
-                                                <input class="form-control" type="text" id="txtDescripcionModal" placeholder="Busqueda por Descripción" autofocus />
+                                                <input class="form-control" type="text" id="txtDescripcionClienteModal" placeholder="Busqueda por Descripción" autofocus />
+                                                <input type="hidden" id="txtNroPaginaModal" />
                                             </div>
 
                                             <div class="col-md-9 col-sm-8 col-xs-12">
@@ -287,6 +204,7 @@
                                         <div class="form-group row">
                                             <div class="cuadro-busqueda col-md-3 col-sm-4 col-xs-12">
                                                 <input class="form-control" type="text" id="txtDescripcionRepuestoModal" placeholder="Busqueda por Descripción" autofocus />
+                                                <input type="hidden" id="txtNroPaginaModal2" />
                                             </div>
 
                                             <div class="col-md-9 col-sm-8 col-xs-12">

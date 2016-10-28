@@ -136,7 +136,7 @@
                                             </td>
                                             <td class="td-acciones-eliminar">
                                                 <a class="text-danger" href="#modalEliminar<%=i+1%>" data-toggle="modal">
-                                                    <button class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                                                    <button class="btn btn-danger"><span class="glyphicon glyphicon-minus-sign"></span></button>
                                                 </a>
                                             </td>
                                         </tr>
@@ -157,7 +157,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                                                <button onclick="eliminar(<%=comprobante.getIdComprobanteVenta() %>)" type="button" class="btn btn-danger">Eliminar</button>
+                                                <button onclick="eliminar(<%=comprobante.getIdComprobanteVenta() %>)" type="button" class="btn btn-danger">Cambiar Estado</button>
                                             </div>
                                         </div>
                                     </div>

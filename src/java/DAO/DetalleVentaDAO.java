@@ -4,7 +4,6 @@ import Interfaces.iDetalleVentaDAO;
 import Modelo.ComprobanteVenta;
 import Modelo.DetalleOperacionRepuesto;
 import Modelo.DetalleVenta;
-import Modelo.OperacionRepuesto;
 import Modelo.TipoComprobanteVenta;
 import Util.Conexion;
 import java.sql.CallableStatement;
@@ -12,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -37,8 +35,9 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
             cn.setAutoCommit(false);
             cs = cn.prepareCall(sql.trim());
             //OPERACION
-            cs.setInt(1, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getCliente().getIdCliente());
-            cs.setInt(2, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getEmpleado().getIdEmpleado());
+            cs.setInt(1, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getIdOperacionRepuesto());
+            cs.setInt(2, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getCliente().getIdCliente());
+            cs.setInt(3, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getEmpleado().getIdEmpleado());
             
             //DETALLE OPERACION
             
@@ -48,17 +47,16 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
             }
             
             //COMPROBANTE VENTA
-            cs.setString(3, detalleVenta.getComprobanteVenta().getNumero());
-            cs.setDate(4, (java.sql.Date) detalleVenta.getComprobanteVenta().getFecha());
-            cs.setString(5, detalleVenta.getComprobanteVenta().getDescripcion());
-            cs.setDouble(6, detalleVenta.getComprobanteVenta().getImporte());
-            cs.setDouble(7, detalleVenta.getComprobanteVenta().getTipoComprobanteVenta().getIdTipoComprobanteventa());
+            cs.setString(4, detalleVenta.getComprobanteVenta().getNumero());
+            cs.setDate(5, (java.sql.Date) detalleVenta.getComprobanteVenta().getFecha());
+            cs.setString(6, detalleVenta.getComprobanteVenta().getDescripcion());
+            cs.setDouble(7, detalleVenta.getComprobanteVenta().getImporte());
+            cs.setDouble(8, detalleVenta.getComprobanteVenta().getTipoComprobanteVenta().getIdTipoComprobanteventa());
             
-            cs.setInt(8, detalleVenta.getComprobanteVenta().getIdComprobanteVenta());
-            cs.setInt(9, detalleVenta.getDetalleOperacion().getIdDetalleOperacion());
-            cs.registerOutParameter(10, java.sql.Types.INTEGER);
+
+            cs.registerOutParameter(11, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(10).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(11).toString());
             
             if(flgOperacion==1){
                 cn.commit();
@@ -87,7 +85,7 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
             cs.setDouble(2, detalleOperacionRepuesto.getPrecio());
             cs.setDouble(3, detalleOperacionRepuesto.getSubTotal());
             cs.setInt(4, idOperacion);
-            cs.setInt(5, detalleOperacionRepuesto.getRepuesto().getIdproducto());
+            cs.setInt(5, detalleOperacionRepuesto.getRepuesto().getIdrepuesto());
             cs.registerOutParameter(6, java.sql.Types.INTEGER);
             cs.executeUpdate();
             flgOperacion = Integer.parseInt(cs.getObject(6).toString());
@@ -208,6 +206,28 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
 
     @Override
     public int eliminar(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            logger.info("Eliminar Venta");
+        sql= "{CALL P_Anular_ComprobanteVenta(?,?)}";
+        try{
+            con=new Conexion();
+            cn=con.getConexion();
+            
+            cs = cn.prepareCall(sql.trim());
+            cs.setInt(1, id);
+            cs.registerOutParameter(2, java.sql.Types.INTEGER);
+            cs.executeUpdate();
+            flgOperacion = Integer.parseInt(cs.getObject(2).toString());
+            
+            if(flgOperacion == 1){
+                cn.commit();
+            }else{
+                cn.rollback();
+            }
+        }catch(Exception e){
+            logger.info("Error al Eliminar" + e.getMessage());
+        }finally{
+            con.cerrarConexion(cn);
+        }
+        return flgOperacion;
     }
 }
