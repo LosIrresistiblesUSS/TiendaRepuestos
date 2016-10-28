@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-10-2016 a las 09:08:06
+-- Tiempo de generación: 29-10-2016 a las 00:11:46
 -- Versión del servidor: 10.1.13-MariaDB
 -- Versión de PHP: 5.6.23
 
@@ -391,6 +391,70 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_TipoServicio` (IN `descr
 	SELECT flag_exitoso;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_VentaRepuestos` (IN `_idOperacion` INT, IN `_idCliente` INT, IN `_idEmpleado` INT, IN `_idComprobanteVenta` INT, IN `_numero` VARCHAR(15), IN `_fecha` TIMESTAMP, IN `_descripcion` VARCHAR(150), IN `_importe` DECIMAL(7,2), IN `_idTipoComprobanteVenta` INT, OUT `flag_exitoso` INT)  BEGIN
+	DECLARE contador_rep INT DEFAULT 0;
+	DECLARE _idPersonaCliente INT;
+	DECLARE _idPersonaEmpleado INT;
+	SET flag_exitoso = 0;
+
+	select count(*) into contador_rep from ComprobanteVenta 
+	where numero = _numero;
+
+	IF (contador_rep != 0) THEN
+		SET flag_exitoso = 2;
+	ELSE
+		START TRANSACTION;
+			SELECT c.idPersona into _idPersonaCliente FROM Cliente as c
+			inner join Persona as p on c.idPersona = p.idPersona
+			where c.idCliente = _idCliente;
+			
+			SELECT e.idPersona into _idPersonaEmpleado FROM Empleado as e
+			inner join Persona as p on e.idPersona = p.idPersona
+			where e.idEmpleado = _idEmpleado;
+		
+			INSERT INTO ComprobanteVenta(idComprobanteVenta,numero,fecha,descripcion,importe,idTipoComprobanteVenta)
+			VALUES(_idComprobanteVenta,_numero,_fecha,_descripcion,_importe,_idTipoComprobanteVenta);
+			
+			INSERT INTO Operacion(idOperacion,idPersonaCliente,idPersonaEmpleado)
+			VALUES(_idOperacion,_idPersonaCliente,_idPersonaEmpleado);
+		COMMIT;
+	END IF;
+	SELECT flag_exitoso;
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `P_Insertar_VentaRepuestos2` (IN `_cantidad` INT, IN `_precio` DECIMAL(7,2), IN `_subtotal` DECIMAL(7,2), IN `_idOperacion` INT, IN `_idComprobanteVenta` INT, IN `_idRepuesto` INT, OUT `flag_exitoso` INT)  BEGIN
+	DECLARE contadorDetalleOperacion INT DEFAULT 0;
+	DECLARE contadorDetalleVenta INT DEFAULT 0;
+	
+	DECLARE _idProducto INT;
+
+	SET flag_exitoso = 0;
+
+		START TRANSACTION;
+			select idDetalleOperacion into contadorDetalleOperacion from DetalleOperacion
+			order by idDetalleOperacion desc limit 1;
+			
+			select idDetalleVenta into contadorDetalleVenta from DetalleVenta
+			order by idDetalleVenta desc limit 1;
+			
+			select r.idProducto into _idProducto from Repuesto as r inner join Producto as p
+			on r.idProducto = p.idProducto where r.idRepuesto = _idRepuesto;
+		
+			
+			INSERT INTO DetalleOperacion(idDetalleOperacion,cantidad,precio,subTotal,idOperacion,idProducto)
+			VALUES(contadorDetalleOperacion+1,_cantidad,_precio,_subtotal,_idOperacion,_idProducto);
+			
+			INSERT INTO DetalleVenta(idDetalleVenta,idComprobanteVenta,idDetalleOperacion)
+			VALUES(contadorDetalleVenta+1,_idComprobanteVenta,contadorDetalleOperacion+1);
+			
+			SET flag_exitoso = 1;
+		COMMIT;
+
+	SELECT flag_exitoso;
+
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -490,7 +554,7 @@ INSERT INTO `comprobanteventa` (`idComprobanteVenta`, `numero`, `fecha`, `descri
 (8, 'B-001-000004', '2016-05-15 05:00:00', 'Realizando Ventas', '160.00', b'1', 1),
 (9, 'F-001-000005', '2016-05-16 05:00:00', 'Realizando Ventas', '440.00', b'1', 2),
 (10, 'B-001-000005', '2016-05-17 05:00:00', 'Realizando Ventas', '1300.00', b'1', 1),
-(11, 'F-001-000006', '2016-05-18 05:00:00', 'Realizando Ventas', '1240.00', b'1', 2),
+(11, 'F-001-000006', '2016-05-18 05:00:00', 'Realizando Ventas', '1240.00', b'0', 2),
 (12, 'B-001-000006', '2016-05-19 05:00:00', 'Realizando Ventas', '2500.00', b'1', 1),
 (13, 'F-001-000007', '2016-05-20 05:00:00', 'Realizando Ventas', '1400.00', b'1', 2),
 (14, 'B-001-000007', '2016-05-21 05:00:00', 'Realizando Ventas', '1280.00', b'1', 1),
@@ -499,13 +563,13 @@ INSERT INTO `comprobanteventa` (`idComprobanteVenta`, `numero`, `fecha`, `descri
 (17, 'F-001-000009', '2016-05-24 05:00:00', 'Realizando Ventas', '40.00', b'1', 2),
 (18, 'B-001-000009', '2016-05-25 05:00:00', 'Realizando Ventas', '160.00', b'1', 1),
 (19, 'F-001-000010', '2016-05-26 05:00:00', 'Realizando Ventas', '1180.00', b'1', 2),
-(20, 'B-001-000010', '2016-05-27 05:00:00', 'Realizando Ventas', '1140.00', b'1', 1),
+(20, 'B-001-000010', '2016-05-27 05:00:00', 'Realizando Ventas', '1140.00', b'0', 1),
 (21, 'F-001-000011', '2016-05-08 05:00:00', 'Realizando Ventas', '2000.00', b'1', 2),
-(22, 'B-001-000012', '2016-05-29 05:00:00', 'Realizando Ventas', '1240.00', b'1', 1),
-(23, 'F-001-000012', '2016-05-30 05:00:00', 'Realizando Ventas', '1240.00', b'1', 2),
-(24, 'B-001-000013', '2016-05-31 05:00:00', 'Realizando Ventas', '2320.00', b'1', 1),
+(22, 'B-001-000011', '2016-05-29 05:00:00', 'Realizando Ventas', '1240.00', b'1', 1),
+(23, 'F-001-000012', '2016-05-30 05:00:00', 'Realizando Ventas', '1240.00', b'0', 2),
+(24, 'B-001-000012', '2016-05-31 05:00:00', 'Realizando Ventas', '2320.00', b'1', 1),
 (25, 'F-001-000013', '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00', b'0', 2),
-(26, 'B-001-000014', '2016-06-01 05:00:00', 'Realizando Ventas', '1320.00', b'1', 1);
+(26, 'B-001-000013', '2016-10-28 05:00:00', '', '151.16', b'1', 1);
 
 -- --------------------------------------------------------
 
@@ -584,7 +648,9 @@ INSERT INTO `detalleoperacion` (`idDetalleOperacion`, `cantidad`, `precio`, `sub
 (23, 1, '80.00', '80.00', 10, 103),
 (24, 1, '30.00', '30.00', 16, 120),
 (25, 1, '200.00', '200.00', 17, 130),
-(26, 1, '350.00', '350.00', 20, 133);
+(26, 1, '350.00', '350.00', 20, 133),
+(27, 1, '70.60', '70.60', 23, 86),
+(28, 1, '80.56', '80.56', 23, 100);
 
 -- --------------------------------------------------------
 
@@ -743,7 +809,9 @@ INSERT INTO `detalleventa` (`idDetalleVenta`, `idComprobanteVenta`, `idDetalleOp
 (22, 18, 19),
 (23, 20, 21),
 (24, 22, 23),
-(25, 24, 25);
+(25, 24, 25),
+(26, 26, 27),
+(27, 26, 28);
 
 -- --------------------------------------------------------
 
@@ -876,10 +944,10 @@ INSERT INTO `login` (`idLogin`, `idPersona`, `usuario`, `pass`, `imagen`) VALUES
 
 CREATE TABLE `operacion` (
   `idOperacion` int(11) NOT NULL,
-  `estado` tinyint(1) NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
   `idPersonaCliente` int(11) NOT NULL,
   `idPersonaEmpleado` int(11) NOT NULL,
-  `idVehiculo` int(11) NOT NULL
+  `idVehiculo` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
@@ -908,7 +976,8 @@ INSERT INTO `operacion` (`idOperacion`, `estado`, `idPersonaCliente`, `idPersona
 (19, 0, 18, 28, 41),
 (20, 1, 27, 28, 37),
 (21, 0, 5, 28, 43),
-(22, 0, 34, 17, 36);
+(22, 0, 34, 17, 36),
+(23, 1, 33, 36, NULL);
 
 -- --------------------------------------------------------
 
@@ -970,7 +1039,7 @@ INSERT INTO `persona` (`idPersona`, `numeroDocumento`, `nombres`, `direccion`, `
 (16, '20397132847', 'Elmer Anthony', 'Jr. Ayacucho #812', '251327', 'msandovalelmer@crece.uss.edu.pe', 2),
 (17, '44085443', 'Danny Frank', 'Av. America Sur #2269', '262811', 'oarrascuedannyf@crece.uss.edu.pe', 1),
 (18, '001179224181', 'Jhon Adderly', 'Jr. Zepita #566 Of.2', '250184', 'psuclupej@crece.uss.edu.pe', 3),
-(19, '20314512643', 'José Luis Felipe Giovany', 'Diego de Aalmagro 746-Trujillo', '201818', 'pcoronadojose@crece.uss.edu.pe', 2),
+(19, '20314512643', 'José Luis Felipe Giovany', 'Diego de Aalmagro #746 - Trujillo', '201818', 'pcoronadojose@crece.uss.edu.pe', 2),
 (20, '49736549', 'Luis Robert', 'Av. America Norte #967', '246065', 'rramosluis@crece.uss.edu.pe', 1),
 (21, '49878234', 'Gustavo Adolfo', 'Av. Simón Bolivar #810', '265966', 'rmejiagua@crece.uss.edu.pe', 1),
 (22, '10634875819', 'Cesar Manuel', 'Diego Maradona #347', '267881', 'selescanoc@crece.uss.edu.pe', 2),
@@ -1106,9 +1175,9 @@ INSERT INTO `producto` (`idProducto`, `descripcion`, `stock`, `precio`, `precioP
 (95, 'SISTEMAS DE BOBINAS CONVECIONAL CON PLATINO BOSCH', 20, '30.23', '26.00'),
 (96, 'SISTEMAS DE BOBINAS ELECTRONICO  BOSCH', 2, '50.23', '48.00'),
 (97, 'BOBINAS ASFÁLTICAS', 4, '30.00', '26.00'),
-(98, 'AROS ZH-125 ', 4, '124.00', '120.00'),
-(99, 'LLANATAS MICHELIN Q: 99 mph (159 km/hr) ', 25, '154.00', '150.00'),
-(100, 'BOBINAS PLASTICAS BOSCH', 4, '80.56', '77.00'),
+(98, 'AROS ZH 125 ', 4, '124.00', '120.00'),
+(99, 'LLANATAS MICHELIN Q 99 mph (159 km/hr) ', 25, '154.00', '150.00'),
+(100, 'BOBINAS PLASTICAS - BOSCH', 4, '80.56', '77.00'),
 (101, 'Sistema electrico', NULL, '100.00', NULL),
 (102, 'Sistema de enfriamiento', NULL, '120.00', NULL),
 (103, 'Balanceo', NULL, '80.00', NULL),
@@ -1727,7 +1796,7 @@ ALTER TABLE `vehiculo`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT de la tabla `comprobantecompra`
 --
@@ -1747,7 +1816,7 @@ ALTER TABLE `detallecompra`
 -- AUTO_INCREMENT de la tabla `detalleoperacion`
 --
 ALTER TABLE `detalleoperacion`
-  MODIFY `idDetalleOperacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `idDetalleOperacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 --
 -- AUTO_INCREMENT de la tabla `detallepermiso`
 --
@@ -1757,12 +1826,12 @@ ALTER TABLE `detallepermiso`
 -- AUTO_INCREMENT de la tabla `detalleventa`
 --
 ALTER TABLE `detalleventa`
-  MODIFY `idDetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `idDetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `idEmpleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idEmpleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `kardex`
 --
@@ -1777,7 +1846,7 @@ ALTER TABLE `login`
 -- AUTO_INCREMENT de la tabla `operacion`
 --
 ALTER TABLE `operacion`
-  MODIFY `idOperacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idOperacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT de la tabla `permiso`
 --
@@ -1787,17 +1856,17 @@ ALTER TABLE `permiso`
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `idPersona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `idPersona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
+  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `idProveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `idProveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT de la tabla `repuesto`
 --
@@ -1807,7 +1876,7 @@ ALTER TABLE `repuesto`
 -- AUTO_INCREMENT de la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `idServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 --
 -- AUTO_INCREMENT de la tabla `tipocliente`
 --
@@ -1822,12 +1891,12 @@ ALTER TABLE `tipocomprobanteventa`
 -- AUTO_INCREMENT de la tabla `tipodocumento`
 --
 ALTER TABLE `tipodocumento`
-  MODIFY `idTipoDocumento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `idTipoDocumento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT de la tabla `tiposervicio`
 --
 ALTER TABLE `tiposervicio`
-  MODIFY `idTipoServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `idTipoServicio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT de la tabla `vehiculo`
 --
