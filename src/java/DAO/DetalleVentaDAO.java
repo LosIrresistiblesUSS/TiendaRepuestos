@@ -23,12 +23,13 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
     private PreparedStatement ps;
     private CallableStatement cs;
     private int flgOperacion = 0;
+    private int flgOperacion2 = 0;
     private String sql;
     
     @Override
     public int insertar(DetalleVenta detalleVenta) {
         logger.info("Insertando Venta");
-        sql= "{CALL P_Insertar_Venta(?,?,?,?,?,?,?,?,?,?,?)}";
+        sql= "{CALL P_Insertar_VentaRepuestos(?,?,?,?,?,?,?,?,?,?)}";
         try{
             con=new Conexion();
             cn=con.getConexion();
@@ -39,24 +40,23 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
             cs.setInt(2, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getCliente().getIdCliente());
             cs.setInt(3, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getEmpleado().getIdEmpleado());
             
-            //DETALLE OPERACION
-            
-            List<DetalleOperacionRepuesto> lstDetalleOperacionRepuesto = detalleVenta.getDetalleOperacion().getLstDetalleRepuesto();
-            for(DetalleOperacionRepuesto detalleOperacionRepuesto : lstDetalleOperacionRepuesto){
-                insertarDOR(detalleOperacionRepuesto, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getIdOperacionRepuesto());
-            }
-            
             //COMPROBANTE VENTA
-            cs.setString(4, detalleVenta.getComprobanteVenta().getNumero());
-            cs.setDate(5, (java.sql.Date) detalleVenta.getComprobanteVenta().getFecha());
-            cs.setString(6, detalleVenta.getComprobanteVenta().getDescripcion());
-            cs.setDouble(7, detalleVenta.getComprobanteVenta().getImporte());
-            cs.setDouble(8, detalleVenta.getComprobanteVenta().getTipoComprobanteVenta().getIdTipoComprobanteventa());
+            cs.setInt(4, detalleVenta.getComprobanteVenta().getIdComprobanteVenta());
+            cs.setString(5, detalleVenta.getComprobanteVenta().getNumero());
+            cs.setDate(6, (java.sql.Date) detalleVenta.getComprobanteVenta().getFecha());
+            cs.setString(7, detalleVenta.getComprobanteVenta().getDescripcion());
+            cs.setDouble(8, detalleVenta.getComprobanteVenta().getImporte());
+            cs.setDouble(9, detalleVenta.getComprobanteVenta().getTipoComprobanteVenta().getIdTipoComprobanteventa());
             
-
-            cs.registerOutParameter(11, java.sql.Types.INTEGER);
+            cs.registerOutParameter(10, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(11).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(10).toString());
+  
+            //DETALLE OPERACION
+                List<DetalleOperacionRepuesto> lstDetalleOperacionRepuesto = detalleVenta.getDetalleOperacion().getLstDetalleRepuesto();
+                for(DetalleOperacionRepuesto detalleOperacionRepuesto : lstDetalleOperacionRepuesto){
+                    insertarDOR(detalleOperacionRepuesto, detalleVenta.getDetalleOperacion().getOperacionRespuesto().getIdOperacionRepuesto(),detalleVenta.getComprobanteVenta().getIdComprobanteVenta());
+                }
             
             if(flgOperacion==1){
                 cn.commit();
@@ -73,10 +73,12 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
     }
 
     @Override
-    public int insertarDOR(DetalleOperacionRepuesto detalleOperacionRepuesto, int idOperacion) {
+    public int insertarDOR(DetalleOperacionRepuesto detalleOperacionRepuesto, int idOperacion, int idComprobanteVenta) {
         logger.info("Insertando Otra Venta");
-        sql= "{CALL P_Insertar_OtraVenta(?,?,?,?,?,?)}";
+        sql= "{CALL P_Insertar_VentaRepuestos2(?,?,?,?,?,?,?)}";
         try{
+            
+            System.out.println("ENTREEEEEEEEEEEEEE");
             con=new Conexion();
             cn=con.getConexion();
             cn.setAutoCommit(false);
@@ -85,10 +87,11 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
             cs.setDouble(2, detalleOperacionRepuesto.getPrecio());
             cs.setDouble(3, detalleOperacionRepuesto.getSubTotal());
             cs.setInt(4, idOperacion);
-            cs.setInt(5, detalleOperacionRepuesto.getRepuesto().getIdrepuesto());
-            cs.registerOutParameter(6, java.sql.Types.INTEGER);
+            cs.setInt(5, idComprobanteVenta);
+            cs.setInt(6, detalleOperacionRepuesto.getRepuesto().getIdrepuesto());
+            cs.registerOutParameter(7, java.sql.Types.INTEGER);
             cs.executeUpdate();
-            flgOperacion = Integer.parseInt(cs.getObject(6).toString());
+            flgOperacion = Integer.parseInt(cs.getObject(7).toString());
             
             if(flgOperacion==1){
                 cn.commit();
@@ -106,7 +109,7 @@ public class DetalleVentaDAO implements iDetalleVentaDAO {
     @Override
     public List<ComprobanteVenta> buscar(String nombres, int inicio, int registroPorPagina) {
         logger.info("buscar");
-        sql = "select " +
+        sql = "select DISTINCT " +
             "cv.idComprobanteVenta " +
             ",p.nombres " +
             ",c.apellidos" +

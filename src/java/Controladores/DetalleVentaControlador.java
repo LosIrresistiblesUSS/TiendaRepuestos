@@ -156,6 +156,7 @@ public class DetalleVentaControlador extends HttpServlet {
             ComprobanteVenta comprobanteV= new ComprobanteVenta();
             TipoComprobanteVenta tipoComprobanteVenta = new TipoComprobanteVenta();
             tipoComprobanteVenta.setIdTipoComprobanteventa(tipoComprobante);
+            comprobanteV.setIdComprobanteVenta(ListasObjetos.ultimoIdComprobanteVenta());
             comprobanteV.setTipoComprobanteVenta(tipoComprobanteVenta);
             comprobanteV.setNumero(nroDocumento);
             comprobanteV.setFecha(Date.valueOf(fecha));

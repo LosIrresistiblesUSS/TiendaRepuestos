@@ -17,9 +17,9 @@ public class DetalleVentaLogica implements iDetalleVentaLogica {
     }
 
     @Override
-    public int insertarDOR(DetalleOperacionRepuesto detalleOperacionRepuesto, int idOperacion) {
+    public int insertarDOR(DetalleOperacionRepuesto detalleOperacionRepuesto, int idOperacion, int idComprobanteVenta) {
         detalleVentaDAO = new DetalleVentaDAO();
-        return detalleVentaDAO.insertarDOR(detalleOperacionRepuesto, idOperacion);
+        return detalleVentaDAO.insertarDOR(detalleOperacionRepuesto, idOperacion, idComprobanteVenta);
     }
 
     @Override
